@@ -1,0 +1,10 @@
+{# comparison_table.html.j2 #}
+<div style="margin:20px 0;"><table style="{{ table_base(font_size='14px', border='1px solid ' ~ COLORS.border) }}">{{ table_caption(title) }}<thead><tr style="background:{{ COLORS.surface }};">
+{% for h in headers %}
+<th style="padding:12px;text-align:{{ 'left' if loop.index0 == 0 else 'right' }};color:{{ COLORS.neutral }};">{{ h }}</th>
+{% endfor %}
+</tr></thead><tbody>
+{% for name, exp, var, cvar in rows %}
+<tr><td style="padding:12px;font-weight:bold;color:{{ COLORS.neutral }};">{{ name }}</td><td style="padding:12px;text-align:right;color:{{ COLORS.secondary }};">EUR {{ '{:,.0f}'.format(exp) }}</td><td style="padding:12px;text-align:right;color:{{ COLORS.danger }};">EUR {{ '{:,.0f}'.format(var) }}</td><td style="padding:12px;text-align:right;color:{{ COLORS.neutral }};font-weight:bold;">EUR {{ '{:,.0f}'.format(cvar) }}</td></tr>
+{% endfor %}
+</tbody></table></div>

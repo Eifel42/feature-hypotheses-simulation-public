@@ -1,0 +1,76 @@
+ADR-003: KISS Architecture Principle
+
+== Status
+Accepted
+
+== Context
+The Feature Hypotheses Simulation platform could be implemented using various architectural patterns:
+* Microservices with REST APIs and databases
+* Complex web applications with frontend/backend separation
+* Service-oriented architecture with message queues
+* Simple library-based approach with direct imports
+
+Initial documentation showed a complex system with REST APIs, databases, and web interfaces, but the actual implementation needs to prioritize:
+* Ease of use for data science workflows
+* Quick setup without infrastructure overhead
+* Direct integration with Jupyter notebooks
+* Version control friendly (no databases)
+
+== Decision
+We will adopt the *KISS (Keep It Simple, Stupid) architectural principle* with:
+* *Direct Python library usage* instead of REST APIs
+* *Jupyter notebooks* as the primary user interface
+* *CSV files* for data persistence instead of databases
+* *No microservices* - everything runs in the same Python process
+* *Minimal infrastructure* requirements
+
+The architecture consists of:
+* FHS Python library (`src/fhs/`) with direct imports
+* Jupyter Lab container for interactive analysis
+* CSV files for configuration and data
+* Docker for optional containerized development
+
+== Consequences
+
+=== Positive
+* *Zero infrastructure setup* - just `pip install` and run
+* *Perfect for data science workflows* - natural Jupyter integration
+* *Version control friendly* - no databases to manage
+* *Easy debugging* - direct method calls, no network complexity
+* *Fast development cycles* - no API contracts or deployment overhead
+* *Portable* - runs anywhere Python runs
+
+=== Negative
+* *Not suitable for web applications* - no REST API layer
+* *Single-user focused* - no built-in multi-tenancy
+* *Limited scalability* - everything runs in one process
+* *No authentication/authorization* built-in
+
+=== Mitigation
+* *Web deployment possible* via Jupyter Hub for multi-user scenarios
+* *Scalability through containerization* when needed
+* *API layer can be added later* without changing core library
+* *Authentication handled at container/deployment level*
+
+== Implementation Examples
+
+```python
+# KISS approach - direct imports
+from fhs import Feature, FeatureSimulator
+
+feature = Feature(name="Checkout", expected_users=1000, conversion_rate=0.15, uncertainty=0.1)
+simulator = FeatureSimulator(seed=42)
+result = simulator.simulate_feature(feature, scenarios=1000)
+print(f"VaR 95%: {result.p5}")
+```
+
+vs rejected complex approach:
+```python
+# Rejected - complex API approach
+response = requests.post('/api/features/create', json=feature_data)
+feature_id = response.json()['id']
+response = requests.post('/api/simulations/run', json={'feature_id': feature_id})
+```
+
+'''
+_Architecture Decision Record_

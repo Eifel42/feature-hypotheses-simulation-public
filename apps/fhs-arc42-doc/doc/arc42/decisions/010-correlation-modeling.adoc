@@ -1,0 +1,251 @@
+= ADR-010: Correlation Modeling Strategy for Dependent Features
+
+== Status
+✅ Accepted (Implemented Q1 2026)
+
+== Context
+Features don't develop in isolation. In real portfolios, features are often correlated:
+
+- Mobile + web features: users adopt together
+- Market-dependent features: all affected by market conditions
+- Platform features: interdependent capabilities
+
+Current implementation treats features as independent (correlation = 0). This is unrealistic for most portfolios. Example: blockchain integration + DeFi features have high positive correlation because they share infrastructure and market interest.
+
+== Decision
+Implement correlation modeling using:
+
+1. **Cholesky Decomposition** for transforming independent normal variables into correlated scenarios
+2. **Correlation Matrix** (n×n) as optional input to PortfolioAdvisor
+3. **Strict Validation** ensuring matrix is symmetric, positive semi-definite
+
+```python
+MonteCarloEngine.simulate_correlated(
+    scenarios=10000,
+    correlation_matrix=np.array([
+        [1.0,  0.5,  0.3],  # mobile-web: 50% correlated
+        [0.5,  1.0,  0.2],  # web-api: 20% correlated
+        [0.3,  0.2,  1.0]
+    ]),
+    distribution='normal'
+)
+```
+
+== Rationale
+
+1. **Realistic Scenarios:** Captures feature interdependencies in portfolio context
+2. **Numerical Stability:** Cholesky decomposition is well-tested, numerically stable
+3. **Flexibility:** Optional parameter; independent features work without correlation
+4. **Performance:** O(n³) decomposition once, then O(n²) per scenario (acceptable)
+5. **Scientific Rigor:** Proper covariance matrix handling vs. naive scaling
+
+== Mathematical Background
+
+=== Cholesky Decomposition
+
+For a correlation matrix C with standard deviations σ:
+
+```
+Covariance Matrix: Σ = D · C · D
+where D = diag(σ₁, σ₂, ..., σₙ)
+
+Cholesky: Σ = L · L^T
+L: lower triangular matrix
+
+Correlated samples: X = L · Z
+where Z ~ N(0, I) independent samples
+```
+
+=== Validation Checks
+
+```python
+def _validate_correlation_matrix(C: np.ndarray):
+    # 1. Shape: square matrix
+    assert C.shape[0] == C.shape[1], "Matrix must be square"
+
+    # 2. Symmetry: C[i,j] = C[j,i]
+    assert np.allclose(C, C.T, atol=1e-10), "Matrix must be symmetric"
+
+    # 3. Diagonal: all 1.0
+    assert np.allclose(np.diag(C), 1.0, atol=1e-10), "Diagonal must be 1.0"
+
+    # 4. Positive semi-definite: Cholesky succeeds
+    try:
+        L = np.linalg.cholesky(C)
+    except np.linalg.LinAlgError:
+        raise ValueError("Matrix not positive semi-definite")
+
+    # 5. Correlation bounds: -1 ≤ ρ ≤ 1
+    assert np.all(C >= -1.0 - 1e-10) and np.all(C <= 1.0 + 1e-10), \
+        "Correlations must be in [-1, 1]"
+```
+
+== Consequences
+
+=== Positive
+- Portfolio risk more accurate for dependent features
+- Risk concentration analysis considers correlations (not just HHI)
+- Stress testing more realistic with correlated failures
+- Scientific foundation for multi-feature risk assessment
+- Enables detection of hidden dependencies (negative correlations)
+
+=== Negative
+- User must provide valid correlation matrix (high entry barrier)
+- Performance cost: ~10% slower than independent simulation
+- Requires understanding of correlation concepts
+- Difficult to estimate correlation coefficients accurately
+- High correlation (> 0.8) can cause numerical instability
+
+=== Performance Impact
+
+```
+Independent simulation:  1.0x baseline
+Correlated (10 features): 1.1x (10% overhead)
+Correlated (100 features): 1.2x (20% overhead - Cholesky is O(n³))
+```
+
+== Alternatives Considered
+
+=== 1. Independence Assumption (Current)
+- **Pros:** Simple, no user input needed
+- **Cons:** Unrealistic for real portfolios, underestimates risk concentration
+- **Use for:** Single-feature analysis
+
+=== 2. Pearson Coefficients with User Estimates
+- **Pros:** More intuitive (ask "are features correlated?")
+- **Cons:** Would need n(n-1)/2 user inputs; same validation complexity
+- **Use for:** Manual correlation specification (could add later)
+
+=== 3. Factor Models
+- **Pros:** Natural grouping by market factors
+- **Cons:** Too complex for MVP; requires factor identification
+- **Use for:** Advanced portfolio analysis (Q3 2026+)
+
+=== 4. Copula Methods
+- **Pros:** Flexible, can model non-linear dependencies
+- **Cons:** Significantly more complex; overkill for current needs
+- **Use for:** Advanced risk modeling (research track)
+
+== Design Decisions
+
+=== Cholesky vs. Eigenvalue Decomposition
+- **Cholesky:** Standard, O(n³), gives L such that C = L·L^T
+- **Eigen:** Allows rank reduction, more flexible, but slower
+- **Decision:** Cholesky (simpler, standard, sufficient)
+
+=== Validation Strictness
+- **Strict:** Reject any non-positive semi-definite matrix
+- **Lenient:** Try to fix via eigenvalue clipping
+- **Decision:** Strict (better error messages, fewer surprises)
+
+=== Optional vs. Required
+- **Required:** All simulations use correlation
+- **Optional:** Only applied when correlation_matrix provided
+- **Decision:** Optional (backward compatible, opt-in)
+
+== Test Coverage
+
+```
+test_monte_carlo.py::TestCorrelation:
+  - test_identity_matrix() — C = I gives independent results
+  - test_simple_2x2() — Small correlation matrix
+  - test_large_correlation_matrix() — 100x100 matrix
+  - test_symmetric_check() — Rejects non-symmetric
+  - test_diagonal_check() — Rejects diagonal ≠ 1
+  - test_positive_definite_check() — Rejects non-PSD
+  - test_correlation_bounds() — Rejects |ρ| > 1
+  - test_numerical_stability() — High correlations (0.9+)
+  - test_realizability_check() — Determinant > 0
+  - test_performance_benchmark() — < 10% overhead
+  - test_reproducibility() — Same seed gives same results
+
+test_portfolio_advisor.py::TestCorrelation:
+  - test_correlated_portfolio() — Multi-feature correlated simulation
+  - test_correlation_effect_on_risk() — Risk differs from independent
+```
+
+== Related ADRs
+- ADR-001: Python Stack (NumPy for linear algebra)
+- ADR-003: KISS (optional feature, not mandatory)
+- ADR-009: Development Cost (cost-aware portfolios)
+- ADR-011: Greedy Optimization (portfolio selection with correlation)
+
+== Future Enhancements
+
+1. **Correlation Matrix Builder:** Interactive tool to construct valid matrices
+2. **Sample Correlation Templates:** "20% correlated", "50% correlated" patterns
+3. **Factor Models:** Auto-generate correlations from market factors
+4. **Sensitivity Analysis:** "Portfolio risk if correlation ±10%?"
+5. **Copula Methods:** Non-linear dependencies (research)
+
+== Implementation Notes
+
+=== Distribution Support
+```python
+# Normal distribution: standard Cholesky
+simulate_correlated(..., distribution='normal')
+
+# Lognormal: Cholesky on normal, then exp()
+simulate_correlated(..., distribution='lognormal')
+
+# Other distributions: future enhancement
+```
+
+=== Bounded Support
+Features with [0,1] bounds (conversion rates):
+```python
+# Generate correlated normal samples
+X = L @ Z  # standard normal + correlation
+# Clip to [0,1]
+X = np.clip(X, 0, 1)
+# Result: bounds respected, correlation ~preserved
+```
+
+=== Example: Blockchain Portfolio
+
+```python
+features = [
+    Feature(name="Blockchain Integration", ...),
+    Feature(name="DeFi Features", ...),
+    Feature(name="Smart Contracts", ...)
+]
+
+# High correlation: blockchain features depend on each other
+correlation = np.array([
+    [1.0,  0.7,  0.6],
+    [0.7,  1.0,  0.8],
+    [0.6,  0.8,  1.0]
+])
+
+advisor = PortfolioAdvisor(features=features)
+result = advisor.simulate_correlated(
+    scenarios=10000,
+    correlation_matrix=correlation
+)
+# Risk metrics now reflect interdependencies
+```
+
+== Risks & Mitigations
+
+- **Risk:** Invalid correlation matrix causes Cholesky to fail
+- **Mitigation:** Strict validation with clear error messages (IMPLEMENTED)
+
+- **Risk:** Users don't know how to estimate correlations
+- **Mitigation:** Documentation + templates (FUTURE)
+
+- **Risk:** High correlations (0.9+) cause numerical instability
+- **Mitigation:** Tests validate stability; recommend < 0.95
+
+== See Also
+- `apps/fhs/src/fhs/core/monte_carlo.py` (implementation)
+- `test_monte_carlo.py::TestCorrelation` (11+ tests)
+- Research: Cholesky decomposition numerical stability
+
+== Changelog
+
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-02-21 | Initial acceptance | Implementation Team |
+
+'''
+_Part of Arc42 Architecture Documentation_

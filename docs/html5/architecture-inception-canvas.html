@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="description" content="One-page architecture overview based on the Architecture Inception Canvas by arc42">
+<meta name="author" content="eifel42.dev">
+<title>Feature Hypotheses Simulation - Architecture Inception Canvas</title>
+<style>
+/* Modern International HTML5 Design for arc42 Documentation */
+
+/* Base styles with international font support */
+:root {
+  --primary-color: #1e40af; /* Slightly darker for better contrast */
+  --secondary-color: #b91c1c; /* Slightly darker for better contrast */
+  --accent-color: #2563eb;
+  --background-color: #ffffff;
+  --text-color: #111827;
+  --text-muted: #374151; /* Darker for better contrast */
+  --heading-color: #000000;
+  --link-color: #1d4ed8;
+  --link-hover-color: #1e3a8a;
+  --code-bg: #f8fafc;
+  --code-border: #cbd5e1;
+  --table-border: #94a3b8;
+  --table-header-bg: #f1f5f9;
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #cbd5e1;
+  --sidebar-width: 320px; /* Slightly wider */
+  --border-radius: 8px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.1); /* Slightly more prominent */
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.15), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --transition: color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    transform 0.15s ease-in-out;
+  --focus-ring-color: #2563eb;
+  --focus-ring-offset: 2px;
+
+  /* International font stacks */
+  --font-sans: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Noto Sans', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-serif: 'Charter', 'Bitstream Charter', 'Sitka Text', Cambria, 'Noto Serif', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, 'Liberation Mono', 'Menlo', monospace;
+}
+
+/* Global styles with improved typography */
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.back-to-index {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 1200;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0.7rem 1rem 0.7rem 0.75rem;
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 0.97), rgb(241 245 249 / 0.96));
+  color: #ffffff !important;
+  border-radius: 1.1rem;
+  border: 1px solid rgb(148 163 184 / 0.35);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+  box-shadow: 0 18px 48px rgb(15 23 42 / 0.18);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: var(--text-color) !important;
+}
+
+.back-to-index:hover,
+.back-to-index:focus-visible {
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 1), rgb(219 234 254 / 0.95)) !important;
+  border-color: rgb(37 99 235 / 0.28);
+  color: var(--text-color) !important;
+  text-decoration: none !important;
+  box-shadow: 0 24px 56px rgb(15 23 42 / 0.22);
+  transform: translateY(-3px);
+}
+
+.back-to-index:active {
+  transform: translateY(0);
+  box-shadow: 0 12px 28px rgb(15 23 42 / 0.18);
+}
+
+.back-to-index__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: #ffffff;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
+  flex: 0 0 auto;
+}
+
+.back-to-index__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.back-to-index__eyebrow {
+  font-size: 0.66rem;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.back-to-index__title {
+  font-size: 0.9rem;
+  line-height: 1.15;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-index {
+    transition: none;
+  }
+}
+
+/* Modern typography with better hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  color: var(--heading-color);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+}
+
+h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  border-bottom: 2px solid var(--table-border);
+  padding-bottom: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  border-bottom: 1px solid var(--table-border);
+  padding-bottom: 0.5rem;
+  margin-top: 2.5rem;
+}
+
+h3 {
+  font-size: 1.875rem;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h5, h6 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  max-width: 85ch;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--focus-ring-color);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 2px;
+  transition: var(--transition);
+  border-radius: 2px;
+  font-weight: 600;
+}
+
+a:hover, a:focus-visible {
+  color: var(--link-hover-color);
+  text-decoration-thickness: 2px;
+}
+
+a:visited {
+  color: #581c87;
+}
+
+/* Modern code styling */
+code, pre {
+  font-family: var(--font-mono);
+  background-color: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: var(--border-radius);
+}
+
+code {
+  padding: 0.125rem 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+pre {
+  padding: 1.25rem;
+  overflow-x: auto;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Modern layout with better spacing - using more page width */
+#header, #content, #footer {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+#header {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--table-border);
+  padding-bottom: 1.5rem;
+}
+
+/* Modern TOC Sidebar */
+body.toc2 {
+  padding-left: var(--sidebar-width);
+}
+
+#toc.toc2 {
+  position: fixed;
+  width: var(--sidebar-width);
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-md);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+#toc.toc2 #toctitle {
+  font-family: var(--font-sans);
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--heading-color);
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+#toc ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#toc li {
+  margin-bottom: 0.25rem;
+}
+
+#toc a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  color: #334155;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+#toc a:hover,
+#toc a:focus-visible {
+  background-color: #1e40af;
+  color: white;
+  transform: translateX(4px);
+}
+
+/* Modern tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 2rem;
+  border: 1px solid var(--table-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--table-border);
+  font-size: 0.875rem;
+}
+
+th {
+  background-color: var(--table-header-bg);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  color: var(--heading-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+tr:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+tr:hover {
+  background-color: #f1f5f9;
+  transition: var(--transition);
+}
+
+/* Modern images with better presentation - using more width */
+img {
+  max-width: 95%;
+  height: auto;
+  display: block;
+  margin: 1.5rem auto;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--table-border);
+}
+
+/* Figure captions */
+.imageblock .title {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-color);
+  text-align: center;
+  margin-top: 0.75rem;
+  font-style: italic;
+}
+
+/* Modern admonition blocks */
+.admonitionblock {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border-left: 4px solid var(--accent-color);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.admonitionblock.note {
+  border-left-color: #3b82f6;
+}
+
+.admonitionblock.tip {
+  border-left-color: #10b981;
+}
+
+.admonitionblock.important {
+  border-left-color: #f59e0b;
+}
+
+.admonitionblock.caution,
+.admonitionblock.warning {
+  border-left-color: #ef4444;
+}
+
+.admonitionblock td.icon {
+  width: 60px;
+  text-align: center;
+  vertical-align: top;
+  padding-right: 1rem;
+}
+
+.admonitionblock td.icon i {
+  font-size: 1.5rem;
+  color: var(--accent-color);
+}
+
+.admonitionblock td.content {
+  padding: 0;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+/* Make C4 notation references smaller and less prominent */
+a[href*="c4_model_notation_reference"],
+a[href*="#c4-model-notation-reference"],
+.admonitionblock.note a[href*="c4"],
+.admonitionblock.note a[href*="C4"],
+a[title*="C4 Model"],
+a[title*="c4 model"] {
+  font-size: 0.875rem !important;
+  font-weight: 500;
+  color: #475569 !important;
+  text-transform: none;
+  letter-spacing: 0.025em;
+  text-decoration: underline;
+}
+
+a[href*="c4_model_notation_reference"]:hover,
+a[href*="#c4-model-notation-reference"]:hover,
+.admonitionblock.note a[href*="c4"]:hover,
+.admonitionblock.note a[href*="C4"]:hover,
+a[title*="C4 Model"]:hover,
+a[title*="c4 model"]:hover {
+  color: #1e40af !important;
+}
+
+/* Make NOTE blocks with C4 references smaller */
+.admonitionblock.note:has(a[href*="c4"]),
+.admonitionblock.note:has(a[href*="C4"]) {
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  margin: 1rem 0;
+}
+
+/* --- Simplified Uniform Appendix Styling --- */
+/* Applies to all appendix sections, regardless of ID or class */
+[id^="_appendix"],
+[id*="appendix"],
+[id="c4-model-notation-reference"],
+[id="gdpr-compliance"] {
+  font-size: 1rem;
+  opacity: 1;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--accent-color);
+}
+
+[id^="_appendix"] h2,
+[id*="appendix"] h2,
+[id="c4-model-notation-reference"] h2,
+[id="gdpr-compliance"] h2 {
+  font-size: 2.5rem !important;
+  font-weight: 600;
+  opacity: 1;
+  margin-top: 2rem;
+  border-bottom: 1px solid var(--table-border);
+  padding-bottom: 0.5rem;
+  color: var(--accent-color);
+}
+
+[id^="_appendix"] h3,
+[id*="appendix"] h3,
+[id="c4-model-notation-reference"] h3,
+[id="gdpr-compliance"] h3 {
+  font-size: 1.5rem !important;
+  font-weight: 500;
+  opacity: 1;
+  margin-top: 1.5rem;
+}
+
+[id^="_appendix"] h4,
+[id*="appendix"] h4,
+[id="c4-model-notation-reference"] h4,
+[id="gdpr-compliance"] h4 {
+  font-size: 1.25rem !important;
+  font-weight: 500;
+  opacity: 1;
+  margin-top: 1.25rem;
+}
+
+/* C4 Model Color Labels - Safari Compatible */
+.c4-color {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Individual C4 element color definitions - Safari compatible */
+.c4-person {
+  background-color: #08427B !important;
+  color: white !important;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.c4-system {
+  background-color: #1168BD !important;
+  color: white !important;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.c4-container {
+  background-color: #438DD5 !important;
+  color: #0f172a !important;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.c4-component {
+  background-color: #85BBF0 !important;
+  color: #1f2937 !important;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-shadow: none !important;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.c4-database {
+  background-color: #23A2F0 !important;
+  color: #0f172a !important;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.c4-external {
+  background-color: #999999 !important;
+  color: #111827 !important;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  text-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Dark mode support for C4 colors */
+@media (prefers-color-scheme: dark) {
+  .c4-color {
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  tr:nth-child(5) .c4-color,
+  .c4-component {
+    color: #111827 !important;
+  }
+}
+
+/* Responsive design with mobile-first approach */
+@media screen and (max-width: 1024px) {
+  :root {
+    --sidebar-width: 280px;
+  }
+
+  #header, #content, #footer {
+    padding: 0 1.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  :root {
+    --sidebar-width: 100%;
+  }
+
+  .back-to-index {
+    right: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    gap: 0.65rem;
+    padding: 0.65rem 0.8rem 0.65rem 0.65rem;
+    max-width: min(calc(100vw - 2rem), 18rem);
+  }
+
+  .back-to-index__icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .back-to-index__eyebrow {
+    font-size: 0.62rem;
+  }
+
+  .back-to-index__title {
+    font-size: 0.84rem;
+  }
+
+  body.toc2 {
+    padding-left: 0;
+  }
+
+  #toc.toc2 {
+    position: static;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--sidebar-border);
+    margin-bottom: 2rem;
+    padding: 1rem;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  #header, #content, #footer {
+    padding: 0 1rem;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  table {
+    font-size: 0.75rem;
+  }
+
+  th, td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  /* Mobile image sizing */
+  img,
+  .imageblock img {
+    max-width: 95% !important;
+  }
+}
+
+/* Optimized layout for wide screens */
+@media screen and (min-width: 1920px) {
+  :root {
+    --sidebar-width: 400px;
+  }
+
+  #header, #content, #footer {
+    max-width: 2000px;
+    padding: 0 3rem;
+  }
+
+  p {
+    max-width: 100ch;
+  }
+
+  .imageblock img {
+    max-width: 100%;
+  }
+
+  /* Two-column layout for very wide screens */
+  .sect1 .sectionbody {
+    column-count: 1; /* Keep single column for readability */
+    column-gap: 3rem;
+    column-rule: 1px solid var(--table-border);
+  }
+}
+
+@media screen and (min-width: 1440px) and (max-width: 1919px) {
+  :root {
+    --sidebar-width: 380px;
+  }
+
+  #header, #content, #footer {
+    max-width: 1800px;
+    padding: 0 2.5rem;
+  }
+
+  p {
+    max-width: 95ch;
+  }
+}
+
+/* Enhanced print styles */
+@media print {
+  .back-to-index {
+    display: none;
+  }
+
+  :root {
+    --font-size: 12pt;
+    --line-height: 1.4;
+  }
+
+  body.toc2 {
+    padding-left: 0;
+  }
+
+  #toc.toc2 {
+    display: none;
+  }
+
+  #header, #content, #footer {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  h1, h2 {
+    page-break-after: avoid;
+  }
+
+  img {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  table {
+    page-break-inside: avoid;
+  }
+
+  .admonitionblock {
+    page-break-inside: avoid;
+  }
+}
+
+/* Structurizr diagrams styling */
+.imageblock {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.imageblock img[src$=".svg"] {
+  width: min(100%, 1200px);
+  max-width: 100%;
+}
+
+/* Specific sizing for different diagram types */
+.imageblock img[alt*="Context"],
+.imageblock img[alt*="System Context"] {
+  width: min(100%, 1280px);
+  max-width: 100%;
+}
+
+.imageblock img[alt*="Container"],
+.imageblock img[alt*="Component"] {
+  width: min(100%, 1180px);
+  max-width: 100%;
+}
+
+.imageblock img[alt*="Sequence"],
+.imageblock img[alt*="Flow"] {
+  width: min(100%, 1280px);
+  max-width: 100%;
+}
+
+.imageblock img[alt*="Quality Tree"],
+.imageblock img[alt*="Mindmap"] {
+  width: min(100%, 960px);
+  max-width: 100%;
+}
+
+.imageblock img {
+  max-width: 85%;
+  height: auto;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--table-border);
+  transition: var(--transition);
+}
+
+.imageblock img:hover {
+  box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  transform: translateY(-2px);
+}
+
+.imageblock .title {
+  font-family: var(--font-serif);
+  font-size: 1.125rem; /* Two sizes larger than standard diagram text */
+  font-weight: 600;
+  color: var(--heading-color);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-style: normal;
+  line-height: 1.4;
+}
+
+/* Diagram-specific styling to ensure serif fonts */
+svg {
+  font-family: var(--font-serif) !important;
+}
+
+svg text {
+  font-family: var(--font-serif) !important;
+  font-size: 14px; /* Base diagram text size */
+}
+
+svg text.title,
+svg text[font-size="24"],
+svg text[font-size="22"] {
+  font-family: var(--font-serif) !important;
+  font-size: 20px !important; /* Two sizes larger for diagram titles */
+  font-weight: 600 !important;
+}
+
+svg text[font-size="20"] {
+  font-family: var(--font-serif) !important;
+  font-size: 18px !important; /* One size larger for subtitles */
+  font-weight: 500 !important;
+}
+
+/* PlantUML diagram text styling */
+.plantuml svg text {
+  font-family: var(--font-serif) !important;
+}
+
+.plantuml svg text.title {
+  font-family: var(--font-serif) !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+/* Code highlighting */
+.hljs {
+  background: var(--code-bg);
+  border-radius: 4px;
+  padding: 1em;
+}
+
+/* Enhanced section anchors with modern styling */
+.sect1, .sect2, .sect3, .sect4 {
+  position: relative;
+  scroll-margin-top: 2rem;
+}
+
+.sectanchors {
+  position: absolute;
+  left: -2rem;
+  opacity: 0;
+  transition: var(--transition);
+  color: var(--accent-color);
+  font-weight: 400;
+  text-decoration: none;
+  padding: 0.25rem;
+  border-radius: var(--border-radius);
+}
+
+.sectanchors:hover {
+  background-color: var(--accent-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+.sectanchors:focus-visible {
+  opacity: 1;
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.sect1:hover .sectanchors,
+.sect2:hover .sectanchors,
+.sect3:hover .sectanchors,
+.sect4:hover .sectanchors {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  #toc a:hover,
+  #toc a:focus-visible,
+  .imageblock img:hover,
+  .sectanchors:hover {
+    transform: none !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary-color: #60a5fa;
+    --secondary-color: #f87171;
+    --accent-color: #60a5fa;
+    --background-color: #0f172a;
+    --text-color: #e2e8f0;
+    --heading-color: #f1f5f9;
+    --link-color: #93c5fd;
+    --link-hover-color: #bfdbfe;
+    --code-bg: #1e293b;
+    --code-border: #334155;
+    --table-border: #334155;
+    --table-header-bg: #1e293b;
+    --sidebar-bg: #0c1222;
+    --sidebar-border: #1e293b;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  }
+
+  /* Visited links */
+  a:visited {
+    color: #c4b5fd;
+  }
+
+  /* TOC sidebar links */
+  #toc a {
+    color: #cbd5e1;
+  }
+
+  #toc a:hover {
+    background-color: #2563eb;
+    color: #ffffff;
+  }
+
+  /* Table row backgrounds */
+  tr:nth-child(even) {
+    background-color: #1e293b;
+  }
+
+  tr:hover {
+    background-color: #334155;
+  }
+
+  /* Admonition blocks */
+  .admonitionblock {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  }
+
+  /* Images */
+  img {
+    opacity: 0.9;
+  }
+
+  /* C4 notation reference links */
+  a[href*="c4_model_notation_reference"],
+  a[href*="#c4-model-notation-reference"],
+  .admonitionblock.note a[href*="c4"],
+  .admonitionblock.note a[href*="C4"],
+  a[title*="C4 Model"],
+  a[title*="c4 model"] {
+    color: #94a3b8 !important;
+  }
+
+  a[href*="c4_model_notation_reference"]:hover,
+  a[href*="#c4-model-notation-reference"]:hover,
+  .admonitionblock.note a[href*="c4"]:hover,
+  .admonitionblock.note a[href*="C4"]:hover,
+  a[title*="C4 Model"]:hover,
+  a[title*="c4 model"]:hover {
+    color: #cbd5e1 !important;
+  }
+
+  /* C4 color badges */
+  .c4-color {
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .c4-component {
+    color: #0f172a !important;
+  }
+
+  /* Code highlighting (override highlight.js github theme) */
+  .hljs {
+    background: #1e293b;
+    color: #e2e8f0;
+  }
+
+  /* Scrollbar styling for dark mode */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Architecture Inception Canvas (AIC) page layout                            */
+/* Applies only to pages containing canvas section roles                      */
+/* -------------------------------------------------------------------------- */
+body:has(#content > .canvas-business) {
+  background: #f4f6f8;
+}
+
+body.toc2:has(#content > .canvas-business) {
+  padding-left: 0;
+}
+
+body:has(#content > .canvas-business) #toc.toc2 {
+  display: none;
+}
+
+body:has(#content > .canvas-business) #header,
+body:has(#content > .canvas-business) #content,
+body:has(#content > .canvas-business) #footer {
+  max-width: 1700px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+body:has(#content > .canvas-business) #header {
+  margin-top: 1rem;
+  margin-bottom: 0.7rem;
+  display: grid;
+  grid-template-columns: 1.8fr 2.2fr;
+  gap: 12px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+body:has(#content > .canvas-business) #header > h1 {
+  display: none;
+}
+
+body:has(#content > .canvas-business) #header > .details {
+  margin: 0;
+  border: 2px solid #95a8ba;
+  background: #ffffff;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+body:has(#content > .canvas-business) #header > .details br {
+  display: none;
+}
+
+body:has(#content > .canvas-business) #header > .details > span {
+  margin: 0;
+  padding: 10px 12px;
+  border-right: 1px solid #95a8ba;
+  border-bottom: 1px solid #95a8ba;
+  background: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  color: #0f172a;
+}
+
+body:has(#content > .canvas-business) #header > .details > span:nth-child(2n) {
+  border-right: none;
+}
+
+body:has(#content > .canvas-business) #header > .details > span:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+body:has(#content > .canvas-business) #content {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto auto auto auto;
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+  border: 3px solid #7f97ab;
+  background: #e8edf0;
+}
+
+body:has(#content > .canvas-business) #content > #preamble {
+  display: none;
+}
+
+body:has(#content > .canvas-business) #content > .sect1 {
+  margin: 0;
+  border: 2px solid #c7d0d8;
+  background: #ffffff;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  min-height: 140px;
+}
+
+body:has(#content > .canvas-business) #content > .sect1 > h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: none;
+  padding-bottom: 0;
+  color: #2f5c7c;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+body:has(#content > .canvas-business) #content > .sect1 > .sectionbody {
+  overflow: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(#content > .canvas-business) #content > .sect1 > .sectionbody > .ulist,
+body:has(#content > .canvas-business) #content > .sect1 > .sectionbody > .olist {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+body:has(#content > .canvas-business) #content > .sect1 > .sectionbody > * {
+  max-width: none;
+}
+
+body:has(#content > .canvas-business) #content p,
+body:has(#content > .canvas-business) #content li,
+body:has(#content > .canvas-business) #content td {
+  font-size: 0.87rem;
+  line-height: 1.35;
+}
+
+body:has(#content > .canvas-business) #content ul,
+body:has(#content > .canvas-business) #content ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+body:has(#content > .canvas-business) #content table {
+  margin-bottom: 0;
+}
+
+body:has(#content > .canvas-business) #content pre {
+  margin-bottom: 0.5rem;
+  font-size: 0.74rem;
+}
+
+body:has(#content > .canvas-business) #content .imageblock {
+  margin: 0;
+}
+
+body:has(#content > .canvas-business) #content .imageblock img {
+  max-width: 100%;
+  height: auto;
+  max-height: 180px;
+  margin: 0;
+  object-fit: contain;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-context .imageblock img,
+body:has(#content > .canvas-business) #content > .canvas-context .imageblock img[src$=".svg"] {
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  object-fit: contain;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-business {
+  grid-column: 1 / 13;
+  min-height: 170px;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-functional {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  min-height: 280px;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-quality {
+  grid-column: 1 / 4;
+  grid-row: 3;
+  min-height: 230px;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-context {
+  grid-column: 4 / 9;
+  grid-row: 2 / 4;
+  min-height: 522px;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-org-constraints {
+  grid-column: 9 / 13;
+  grid-row: 2;
+  min-height: 280px;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-tech-constraints {
+  grid-column: 9 / 13;
+  grid-row: 3;
+  min-height: 230px;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-hypotheses {
+  grid-column: 1 / 7;
+  grid-row: 4;
+  min-height: 260px;
+}
+
+body:has(#content > .canvas-business) #content > .canvas-risks {
+  grid-column: 7 / 13;
+  grid-row: 4;
+  min-height: 260px;
+  border-color: #d66a71;
+  background: #f8d7d9;
+}
+
+body:has(#content > .canvas-business) #footer {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #475569;
+  border-top: none;
+}
+
+@media (max-width: 1200px) {
+  body:has(#content > .canvas-business) #header {
+    grid-template-columns: 1fr;
+  }
+
+  body:has(#content > .canvas-business) #content {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    padding: 10px;
+  }
+
+  body:has(#content > .canvas-business) #content > .sect1 {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    min-height: 0 !important;
+  }
+}
+
+@media print {
+  @page {
+    size: A3 landscape;
+    margin: 7mm;
+  }
+
+  body:has(#content > .canvas-business) {
+    background: #ffffff !important;
+  }
+
+  body:has(#content > .canvas-business) #content {
+    gap: 8px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  body:has(#content > .canvas-business) #content > .sect1 {
+    min-height: 0 !important;
+  }
+
+  body:has(#content > .canvas-business) #content p,
+  body:has(#content > .canvas-business) #content li,
+  body:has(#content > .canvas-business) #content td {
+    font-size: 0.72rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Architecture Communication Canvas (ACC) layout                             */
+/* -------------------------------------------------------------------------- */
+body:has(#content > .canvas-value) {
+  background: #f4f6f8;
+}
+
+body.toc2:has(#content > .canvas-value) {
+  padding-left: 0;
+}
+
+body:has(#content > .canvas-value) #toc.toc2 {
+  display: none;
+}
+
+body:has(#content > .canvas-value) #header,
+body:has(#content > .canvas-value) #content,
+body:has(#content > .canvas-value) #footer {
+  max-width: 1700px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+body:has(#content > .canvas-value) #header {
+  margin-top: 1rem;
+  margin-bottom: 0.7rem;
+  display: grid;
+  grid-template-columns: 1.8fr 2.2fr;
+  gap: 12px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+body:has(#content > .canvas-value) #header > h1 {
+  margin: 0;
+  border: 2px solid #95a8ba;
+  background: #f5f8fb;
+  padding: 14px;
+  color: #2f5c7c;
+  font-size: clamp(1.6rem, 2vw, 2.4rem);
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+}
+
+body:has(#content > .canvas-value) #header > .details {
+  margin: 0;
+  border: 2px solid #95a8ba;
+  background: #ffffff;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+body:has(#content > .canvas-value) #header > .details br {
+  display: none;
+}
+
+body:has(#content > .canvas-value) #header > .details > span {
+  margin: 0;
+  padding: 10px 12px;
+  border-right: 1px solid #95a8ba;
+  border-bottom: 1px solid #95a8ba;
+  background: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  color: #0f172a;
+}
+
+body:has(#content > .canvas-value) #header > .details > span:nth-child(2n) {
+  border-right: none;
+}
+
+body:has(#content > .canvas-value) #header > .details > span:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+body:has(#content > .canvas-value) #content {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+  border: 3px solid #7f97ab;
+  background: #e8edf0;
+}
+
+body:has(#content > .canvas-value) #content > #preamble {
+  display: none;
+}
+
+body:has(#content > .canvas-value) #content > .sect1 {
+  margin: 0;
+  border: 2px solid #c7d0d8;
+  background: #ffffff;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  min-height: 140px;
+  border-left-width: 4px;
+  box-shadow: var(--shadow-sm);
+}
+
+body:has(#content > .canvas-value) #content > .sect1 > h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: none;
+  padding-bottom: 0;
+  color: #2f5c7c;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+body:has(#content > .canvas-value) #content > .sect1 > .sectionbody {
+  overflow: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+body:has(#content > .canvas-value) #content > .sect1 > .sectionbody > .ulist,
+body:has(#content > .canvas-value) #content > .sect1 > .sectionbody > .olist {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+body:has(#content > .canvas-value) #content > .sect1 > .sectionbody > * {
+  max-width: none;
+}
+
+body:has(#content > .canvas-value) #content p,
+body:has(#content > .canvas-value) #content li,
+body:has(#content > .canvas-value) #content td {
+  font-size: 0.87rem;
+  line-height: 1.35;
+}
+
+body:has(#content > .canvas-value) #content ul,
+body:has(#content > .canvas-value) #content ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-value {
+  grid-column: 1 / 4;
+  grid-row: 1;
+  min-height: 240px;
+  border-left-color: #1e40af;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-functions {
+  grid-column: 4 / 7;
+  grid-row: 1;
+  min-height: 360px;
+  border-left-color: #1d4ed8;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-stakeholders {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  min-height: 300px;
+  border-left-color: #0f766e;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-quality {
+  grid-column: 4 / 7;
+  grid-row: 2;
+  min-height: 240px;
+  border-left-color: #0369a1;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-decisions {
+  grid-column: 7 / 10;
+  grid-row: 1 / 3;
+  min-height: 610px;
+  border-left-color: #4338ca;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-technologies {
+  grid-column: 10 / 13;
+  grid-row: 1 / 3;
+  min-height: 610px;
+  border-left-color: #059669;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-context {
+  grid-column: 1 / 7;
+  grid-row: 3;
+  min-height: 360px;
+  border-left-color: #1e40af;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-components {
+  grid-column: 7 / 13;
+  grid-row: 3;
+  min-height: 360px;
+  border-left-color: #0f766e;
+}
+
+body:has(#content > .canvas-value) #content > .canvas-risks {
+  grid-column: 1 / 13;
+  grid-row: 4;
+  min-height: 240px;
+  border-left-color: #b91c1c;
+  background: #fef2f2;
+}
+
+body:has(#content > .canvas-value) #footer {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #475569;
+  border-top: none;
+}
+
+@media (max-width: 1200px) {
+  body:has(#content > .canvas-value) #header {
+    grid-template-columns: 1fr;
+  }
+
+  body:has(#content > .canvas-value) #content {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    padding: 10px;
+  }
+
+  body:has(#content > .canvas-value) #content > .sect1 {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    min-height: 0 !important;
+  }
+}
+
+@media print {
+  body:has(#content > .canvas-value) {
+    background: #ffffff !important;
+  }
+
+  body:has(#content > .canvas-value) #content {
+    gap: 8px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  body:has(#content > .canvas-value) #content > .sect1 {
+    min-height: 0 !important;
+    box-shadow: none;
+  }
+
+  body:has(#content > .canvas-value) #content p,
+  body:has(#content > .canvas-value) #content li,
+  body:has(#content > .canvas-value) #content td {
+    font-size: 0.72rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body:has(#content > .canvas-business),
+  body:has(#content > .canvas-value) {
+    background: #08111f;
+    color: #e2e8f0;
+  }
+
+  body:has(#content > .canvas-business) #header > h1,
+  body:has(#content > .canvas-value) #header > h1 {
+    background: #132238;
+    border-color: #3d5a74;
+    color: #dbeafe;
+  }
+
+  body:has(#content > .canvas-business) #header > .details,
+  body:has(#content > .canvas-value) #header > .details {
+    background: #0f1b2d;
+    border-color: #3d5a74;
+  }
+
+  body:has(#content > .canvas-business) #header > .details > span,
+  body:has(#content > .canvas-value) #header > .details > span {
+    background: #0f1b2d;
+    border-color: #3d5a74;
+    color: #dbeafe;
+  }
+
+  body:has(#content > .canvas-business) #content,
+  body:has(#content > .canvas-value) #content {
+    background: #0c1728;
+    border-color: #3d5a74;
+  }
+
+  body:has(#content > .canvas-business) #content > .sect1,
+  body:has(#content > .canvas-value) #content > .sect1 {
+    background: #132238;
+    border-color: #35506b;
+    color: #e2e8f0;
+    box-shadow: 0 10px 30px rgb(2 6 23 / 0.28);
+  }
+
+  body:has(#content > .canvas-business) #content > .sect1 > h2,
+  body:has(#content > .canvas-value) #content > .sect1 > h2 {
+    color: #dbeafe;
+  }
+
+  body:has(#content > .canvas-business) #content a,
+  body:has(#content > .canvas-value) #content a,
+  body:has(#content > .canvas-business) #footer a,
+  body:has(#content > .canvas-value) #footer a {
+    color: #93c5fd;
+  }
+
+  body:has(#content > .canvas-business) #content .imageblock img,
+  body:has(#content > .canvas-value) #content .imageblock img,
+  body:has(#content > .canvas-business) #content .imageblock img[src$=".svg"],
+  body:has(#content > .canvas-value) #content .imageblock img[src$=".svg"] {
+    background: #ffffff;
+    opacity: 1;
+    border-color: #475569;
+  }
+
+  body:has(#content > .canvas-business) #content > .canvas-risks,
+  body:has(#content > .canvas-value) #content > .canvas-risks {
+    background: #3c1218;
+    border-color: #f87171;
+  }
+
+  body:has(#content > .canvas-business) #footer,
+  body:has(#content > .canvas-value) #footer {
+    color: #cbd5e1;
+  }
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Feature Hypotheses Simulation - Architecture Inception Canvas</h1>
+<div class="details">
+<span id="author" class="author">eifel42.dev</span><br>
+<span id="revnumber">version 1.0.0,</span>
+<span id="revdate">2026-04-27</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Canvas Sections</div>
+<ul class="sectlevel1">
+<li><a href="#_business_case">1. Business Case</a></li>
+<li><a href="#_functional_overview">2. Functional Overview</a></li>
+<li><a href="#_quality_goals">3. Quality Goals</a></li>
+<li><a href="#_architecture_hypotheses">4. Architecture Hypotheses</a></li>
+<li><a href="#_business_context">5. Business Context</a></li>
+<li><a href="#_technical_challenges_and_risks">6. Technical Challenges and Risks</a></li>
+<li><a href="#_organisational_constraints">7. Organisational Constraints</a></li>
+<li><a href="#_technical_constraints">8. Technical Constraints</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1 canvas-business">
+<h2 id="_business_case"><a class="anchor" href="#_business_case"></a><a class="link" href="#_business_case">1. Business Case</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Product teams make backlog decisions under uncertainty (users, conversion, business value, and development cost).
+Poor prioritization wastes capacity and budget.</p>
+</div>
+<div class="paragraph">
+<p>FHS applies Monte Carlo simulation plus VaR/CVaR to feature portfolios so Product Owners, Portfolio Owners, and Agile leaders can quantify downside in EUR before funding decisions. Risk Managers use the same outputs for review and governance.</p>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-functional">
+<h2 id="_functional_overview"><a class="anchor" href="#_functional_overview"></a><a class="link" href="#_functional_overview">2. Functional Overview</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Local-first Python package with Jupyter notebooks and planning CLI.</p>
+</li>
+<li>
+<p>No REST API, no database, no server-side platform.</p>
+</li>
+<li>
+<p>Main flow: scenario input &#8594; simulation &#8594; risk metrics &#8594; budget recommendation.</p>
+</li>
+<li>
+<p>Core modules: <code>core/services/simulation</code>, <code>core/services/risk</code>, <code>core/services/portfolio</code>, <code>core/services/application</code>, <code>application/scenario_service</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">fhs plan --features backlog.yaml --budget 150000 --output report.md</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-quality">
+<h2 id="_quality_goals"><a class="anchor" href="#_quality_goals"></a><a class="link" href="#_quality_goals">3. Quality Goals</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Correctness:</strong> VaR 95% within +/-1% for fixed seeds.</p>
+</li>
+<li>
+<p><strong>Simplicity:</strong> first assessment in &lt;15 minutes without coaching.</p>
+</li>
+<li>
+<p><strong>Transparency:</strong> all key metrics shown in EUR with plain-language explanation.</p>
+</li>
+<li>
+<p><strong>Decision support:</strong> output directly supports build/skip, priority, and budget-fit decisions.</p>
+</li>
+<li>
+<p><strong>Accessibility:</strong> all chart colours reference semantic palette tokens (WCAG 2.1 AA, ≥ 4.5:1 contrast); no hardcoded hex literals in presentation code.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-hypotheses">
+<h2 id="_architecture_hypotheses"><a class="anchor" href="#_architecture_hypotheses"></a><a class="link" href="#_architecture_hypotheses">4. Architecture Hypotheses</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>H1:</strong> KISS over infrastructure&#8201;&#8212;&#8201;local library + CLI minimize deployment/ops complexity.</p>
+</li>
+<li>
+<p><strong>H2:</strong> Notebooks are first-class presentation components; DDD layering keeps business logic separated.</p>
+</li>
+<li>
+<p><strong>H3:</strong> Correlation-aware portfolio analysis improves realism over naive diversification assumptions.</p>
+</li>
+<li>
+<p><strong>H4:</strong> Exact combinatorial selection (fixed feature count) plus greedy budget/sprint optimization keeps runtime practical.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-context">
+<h2 id="_business_context"><a class="anchor" href="#_business_context"></a><a class="link" href="#_business_context">5. Business Context</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Product Owner:</strong> defines features and compares expected business value, business value floor, and delivery confidence.</p>
+</li>
+<li>
+<p><strong>Portfolio Owner / Agile leader:</strong> uses the portfolio view for roadmap trade-offs, budget fit, and sequencing.</p>
+</li>
+<li>
+<p><strong>Risk Manager:</strong> evaluates CVaR, correlation, stress scenarios, and portfolio trade-offs.</p>
+</li>
+<li>
+<p><strong>Business Stakeholder:</strong> consumes notebook and CLI reports for investment decisions.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/structurizr-SystemContext.svg" alt="System Context" width="700" height="280">
+</div>
+</div>
+<div class="paragraph">
+<p>Communication Canvas: <a href="architecture-communication-canvas.html">HTML</a> | <a href="./architecture-communication-canvas.drawio">draw.io source</a><br>
+Inception Canvas (draw.io): <a href="./architecture-inception-canvas.drawio">Architecture Inception Canvas source</a></p>
+</div>
+<div class="paragraph">
+<p><strong>System boundary:</strong> simulation and advisory engine for product backlogs.</p>
+</div>
+<div class="paragraph">
+<p><strong>Out of scope:</strong> financial trading, real-time market feeds, multi-tenant SaaS, API gateway, persistent database backend.</p>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-risks">
+<h2 id="_technical_challenges_and_risks"><a class="anchor" href="#_technical_challenges_and_risks"></a><a class="link" href="#_technical_challenges_and_risks">6. Technical Challenges and Risks</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Sampling bias:</strong> high uncertainty can distort normal sampling; mitigation via lognormal/bounded alternatives.</p>
+</li>
+<li>
+<p><strong>Weak correlation data:</strong> teams often lack historical evidence; mitigation via explicit correlation source and manual matrices.</p>
+</li>
+<li>
+<p><strong>Optimization scaling:</strong> combinatorial search does not scale linearly; mitigation via exact mode for small sets and greedy optimization for budget/capacity constraints.</p>
+</li>
+<li>
+<p><strong>Input quality risk:</strong> weak assumptions can mislead; mitigation via validation, confidence intervals, and scenario communication.</p>
+</li>
+<li>
+<p><strong>Statistical stability:</strong> enforce minimum scenario counts (1,000 minimum, 10,000 default).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-org-constraints">
+<h2 id="_organisational_constraints"><a class="anchor" href="#_organisational_constraints"></a><a class="link" href="#_organisational_constraints">7. Organisational Constraints</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Usable by Product Owners, Portfolio Owners, Agile leaders, and Risk Managers without formal finance training.</p>
+</li>
+<li>
+<p>Must fit into sprint/release planning sessions.</p>
+</li>
+<li>
+<p>Documentation language: US English.</p>
+</li>
+<li>
+<p>License: MIT License - Copyright &#169; 2026 Stefan Zils.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-tech-constraints">
+<h2 id="_technical_constraints"><a class="anchor" href="#_technical_constraints"></a><a class="link" href="#_technical_constraints">8. Technical Constraints</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Python baseline: 3.14+</p>
+</li>
+<li>
+<p>Required stack: NumPy, SciPy, Pandas, Matplotlib, Plotly.</p>
+</li>
+<li>
+<p>Primary interfaces: Jupyter notebooks and <code>fhs plan</code> CLI.</p>
+</li>
+<li>
+<p>Linux/macOS workflows with Docker quick-start profile.</p>
+</li>
+<li>
+<p>Notebook code cells must be source-hidden (<code>source_hidden: true</code> metadata) — target audience is Product Owners, Portfolio Owners, Agile leaders, and Risk Managers, not engineers.</p>
+</li>
+<li>
+<p>Pydantic models enforce input validation at all domain boundaries.</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p><span class="small">Based on the <a href="https://canvas.arc42.org/architecture-inception-canvas">Architecture Inception Canvas</a> by <a href="https://arc42.org">arc42</a>.<br>
+Full documentation: <a href="arc42-docs.html">Arc42 Architecture Documentation</a>.<br>
+Communication Canvas: <a href="architecture-communication-canvas.html">HTML</a> | <a href="./architecture-communication-canvas.drawio">draw.io source</a>.<br>
+Assets: <a href="./architecture-inception-canvas.drawio">Architecture Inception Canvas source</a>.</span></p>
+</div>
+<a href="index.html"
+   class="back-to-index"
+   rel="home"
+   aria-label="Back to the documentation index"
+   title="Back to documentation index">
+  <span class="back-to-index__icon" aria-hidden="true">
+    <i class="fa fa-arrow-left"></i>
+  </span>
+  <span class="back-to-index__copy">
+    <span class="back-to-index__eyebrow">Documentation Hub</span>
+    <span class="back-to-index__title">Return to index</span>
+  </span>
+</a>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated 2026-04-27 15:57:57 UTC
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{# selection_card.html.j2 — Portfolio selection card with metrics #}
+<div style="{{ card_wrapper(padding='25px') }};border-left:5px solid {{ accent }};color:{{ COLORS.neutral }};"><h3 style="margin-top:0;color:{{ COLORS.neutral }};">{{ title }}</h3><div style="display:flex;gap:10px;flex-wrap:wrap;margin:15px 0;">
+{% for name in selected_features %}
+<div style="background:{{ COLORS.background }};padding:10px 20px;border-radius:4px;font-weight:bold;color:{{ COLORS.neutral }};">✅ {{ name }}</div>
+{% endfor %}
+</div><table style="border-collapse:collapse;margin-top:10px;color:{{ COLORS.neutral }};">{{ table_caption('Selection Metrics', font_weight='600', padding='4px 0') }}<tbody>{{ metrics_rows }}</tbody></table>{{ excl_html }}</div>

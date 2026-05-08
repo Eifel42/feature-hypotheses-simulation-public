@@ -1,0 +1,209 @@
+# Project: FHS (Feature Hypotheses Simulation)
+# Copyright: Eifel42 Stefan Zils 2026
+# License: See LICENSE and README.md
+# Disclaimer: This file is provided "as is" without warranty.
+
+scenario_id: advanced-features
+name: Advanced Feature Portfolio (10 Features)
+description: Larger portfolio to demonstrate solver divergence at scale
+budget: 400000.0
+discount_rate: 0.08
+cost_inflation_max: 0.25
+risk_model:
+  # Risk 1 is configured per feature via likelihood_of_non_delivery.
+  # --- Risk 2: Market Shock (portfolio-wide) ---
+  # Probability that a market downturn occurs in any given simulation.
+  # When triggered, all feature business values are multiplied by the market multiplier.
+  risk_2_market_probability: 0.20
+  risk_2_market_multiplier: 0.85
+
+  # --- Risk 3: Global Crisis (portfolio-wide) ---
+  # Probability of a severe event (pandemic, regulation, etc.).
+  # When triggered, all feature business values are multiplied by the global multiplier.
+  risk_3_global_probability: 0.05
+  risk_3_global_multiplier: 0.60
+
+  # --- Component Risk (per dependency cluster) ---
+  # Probability that a shared platform/dependency fails.
+  # Features in the same cluster share the same failure draw.
+  # When triggered, affected business values are multiplied by the component multiplier.
+  component_risk_multiplier: 0.70
+  default_component_probability: 0.08
+  component_risk_by_cluster:
+    Customer Platform: 0.08
+    Supply Operations Platform: 0.12
+    Commercial Intelligence Platform: 0.10
+    Cold Chain Operations: 0.15
+    Sustainability Data Platform: 0.06
+strategy:
+  'F01: Mobile App Redesign':
+    category: Customer Experience
+    reason: Improve usability to reduce churn and lift app engagement
+  'F02: Real-Time Inventory':
+    category: Operational Excellence
+    reason: Cut waste by synchronising stock levels across warehouses
+  'F03: Loyalty Programme':
+    category: Retention Engine
+    reason: Increase repeat purchases through segmented reward mechanics
+  'F04: Supplier Portal':
+    category: Supplier Integration
+    reason: Automate supplier onboarding and order management
+  'F05: AI Demand Forecast':
+    category: Predictive Intelligence
+    reason: Predict seasonal demand to optimise purchasing decisions
+  'F06: Multi-Language Support':
+    category: Market Expansion
+    reason: Expand into French and Italian speaking regions
+  'F07: Cold Chain Monitoring':
+    category: Quality Assurance
+    reason: Reduce spoilage with proactive IoT temperature monitoring
+  'F08: Customer Self-Service':
+    category: Service Automation
+    reason: Reduce support workload and improve customer satisfaction
+  'F09: Dynamic Pricing':
+    category: Margin Optimization
+    reason: Maximise margin on perishable goods near expiry
+  'F10: Carbon Footprint Label':
+    category: Sustainability Positioning
+    reason: Strengthen premium positioning for sustainability-conscious buyers
+features:
+- name: 'F01: Mobile App Redesign'
+  expected_users: 60000
+  conversion_rate: 0.18
+  uncertainty: 0.4
+  business_value_per_conversion: 35.0
+  development_cost: 120000.0
+  installment_years: 2
+  annual_operating_cost: 18000.0   # app store, CDN, push notifications
+  annual_growth_rate: 0.2
+  likelihood_of_non_delivery: 0.15
+  dependency_cluster: Customer Platform
+  planned_release: R1
+  acceptance_model: binomial
+  key: F01
+- name: 'F02: Real-Time Inventory'
+  expected_users: 25000
+  conversion_rate: 0.3
+  uncertainty: 0.2
+  business_value_per_conversion: 28.0
+  development_cost: 95000.0
+  installment_years: 2
+  annual_operating_cost: 22000.0   # event streaming, DB sync infrastructure
+  annual_growth_rate: 0.1
+  likelihood_of_non_delivery: 0.25
+  dependency_cluster: Supply Operations Platform
+  planned_release: R1
+  acceptance_model: binomial
+  key: F02
+- name: 'F03: Loyalty Programme'
+  expected_users: 45000
+  conversion_rate: 0.12
+  uncertainty: 0.55
+  business_value_per_conversion: 22.0
+  development_cost: 80000.0
+  installment_years: 1
+  annual_operating_cost: 12000.0   # CRM integration, points engine hosting
+  annual_growth_rate: 0.25
+  likelihood_of_non_delivery: 0.3
+  dependency_cluster: Customer Platform
+  planned_release: R2
+  acceptance_model: binomial
+  key: F03
+- name: 'F04: Supplier Portal'
+  expected_users: 8000
+  conversion_rate: 0.45
+  uncertainty: 0.15
+  business_value_per_conversion: 65.0
+  development_cost: 110000.0
+  installment_years: 2
+  annual_operating_cost: 15000.0   # API gateway, portal hosting, EDI
+  annual_growth_rate: 0.1
+  likelihood_of_non_delivery: 0.1
+  dependency_cluster: Supply Operations Platform
+  planned_release: R1
+  acceptance_model: binomial
+  key: F04
+- name: 'F05: AI Demand Forecast'
+  expected_users: 15000
+  conversion_rate: 0.08
+  uncertainty: 0.65
+  business_value_per_conversion: 120.0
+  development_cost: 150000.0
+  installment_years: 3
+  annual_operating_cost: 48000.0   # GPU compute, model retraining, ML platform
+  annual_growth_rate: 0.3
+  likelihood_of_non_delivery: 0.4
+  dependency_cluster: Commercial Intelligence Platform
+  planned_release: R3
+  acceptance_model: binomial
+  key: F05
+- name: 'F06: Multi-Language Support'
+  expected_users: 35000
+  conversion_rate: 0.25
+  uncertainty: 0.2
+  business_value_per_conversion: 18.0
+  development_cost: 45000.0
+  installment_years: 1
+  annual_operating_cost: 6000.0    # translation API calls, locale hosting
+  annual_growth_rate: 0.1
+  likelihood_of_non_delivery: 0.1
+  dependency_cluster: Customer Platform
+  planned_release: R1
+  acceptance_model: binomial
+  key: F06
+- name: 'F07: Cold Chain Monitoring'
+  expected_users: 12000
+  conversion_rate: 0.35
+  uncertainty: 0.3
+  business_value_per_conversion: 42.0
+  development_cost: 85000.0
+  installment_years: 2
+  annual_operating_cost: 32000.0   # IoT device management, telemetry ingestion
+  annual_growth_rate: 0.15
+  likelihood_of_non_delivery: 0.2
+  dependency_cluster: Cold Chain Operations
+  planned_release: R2
+  acceptance_model: binomial
+  key: F07
+- name: 'F08: Customer Self-Service'
+  expected_users: 40000
+  conversion_rate: 0.22
+  uncertainty: 0.25
+  business_value_per_conversion: 15.0
+  development_cost: 55000.0
+  installment_years: 1
+  annual_operating_cost: 9000.0    # knowledge base hosting, chatbot API
+  annual_growth_rate: 0.1
+  likelihood_of_non_delivery: 0.15
+  dependency_cluster: Customer Platform
+  planned_release: R2
+  acceptance_model: binomial
+  key: F08
+- name: 'F09: Dynamic Pricing'
+  expected_users: 20000
+  conversion_rate: 0.1
+  uncertainty: 0.5
+  business_value_per_conversion: 55.0
+  development_cost: 90000.0
+  installment_years: 2
+  annual_operating_cost: 28000.0   # pricing engine compute, market data feeds
+  annual_growth_rate: 0.3
+  likelihood_of_non_delivery: 0.35
+  dependency_cluster: Commercial Intelligence Platform
+  planned_release: R3
+  acceptance_model: binomial
+  key: F09
+- name: 'F10: Carbon Footprint Label'
+  expected_users: 30000
+  conversion_rate: 0.15
+  uncertainty: 0.45
+  business_value_per_conversion: 20.0
+  development_cost: 35000.0
+  installment_years: 1
+  annual_operating_cost: 5000.0    # sustainability data API, label rendering
+  annual_growth_rate: 0.2
+  likelihood_of_non_delivery: 0.2
+  dependency_cluster: Sustainability Data Platform
+  planned_release: R2
+  acceptance_model: binomial
+  key: F10
