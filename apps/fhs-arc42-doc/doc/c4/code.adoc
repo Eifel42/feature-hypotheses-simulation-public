@@ -1,0 +1,249 @@
+= C4 Level 4 - Code
+
+== Overview
+Key classes and their relationships in the FHS core domain.
+All class details are derived from the current source code.
+
+[source,mermaid]
+----
+classDiagram
+    class Feature {
+        +name: str
+        +expected_users: int
+        +conversion_rate: float
+        +uncertainty: float
+        +business_value_per_conversion: float
+        +development_cost: float
+        +installment_years: int
+        +annual_growth_rate: float
+        +likelihood_of_non_delivery: float
+        +dependency_cluster: str | None
+        +planned_release: str | None
+        +acceptance_model: str
+        +annual_operating_cost: float
+        +development_weeks: int | None
+        +get_base_annual_business_value() float
+        +get_risk_category(metric) str
+        +year1_business_value_at_risk: float
+        +year1_profit_at_risk: float
+        +annual_installment: float
+    }
+
+    class SimulationResult {
+        +feature_name: str
+        +expected_value: float
+        +business_value_per_conversion: float
+        +development_cost: float
+        +installment_years: int
+        +var_95: float
+        +cvar_95: float
+        +loss_var_95: float
+        +mean: float
+        +median: float
+        +std: float
+        +p5: float
+        +p10: float
+        +p90: float
+        +p95: float
+        +confidence_interval: list[float]
+        +expected_business_value: float
+        +business_value_at_risk_95: float
+        +net_value_at_risk_95: float
+        +cvar_95_net_value: float
+        +roi: float
+        +net_value: float
+        +profit_margin: float
+        +risk_ratio: float
+        +results: list
+        +results_array: np.ndarray
+        +risk_metrics: dict
+        +business_value_risk_metrics: dict
+        +risk_verdict() tuple[str, str]
+        +risk_classification() tuple[str, str]
+    }
+
+    class MultiYearResult {
+        +feature_name: str
+        +years: list[YearResult]
+        +expected_value_by_year: list[float]
+        +var_95_by_year: list[float]
+        +p95_by_year: list[float]
+        +total_expected: float
+        +total_var_95: float
+    }
+
+    class YearResult {
+        +year: int
+        +expected_value: float
+        +var_95: float
+        +p95: float
+        +spread: float
+        +scenarios: np.ndarray
+    }
+
+    class FeatureSimulator {
+        +feature: Feature | None
+        +seed: int | None
+        +engine: MonteCarloEngine
+        +calculator: RiskCalculator
+        +simulate_feature(feature, scenarios, distribution) SimulationResult
+        +simulate_feature_multi_year(feature, years, scenarios, discount_rate) MultiYearResult
+    }
+
+    class MonteCarloEngine {
+        +simulate(feature, scenarios, seed) np.ndarray
+        +simulate_correlated(features, scenarios, seed) dict
+        +generate_normal(mean, std, n) np.ndarray
+        +generate_lognormal(mean, sigma, n) np.ndarray
+        +generate_beta(alpha, beta, n) np.ndarray
+    }
+
+    class RiskCalculator {
+        +calculate_var(data, confidence) float
+        +calculate_cvar(data, confidence) float
+        +bootstrap_confidence_interval(data, n) tuple
+        +percentiles(data, levels) dict
+    }
+
+    class AdvancedPortfolioService {
+        +risk: RiskAnalysisOperations
+        +delivery: DeliveryAnalysisOperations
+        +multi_year: MultiYearAnalysisOperations
+        +decisions: DecisionOperations
+        +layers: RiskLayersOperations
+        +optimize(solver, strategy) OptimizationResult
+        +portfolio_snapshot(features) PortfolioSnapshot
+    }
+
+    class ScenarioService {
+        +load_scenario(scenario_id, path) ScenarioContext
+        +save_scenario(scenario_id, features, budget, strategy) None
+        +list_versions(scenario_id) list
+    }
+
+    class FHSDisplay {
+        +simulation(result) None
+        +comparison(results) None
+        +risk_dashboard(portfolio) None
+        +portfolio_advisor(service) None
+        +delivery_risk(results) None
+        +multi_year(result) None
+        +capital_budgeting(result) None
+        +distribution_guide() None
+        +budget_frontier(frontier) None
+        +markdown(text) None
+    }
+
+    Feature --> SimulationResult : simulated by FeatureSimulator
+    SimulationResult --> MultiYearResult : aggregated per year
+    MultiYearResult --> YearResult : contains
+    FeatureSimulator --> MonteCarloEngine : orchestrates scenario draws
+    FeatureSimulator --> RiskCalculator : calculates result metrics
+    MonteCarloEngine --> Feature : reads parameters
+    RiskCalculator --> SimulationResult : reads results_array
+    AdvancedPortfolioService --> MonteCarloEngine : delegates scenarios
+    AdvancedPortfolioService --> RiskCalculator : delegates risk metrics
+    ScenarioService --> Feature : materialises from YAML
+    FHSDisplay --> AdvancedPortfolioService : renders portfolio results
+    FHSDisplay --> FeatureSimulator : renders simulation results
+----
+
+== Key Implementation Details
+
+=== Feature Entity (`fhs.core.model.entities.feature`)
+The `Feature` Pydantic model is the central domain entity.
+Key design decisions:
+
+* `business_value_per_conversion` — EUR value per successful conversion (replaces any `revenue` naming)
+* `uncertainty` — relative uncertainty as decimal (e.g., `0.3` = +/-30%); drives Monte Carlo spread
+* `acceptance_model` — `"rate"` (continuous) or `"binomial"` (per-user yes/no)
+* `annual_growth_rate` — compounds business value in multi-year simulations
+* `likelihood_of_non_delivery` — delivery risk factor for LaR and sunk-cost calculations
+* `development_weeks` — optional sprint capacity for budget optimisation
+* `annual_operating_cost` — production running cost deducted from net business value
+
+=== SimulationResult Value Object (`fhs.core.model.value_objects.simulation_result`)
+Immutable result of one Monte Carlo run (10,000+ scenarios).
+Exposes 30+ computed properties, including:
+
+* `var_95` — 5th percentile of business value distribution (Gain-based VaR)
+* `cvar_95` — expected value in the worst 5% of scenarios (Expected Shortfall)
+* `business_value_at_risk_95` — `var_95 * business_value_per_conversion`
+* `net_value_at_risk_95` — BVaR minus annual development cost installment
+* `cvar_95_net_value` — CVaR minus annual installment
+* `roi` — `(expected_business_value - annual_installment) / annual_installment`
+* `profit_margin` — `net_value / expected_business_value`
+* `risk_ratio` — `std / expected_value` — relative spread for risk classification
+
+=== MultiYearResult / YearResult (`fhs.core.model.value_objects.multi_year_result`)
+Result of a multi-year Monte Carlo simulation.
+Each `YearResult` holds independent scenario draws compounded by `annual_growth_rate`.
+Displayed as a fan chart (confidence bands per year) in Notebook 03.
+
+=== FeatureSimulator (`fhs.core.services.simulation.simulator`)
+Main orchestration class combining MonteCarloEngine and RiskCalculator.
+
+* `simulate_feature()` — single-year Monte Carlo with configurable distribution
+* `simulate_feature_multi_year()` — per-year independent simulations with growth compounding and NPV
+
+=== Monte Carlo Engine (`fhs.core.services.monte_carlo`)
+Distribution strategies:
+
+* *Normal* — symmetric uncertainty, most common for adoption rate
+* *Lognormal* — right-skewed, models exponential growth potential
+* *Beta* — bounded [0,1], models conversion-rate uncertainty precisely
+* *Correlated* — Cholesky decomposition for dependent features (same dependency cluster)
+
+=== AdvancedPortfolioService (`fhs.application.advanced_portfolio_service`)
+Main application facade using the Sub-Facade pattern:
+
+* `service.risk.*` — loss metrics, Shapley attribution, component risk
+* `service.delivery.*` — delivery risk, sprint overruns, profitability
+* `service.multi_year.*` — multi-year P&L, NPV/IRR, financial views
+* `service.decisions.*` — feature ranking, score analysis, strategy categories
+* `service.layers.*` — risk layer simulation, sensitivity, retention
+
+All collaborators share `PortfolioContext` Protocol for type-safe dependency injection.
+
+=== ScenarioService (`fhs.application.scenario_service`)
+Application-layer service for YAML-based scenario management:
+
+* `load_scenario()` — loads and validates config, returns `ScenarioContext`
+* `save_scenario()` — persists updated features and budget, publishes `ScenarioConfigurationChanged`
+* `list_versions()` — returns available config versions for rollback
+
+=== FHSDisplay / show (`fhs.presentation.notebook.widgets.facade`)
+Presentation-layer facade built from mixins:
+
+* `_PrimitivesMixin` — markdown, info boxes, KPI cards
+* `_CapitalBudgetingMixin` — NPV/IRR tables and charts
+* `_RiskMixin` — VaR/CVaR dashboards, risk profiles
+* `_PortfolioMixin` — portfolio analysis, budget frontier
+* `_DistributionMixin` — distribution comparison guides
+* `_DeliveryMixin` — delivery risk, break-even, sunk cost
+
+Instantiated as `show` singleton, imported into notebooks via `fhs.presentation.notebook`.
+
+=== Risk Terminology
+[cols="1,3"]
+|===
+| Term | Definition
+
+| VaR (Gain-based)
+| Minimum business value at 95% confidence = 5th percentile of distribution
+
+| CVaR / Expected Shortfall
+| Average outcome in the worst 5% of scenarios
+
+| Loss-based VaR
+| `expected_value - var_95` — how much value could be lost vs. expectation
+
+| LaR 95%
+| Loss at Risk at 95%: 95th percentile of the loss distribution (Notebook 06)
+
+| Break-Even Probability
+| Percentage of delivery scenarios with positive profit (Notebook 06)
+|===
+
+---
+_C4 Level 4 - Code_

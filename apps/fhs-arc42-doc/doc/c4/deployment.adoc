@@ -1,0 +1,146 @@
+= C4 Deployment View
+
+== Overview
+
+The deployment view shows how the FHS containers (JupyterLab and the FHS Python Library) are mapped to real infrastructure.
+FHS has three deployment options — all entirely local, no cloud, no server, no API.
+
+The C4 deployment view complements the container view by showing *where* each container runs, which ports are exposed, and how users and tools reach the system.
+
+== Deployment Environments
+
+=== Environment 1 — Lima VM Development Sandbox (macOS)
+
+The recommended setup for macOS developers.
+A headless Ubuntu 24.04 VM managed by Lima / QEMU isolates the full development toolchain from the host.
+
+[source,mermaid]
+----
+C4Deployment
+    title Deployment: Lima VM Development Sandbox (macOS)
+
+    Deployment_Node(mac, "Developer Laptop", "macOS 14+  ·  Intel or Apple Silicon") {
+        Deployment_Node(lima, "Lima Hypervisor", "Lima / QEMU") {
+            Deployment_Node(vm, "fhs VM", "Ubuntu 24.04  ·  4 CPUs  ·  8 GiB RAM  ·  20 GiB disk") {
+                Deployment_Node(python_rt, "Python 3.14 Runtime", "uv package manager") {
+                    Container(jupyter, "JupyterLab 4.x", "Python / JupyterLab", "Interactive analysis environment. Port 8888 inside VM, forwarded to host localhost:28888")
+                    Container(fhs_lib, "FHS Python Library", "Python Package  ·  pip install -e .[dev]", "DDD-layered simulation and risk engine. Imported in-process by the Jupyter kernel")
+                    ContainerDb(yaml_cfg, "Scenario Configuration", "YAML files", "notebooks/config/*.yaml — feature definitions, budgets, delivery risk parameters")
+                }
+                Deployment_Node(docs_srv, "Documentation Server", "docToolchain 3.4.1  ·  JDK 21  ·  Gradle 8.5") {
+                    Container(docs, "Arc42 HTML Documentation", "HTML / CSS / JavaScript", "arc42 docs rendered on demand. Port 8085 inside VM, forwarded to localhost:28085")
+                }
+            }
+        }
+        Deployment_Node(browser, "Web Browser", "Chrome / Firefox / Safari") {
+            Container(nb_ui, "Notebook UI", "HTML  ·  JavaScript  ·  ipywidgets", "Rendered notebook interface. Connects to localhost:28888 via Lima port-forward")
+        }
+        Deployment_Node(ide, "IDE / Editor", "VS Code Remote-SSH  ·  JetBrains Gateway") {
+            Container(dev_session, "Remote Development Session", "SSH to lima-fhs", "Full Python toolchain inside the VM — edit, lint, debug without a local Python install")
+        }
+    }
+
+    Rel(nb_ui, jupyter, "HTTP / WebSocket", "localhost:28888 → VM port 8888")
+    Rel(dev_session, vm, "SSH", "lima shell  /  make gateway pycharm")
+    Rel(jupyter, fhs_lib, "Python import", "in-process, no network call")
+    Rel(fhs_lib, yaml_cfg, "load_scenario()", "file I/O via PyYAML")
+----
+
+Key characteristics:
+
+* Full development toolchain in an isolated Linux environment (Python 3.14, uv, Go, Dagger, Claude Code, Copilot CLI)
+* Port forwarding: VM port 8888 → `localhost:28888` (Jupyter), VM port 8085 → `localhost:28085` (docs)
+* IDEs connect via SSH (`lima-fhs` host alias) — no local Python installation required on the Mac
+* Two-phase setup: `make create` (~2 min) then `make provision` (~10 min)
+
+=== Environment 2 — Docker (Quick Start)
+
+The simplest route to running FHS on any operating system.
+A single pre-configured Docker container contains all dependencies.
+
+[source,mermaid]
+----
+C4Deployment
+    title Deployment: Docker (Quick Start)
+
+    Deployment_Node(host, "Developer Machine", "Linux  ·  macOS  ·  Windows  ·  Docker Engine required") {
+        Deployment_Node(docker, "Docker Engine", "Docker Engine  /  Docker Desktop") {
+            Deployment_Node(fhs_container, "fhs-platform container", "Python 3.14-slim base image  ·  all dependencies pre-installed") {
+                Deployment_Node(python_rt, "Python 3.14 Runtime", "pip") {
+                    Container(jupyter, "JupyterLab 4.x", "Python / JupyterLab", "Interactive analysis environment. Container port 8888 mapped to host localhost:8888")
+                    Container(fhs_lib, "FHS Python Library", "Python Package  ·  pip install", "Pre-installed: NumPy, SciPy, Matplotlib, Plotly, Pydantic, PuLP, openpyxl")
+                    ContainerDb(yaml_cfg, "Scenario Configuration", "YAML files", "notebooks/config/*.yaml — bind-mounted from host directory for persistence")
+                }
+            }
+        }
+        Deployment_Node(browser, "Web Browser", "Chrome / Firefox / Safari") {
+            Container(nb_ui, "Notebook UI", "HTML  ·  JavaScript  ·  ipywidgets", "Rendered notebook interface at localhost:8888")
+        }
+    }
+
+    Rel(nb_ui, jupyter, "HTTP / WebSocket", "localhost:8888 (Docker port mapping)")
+    Rel(jupyter, fhs_lib, "Python import", "in-process, no network call")
+    Rel(fhs_lib, yaml_cfg, "load_scenario()", "file I/O via PyYAML")
+----
+
+Key characteristics:
+
+* Zero configuration — all scientific computing dependencies pre-installed in the image
+* Host bind-mount for `notebooks/config/` ensures scenario YAML changes persist across container restarts
+* Single command: `docker compose -f cicd/docker-compose.yml up --profile fhs`
+
+=== Environment 3 — Local Python Install
+
+Direct installation for contributors or users with an existing Python environment.
+
+[source,mermaid]
+----
+C4Deployment
+    title Deployment: Local Python Install
+
+    Deployment_Node(machine, "Developer Machine", "Linux  ·  macOS  ·  Windows  ·  Python 3.14+") {
+        Deployment_Node(python_rt, "Python Runtime", "System Python  ·  pyenv  ·  conda") {
+            Container(jupyter, "JupyterLab 4.x", "Python / JupyterLab", "Interactive analysis environment at localhost:8888. Opened automatically on start")
+            Container(fhs_lib, "FHS Python Library", "Python Package  ·  pip install -e .[dev]", "Editable install: NumPy, SciPy, Matplotlib, Plotly, Pydantic, PuLP, openpyxl, pytest")
+            ContainerDb(yaml_cfg, "Scenario Configuration", "YAML files", "apps/fhs/notebooks/config/*.yaml — local file system, version controlled")
+        }
+        Deployment_Node(browser, "Web Browser", "Chrome / Firefox / Safari") {
+            Container(nb_ui, "Notebook UI", "HTML  ·  JavaScript  ·  ipywidgets", "Rendered notebook interface at localhost:8888")
+        }
+    }
+
+    Rel(nb_ui, jupyter, "HTTP / WebSocket", "localhost:8888")
+    Rel(jupyter, fhs_lib, "Python import", "in-process, no network call")
+    Rel(fhs_lib, yaml_cfg, "load_scenario()", "file I/O via PyYAML")
+----
+
+Key characteristics:
+
+* Editable install (`pip install -e .[dev]`) — source code changes take effect immediately without reinstalling
+* Full test suite available: `python3 -m pytest tests/ -v`
+* Works with Python 3.14+ (Python 3.14+ required for the latest features)
+
+== What All Environments Share
+
+Regardless of the deployment option, the runtime topology is the same:
+
+[cols="3,5"]
+|===
+|Invariant |Detail
+
+|*No network calls at runtime*
+|Notebooks import the FHS library as a Python package — no REST API, no socket connection, no external service.
+
+|*Same data flow*
+|`load_scenario()` reads YAML from disk → Monte Carlo simulation runs in-process → results are rendered inline in the notebook.
+
+|*Same YAML source of truth*
+|`notebooks/config/*.yaml` holds all features, budgets, and delivery risk parameters regardless of how the environment is started.
+
+|*Same Python API*
+|`from fhs.notebook import load_scenario` works identically in Lima VM, Docker, and local installs.
+
+|===
+
+---
+_C4 Deployment View — Feature Hypotheses Simulation_

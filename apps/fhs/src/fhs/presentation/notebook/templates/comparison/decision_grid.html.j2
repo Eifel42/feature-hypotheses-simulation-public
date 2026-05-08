@@ -1,0 +1,27 @@
+{# Multi-column decision grid with accent-topped cards.
+   Context: items (list of dicts), title, footer, cols #}
+<div style="{{ card_wrapper(padding='24px 28px') }};font-family:-apple-system,sans-serif;">
+  {% if title %}
+  <h3 style="margin:0 0 16px;color:{{ COLORS.neutral }};font-size:18px;font-weight:bold;">{{ title }}</h3>
+  {% endif %}
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">
+    {% for item in items %}
+    {% set col = item.color %}
+    <div style="border:1px solid {{ COLORS.border }};border-top:4px solid {{ col }};padding:18px;border-radius:2px;">
+      <div style="font-size:16px;font-weight:bold;color:{{ col }};margin-bottom:10px;">{{ item.title }}</div>
+      <div style="font-size:14px;color:{{ COLORS.neutral }};margin-bottom:10px;">{{ item.get("description", "")|safe }}</div>
+      <ul style="font-size:13px;color:{{ COLORS.neutral }};padding-left:18px;margin:0;line-height:1.4;">
+        {% for b in item.get("bullets", []) %}
+        <li>{{ b|safe }}</li>
+        {% endfor %}
+      </ul>
+      {% if item.get("rule") %}
+      <div style="margin-top:10px;font-size:13px;background:{{ COLORS.surface }};padding:10px;border-radius:2px;border-left:2px solid {{ col }};">{{ item.rule|safe }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% if footer %}
+  {{ footer_block(footer|safe, margin_top='20px', padding='14px 18px', font_size='14px') }}
+  {% endif %}
+</div>

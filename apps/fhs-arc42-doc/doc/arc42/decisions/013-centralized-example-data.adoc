@@ -1,0 +1,51 @@
+= ADR-013: Centralized Scenario Data for Blockchain Notebooks
+
+== Status
+
+Superseded (original Python-module approach)
+
+Current implementation: YAML repository + `ScenarioService` + `load_scenario()` (commit `e8dd30a`)
+
+== Context
+
+The blockchain case study defines three features (H1: Simplified UI, H2: Traceability, H3: Expiration Alerts) with specific parameters: expected users, conversion rate, uncertainty, business value per conversion, and development cost.
+
+Three notebooks use these features:
+
+* `02-blockchain-case-study.ipynb`
+* `advanced/01-portfolio-advisor.ipynb`
+* `advanced/02-portfolio-risk-dashboard.ipynb`
+
+When feature definitions were duplicated inline in each notebook, changes had to be made in three places. This caused inconsistencies (e.g., different budget values, different weight allocations) and made it difficult for Product Owners to experiment with different parameters.
+
+== Original Decision (historical)
+
+Define all case study data in a single Python module — `src/fhs/examples/blockchain.py` — and reuse module-level constants in every notebook.
+
+== Current Decision
+
+Use `notebooks/config/blockchain.yaml` as the canonical scenario source and load it through the notebook facade:
+
+[source,python]
+----
+from fhs.notebook import load_scenario
+
+scenario = load_scenario("blockchain")
+----
+
+This keeps one source of truth while moving persistence and validation into DDD layers:
+
+* Infrastructure: `YamlFeatureRepository`
+* Application: `ScenarioService`
+* Presentation: `fhs.notebook.load_scenario()`
+
+`fhs.examples.blockchain` now provides only helper functions (`expected_business_value()`, `standalone_roi()`), not canonical scenario constants.
+
+== Consequences
+
+* Notebook setup is standardized across tracks.
+* Scenario updates are persisted as YAML, versioned, and auditable.
+* Old imports of `FEATURES/STRATEGY/BUDGET/WEIGHTS` from `fhs.examples.blockchain` are obsolete and must be removed.
+
+'''
+_Part of Arc42 Architecture Documentation_

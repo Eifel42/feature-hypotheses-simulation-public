@@ -1,0 +1,86 @@
+# Copyright 2025 eifel42.dev
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Pin by SHA digest for supply-chain immutability.
+# To update: docker pull python:3.14-bookworm && docker inspect --format='{{index .RepoDigests 0}}' python:3.14-bookworm
+FROM python@sha256:f357fca37376cc10aba3bb909d13bba0108a39670d7b9bc8b4039ac94674e874
+
+LABEL maintainer="eifel42.dev"
+LABEL description="Feature Hypotheses Simulation Platform - Container-based Development Environment"
+LABEL version="0.2.0"
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    curl \
+    fonts-liberation \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Set working directory
+WORKDIR /workspace
+
+# Copy dependency definition first (better layer caching)
+COPY apps/fhs/config/pyproject.toml ./pyproject.toml
+COPY apps/fhs/README.md ./README.md
+
+# Create minimal source tree so editable install can resolve the package,
+# then install Python packages while the dependency layer is still cacheable.
+RUN mkdir -p src/fhs \
+    && touch src/fhs/__init__.py \
+    && pip install --no-cache-dir --upgrade pip build \
+    && pip install --no-cache-dir -e ".[dev,notebooks]"
+
+# Copy real source code (overwrites stub, doesn't invalidate pip cache)
+COPY apps/fhs/src/ src/
+COPY apps/fhs/notebooks/ notebooks/
+COPY apps/fhs/tests/ tests/
+COPY apps/fhs/Makefile ./Makefile
+
+# Create non-root user for better security
+RUN useradd -m -s /bin/bash fhsuser \
+    && chown -R fhsuser:fhsuser /workspace \
+    && mkdir -p /home/fhsuser/.jupyter \
+    && chown -R fhsuser:fhsuser /home/fhsuser/.jupyter
+
+# Hardened Jupyter defaults (token required, XSRF checks enabled)
+# Config lives in /etc/jupyter so the jupyter_data volume doesn't shadow it
+COPY cicd/docker/jupyter_lab_config.py /etc/jupyter/jupyter_lab_config.py
+
+# Hot-deploy: enable IPython autoreload for every kernel.
+# Combined with the bind-mount of apps/fhs -> /workspace this means
+# YAML edits AND Python source edits take effect without kernel restart.
+COPY cicd/docker/ipython_startup_autoreload.py \
+    /etc/ipython/profile_default/startup/00-fhs-autoreload.py
+RUN mkdir -p /home/fhsuser/.ipython/profile_default/startup \
+    && cp /etc/ipython/profile_default/startup/00-fhs-autoreload.py \
+          /home/fhsuser/.ipython/profile_default/startup/00-fhs-autoreload.py \
+    && chown -R fhsuser:fhsuser /home/fhsuser/.ipython
+
+# Set Python path
+ENV PYTHONPATH="/workspace/src"
+
+# Expose Jupyter port
+EXPOSE 8888
+
+# Healthcheck for Jupyter (api/status verifies the server is functional)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+    CMD test -n "$JUPYTER_TOKEN" && curl -fsS "http://localhost:8888/api/status?token=${JUPYTER_TOKEN}" || exit 1
+
+# Switch to non-root user by default
+USER fhsuser
+
+# Default command (can be overridden in docker-compose)
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser"]

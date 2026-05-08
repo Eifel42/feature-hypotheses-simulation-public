@@ -1,0 +1,21 @@
+{# Single solver column for side-by-side comparison.
+    Context: label, accent, feats, total_cost, expected_business_value, var95, roi, portfolios_checked, runtime_sec #}
+<div style="flex:1;min-width:280px;border:1px solid {{ COLORS.border }};border-top:4px solid {{ accent }};padding:20px;border-radius:4px;">
+  <div style="font-size:16px;font-weight:bold;color:{{ accent }};margin-bottom:14px;">{{ label }}</div>
+  <table style="{{ table_base(font_size='13px', margin='0') }}">
+    <tr><td style="padding:6px 0;">Selected</td>
+        <td style="padding:6px 0;font-weight:bold;">{{ feats }}</td></tr>
+    <tr><td style="padding:6px 0;">Total Cost</td>
+        <td style="padding:6px 0;">{{ total_cost | eur }}</td></tr>
+    <tr><td style="padding:6px 0;">Expected Business Value</td>
+        <td style="padding:6px 0;">{{ expected_business_value | eur }}</td></tr>
+    <tr><td style="padding:6px 0;font-weight:bold;">VaR 95%</td>
+        <td style="padding:6px 0;font-weight:bold;">{{ var95 | eur }}</td></tr>
+    <tr><td style="padding:6px 0;">ROI</td>
+        <td style="padding:6px 0;">{{ roi | pct }}</td></tr>
+    <tr><td style="padding:6px 0;">Portfolios checked</td>
+        <td style="padding:6px 0;">{{ "{:,}".format(portfolios_checked) }}</td></tr>
+    <tr><td style="padding:6px 0;">Runtime</td>
+        <td style="padding:6px 0;">{{ "%.4f" | format(runtime_sec) }} s</td></tr>
+  </table>
+</div>

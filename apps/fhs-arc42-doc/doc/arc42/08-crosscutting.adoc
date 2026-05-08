@@ -1,0 +1,235 @@
+= Cross-cutting Concepts
+
+== Design Principles
+
+[cols="2,4"]
+|===
+|Principle |How it's applied
+
+|*Correctness first*
+|Risk calculations are statistically sound. All results are validated by tests before visualization.
+
+|*Plain language*
+|Every metric includes a one-sentence explanation in EUR terms.
+
+|*KISS — no infrastructure*
+|Direct Python library imports. No REST API, no database, no message queue.
+
+|*Single source of truth*
+|Scenario configuration is centralized in `apps/fhs/notebooks/config/*.yaml`, loaded via `load_scenario()` and validated by `ScenarioService`.
+
+|*Semantic Colour System*
+|All chart colours are referenced by token (`palette["primary"]`, `COLORS.danger`) rather than hardcoded hex literals. The palette is defined in `presentation/notebook/styling.py` as a frozen `_Colors` dataclass with 16 semantic tokens. Light and dark themes are supported via `ThemeContext`. All foreground/text tokens meet WCAG 2.1 AA contrast ratio (≥ 4.5:1) on white. The `RISK_HEATMAP_GRADIENT` constant defines the canonical red → amber → green gradient for risk heatmaps.
+
+|===
+
+== Project Language
+
+FHS uses two language layers across architecture docs, notebooks, charts, and reports.
+
+1. Product Ownership and Agile Portfolio Management come first: feature hypothesis, initiative, backlog priority, roadmap decision, business value, delivery confidence, budget fit, decision recommendation.
+2. Risk Management comes second: business value floor, loss view, Loss at Risk, CVaR, stress scenario, risk appetite, assumption quality.
+
+Banking remains the quality bar for governance and validation, but the product should not sound like software made only for banks in titles or opening sections.
+
+== Error Handling
+
+|===
+|Case |Behavior
+
+|Invalid Feature parameters (e.g., `conversion_rate > 1`)
+|Validation is enforced by Pydantic/domain rules. Errors surface as validation exceptions (`ValidationError` and/or typed `ValueError` context) before simulation starts.
+
+|High uncertainty with Normal distribution (`uncertainty > 0.5`)
+|`warnings.warn()` alerts user to clipping bias risk. User decides whether to switch to Beta distribution.
+
+|Invalid correlation matrix
+|Validation is executed before decomposition; invalid matrices are rejected with explicit diagnostics (`CorrelationMatrixError`/`ValueError`).
+
+|===
+
+== Configuration Governance
+
+* Scenario changes are persisted as YAML snapshots and versioned via `VersioningService`.
+* `ScenarioConfigurationChanged` events are emitted through `EventBus`.
+* `EventLogger` creates an auditable change trail in notebook logs.
+
+=== Scenario YAML Lifecycle
+
+The lifecycle of a scenario YAML file covers five stages:
+
+. *Edit* — User edits `apps/fhs/notebooks/config/*.yaml` directly or via the Configuration Form widget in Notebook 02.
+. *Validate* — `ScenarioService.load()` validates the YAML against the `ScenarioConfig` Pydantic schema at load time. Invalid YAML raises a `ValidationError` before any simulation runs.
+. *Version* — `VersioningService` creates a timestamped snapshot in `config/versions/` on each save. `ScenarioConfigurationChanged` events are emitted to `EventBus`.
+. *Audit* — `EventLogger` writes domain events at `INFO` level. The Python logger in JupyterLab captures this in notebook output.
+. *Backup* — YAML files should be committed to git after significant changes (see Deployment chapter for backup strategy). The seed field ensures reproducible results from any committed version.
+
+== Strategic Feature Categories
+
+Not every feature generates direct business value. Strategic categories explain why features with negative standalone ROI are still worth building. The category is a free-text field in scenario YAML — teams choose the label that best describes their context. The neutral set below works across software, operations, healthcare, logistics, and public sector portfolios.
+
+[cols="2,4,3", options="header"]
+|===
+|Category |Business justification |Typical examples
+
+|*Value Driver*
+|Direct business value expected. Positive ROI pays for the portfolio.
+|New product capability, upsell feature, retention improvement
+
+|*Efficiency*
+|Reduces cost, time, or process waste. Value is captured as savings or throughput.
+|Automation, workflow improvement, self-service tooling
+
+|*Risk Reduction*
+|Reduces operational, technical, or financial exposure. Value is the avoided loss.
+|Security hardening, reliability improvement, dependency removal
+
+|*Regulatory Compliance*
+|Required by law or governance mandate. Cost of non-compliance (fines, exclusion) exceeds development cost.
+|GDPR, safety regulations, audit requirements
+
+|*Strategic Option*
+|Creates a future capability, market entry point, or learning opportunity. Value is optionality.
+|Platform foundation, market pilot, technical spike
+
+|*Resilience*
+|Improves robustness, continuity, or stability under stress. Value is realized in crisis, not in normal operation.
+|DR/BCP capability, redundancy, degraded-mode handling
+
+|===
+
+Portfolio Advisor flags features with negative standalone ROI and confirms portfolio-level profitability. `strategic_category` is a string field — any label is valid; the table above provides the canonical vocabulary.
+
+== Statistical Accuracy
+
+* **NumPy seeded random generator** ensures reproducibility. Set `seed=42` for identical results.
+* Minimum 1,000 scenarios required; 10,000 recommended for stable VaR estimates.
+* VaR 95% is the 5th percentile of simulated distribution (non-parametric).
+
+== Logging and Observability
+
+FHS uses Python's standard `logging` module, configured via `infra/config.py` (`SimulationConfig`, `DEFAULT_CONFIG`).
+Log level is set at startup; notebook users see warnings and above in cell output.
+No external telemetry, no remote log shipping — all logs stay local.
+
+Key logging points:
+
+* `ScenarioService` logs config load, validation failures, and version-snapshot writes.
+* `EventLogger` writes domain events (`ScenarioConfigurationChanged`) to the Python logger at `INFO` level.
+* Simulation runs do not log intermediate state (performance constraint).
+
+== Performance Strategy
+
+FHS targets 10,000-scenario Monte Carlo in under 2 seconds on standard laptop hardware.
+Strategy:
+
+* **Vectorized NumPy arrays** — no Python loops in the Monte Carlo hot path; all sampling is batch-computed.
+* **`numpy.random.default_rng`** — modern, statistically stronger PRNG that is also faster than the legacy `RandomState`.
+* **Pre-allocated output arrays** — `SimulationResult` holds pre-computed VaR/CVaR so repeated reads are O(1).
+* **No caching between cells** — results are re-computed on each `simulate_feature()` call; this is intentional (inputs may change). For 100k+ scenarios, users are advised to assign results to a variable.
+
+== Security and Trust Model
+
+FHS has a minimal attack surface: it is a local library with no network I/O and no user accounts.
+
+[cols="2,4", options="header"]
+|===
+|Boundary |Control
+
+|YAML loading
+|`yaml.safe_load()` is used throughout `YamlFeatureRepository`. `yaml.load()` with an arbitrary Loader is never used.
+
+|Notebook code execution
+|Jupyter's execution model gives notebooks full Python access. FHS does not add further sandbox restrictions — this is a user-environment responsibility.
+
+|No secrets handling
+|FHS stores no credentials, API keys, or personal data. Scenario YAML files contain only business estimates.
+
+|Dependency supply chain
+|Dependencies are pinned in `pyproject.toml`. CI runs on Docker images built from pinned base images.
+
+|===
+
+== Test Strategy
+
+FHS follows a layered test strategy, enforced in CI on every commit:
+
+[cols="2,3,3", options="header"]
+|===
+|Test Type |Scope |Tool
+
+|Unit tests
+|Individual functions in `core/`, `application/`, `presentation/`
+|pytest — currently 1,374 tests, 100% branch coverage target
+
+|Architecture boundary tests
+|DDD layer import restrictions (no notebook imports from `core.*` directly)
+|`tests/test_architecture.py` with `importlib` inspection
+
+|Statistical regression tests
+|VaR/CVaR output within ±1% of theoretical value across seeds
+|pytest + NumPy assertion tolerances
+
+|Notebook execution tests
+|All notebooks execute without error in a clean kernel
+|`docker compose --profile notebook-check`
+
+|Security defaults tests
+|Jupyter `allow_remote_access = False`, no token-bypass configuration
+|`./cicd/run-cicd.sh security`
+
+|===
+
+== Notebook Code Cell Visibility Convention
+
+*Rule:* All Python code cells in every notebook must have their source hidden.
+
+The primary audience — Product Owners, Portfolio Owners, Agile leaders — reads outputs and decisions, not implementation code.
+Every code cell carries the metadata `{"jupyter": {"source_hidden": true}}`.
+
+Verification:
+
+[source,bash]
+----
+grep -c '"source_hidden": true' apps/fhs/notebooks/01-getting-started.ipynb
+# Expected: equals the number of code cells in the notebook
+----
+
+New notebooks and notebook edits must apply this metadata after any `NotebookEdit` tool call, because the tool does not add it automatically.
+
+== Type Annotation Strategy
+
+* **No `Any` in public presentation APIs.** Widget builder signatures use concrete types from domain value objects.
+* **`TYPE_CHECKING` guards** — imports used only for type hints are wrapped in `if TYPE_CHECKING:` blocks to avoid circular imports at runtime:
++
+[source,python]
+----
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from fhs.core.model.value_objects.multi_year_result import MultiYearResult
+----
+* **Protocol-based contracts** — collaborators in `AdvancedPortfolioService` sub-facades accept a `PortfolioContext` Protocol rather than `Any` or concrete class references.
+* **Frozen dataclasses** for all value objects; Pydantic `BaseModel` for domain entities.
+
+== Public API Stability
+
+The public API surface is everything exported from `fhs/__init__.py`.
+
+*Stability contract (semver-aligned):*
+
+* **Patch** (1.0.x) — bug fixes, statistical corrections; no signature changes.
+* **Minor** (1.x.0) — new symbols added to `__all__`; existing signatures unchanged.
+* **Major** (x.0.0) — breaking changes to existing public symbols (rename, removal, parameter changes).
+
+*Stability guarantee does NOT cover:*
+
+* `fhs.core.*` — internal domain objects; import them at your own risk.
+* `fhs.presentation.notebook.*` — notebook widget internals may change between minor versions.
+* Generated `_generated/*.adoc` files — auto-generated; do not import or include directly.
+
+Notebooks import exclusively from `fhs.*` (enforced by architecture tests in `tests/test_architecture.py`).
+
+'''
+_Part of Arc42 Architecture Documentation_

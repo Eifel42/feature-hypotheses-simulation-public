@@ -1,0 +1,117 @@
+= ADR-009: Development Cost Tracking & ROI Calculation
+
+== Status
+✅ Accepted (Implemented Q1 2026)
+
+== Context
+Product teams need to balance expected feature business value against development investment. ROI (Return on Investment) is a familiar metric for business stakeholders, but the system initially focused only on business value/risk metrics without addressing cost.
+
+== Decision
+Add `development_cost` field to Feature model with three derived ROI properties:
+
+- `roi` = (expected_business_value - development_cost) / development_cost
+- `net_value` = expected_business_value - development_cost
+- `profit_margin` = (expected_business_value - development_cost) / expected_business_value
+
+Development cost is optional (default=0.0) for backward compatibility.
+
+== Rationale
+1. **Business Relevance:** ROI is standard investment metric; stakeholders expect cost analysis
+2. **Backward Compatibility:** Default cost=0.0 doesn't break existing simulations
+3. **Edge Case Handling:** Formula returns sensible values for zero cost, negative revenue
+4. **Integration:** Fits naturally into portfolio optimization (budget constraints)
+5. **Familiarity:** Product teams understand ROI better than pure statistical metrics
+
+== Consequences
+
+=== Positive
+- Portfolio optimization can now express budget constraints naturally
+- Business case analysis possible (cost vs. benefit)
+- Feature ranking by ROI, not just business value
+- Cost-aware feature prioritization enables disciplined investment
+
+=== Negative
+- Introduces estimation uncertainty (cost estimates often ±30% inaccurate)
+- ROI undefined/infinite for zero development cost (handled as 0.0)
+- Users may confuse point-estimate costs with actual variability
+- Propagates cost estimation errors into portfolio decisions
+
+=== Implementation
+```python
+@dataclass
+class Feature:
+    # ... existing fields ...
+    development_cost: float = 0.0  # in currency units
+
+@dataclass
+class SimulationResult:
+    # ... existing fields ...
+
+    @property
+    def roi(self) -> float:
+        """Return on Investment: (business_value - cost) / cost"""
+        if self.development_cost <= 0:
+            return 0.0
+        return (self.expected_business_value - self.development_cost) / self.development_cost
+
+    @property
+    def net_value(self) -> float:
+        """Net Value: business_value - cost"""
+        return self.expected_business_value - self.development_cost
+
+    @property
+    def profit_margin(self) -> float:
+        """Profit Margin: (business_value - cost) / business_value"""
+        if self.expected_business_value <= 0:
+            return 0.0
+        return (self.expected_business_value - self.development_cost) / self.expected_business_value
+```
+
+== Alternatives Considered
+
+=== Cost as Variable (Distribution)
+- **Pros:** Captures estimation uncertainty
+- **Cons:** Too complex for MVP; adds significant complexity
+- **Decision:** Rejected for MVP; added to future work as `cost_uncertainty` field
+
+=== Cost in Feature vs. SimulationResult
+- **Pros/Cons of Feature:** Immutable throughout simulation, simple to track
+- **Pros/Cons of SimulationResult:** Flexible per-scenario costs, but added complexity
+- **Decision:** Place in Feature model (simpler, matches current pattern)
+
+== Design Decisions
+
+=== Edge Case Handling
+- Zero cost (development_cost = 0.0): ROI returns 0.0 (not infinite)
+- Negative cost: Rejected by validation (development_cost >= 0.0)
+- Negative revenue: Allowed (feature may have negative net_value)
+
+=== Backward Compatibility
+- Old code without development_cost: Uses default 0.0
+- Existing tests: Pass without modification
+- All properties: Handle zero cost gracefully
+
+== Related ADRs
+- ADR-003: KISS Architecture (simple point estimates, not distributions)
+- ADR-012: Budget Constraint Scope (how budgets are applied)
+- ADR-011: Greedy Algorithm (why used for budget optimization)
+
+== Risks & Mitigations
+- **Risk:** Cost estimation error (±30-50%) propagates to ROI
+- **Mitigation:** Documentation warning; future: cost_uncertainty field
+- **Risk:** Zero vs. negative cost handling confuses users
+- **Mitigation:** Validation + clear error messages
+
+== See Also
+- `orders/CLIPPING_BIAS_DOCUMENTATION.md` (comprehensive risk analysis)
+- `apps/fhs/notebooks/advanced/01-portfolio-advisor.ipynb` (usage examples)
+- Test: `test_portfolio_advisor.py::TestOptimizeByBudget`
+
+== Changelog
+
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-02-21 | Initial acceptance | Implementation Team |
+
+'''
+_Part of Arc42 Architecture Documentation_

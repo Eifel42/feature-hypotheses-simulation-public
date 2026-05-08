@@ -1,0 +1,8 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+== Delivery Risk Terms
+
+* **Break-Even Probability** - Percentage of Monte Carlo scenarios in which total project profit is positive.
+* **Expected Loss** - Average monetary loss across all scenarios in which profit is negative.
+* **LaR 95% (Loss at Risk, 95th percentile)** - Maximum loss not exceeded in 95 out of 100 scenarios.
+* **Sunk Cost at Cancellation** - Expected development spend that is unrecoverable when a project is cancelled mid-delivery.
+* **Bernoulli Gate** - Binary random variable (delivered or not delivered) used in delivery risk simulation.

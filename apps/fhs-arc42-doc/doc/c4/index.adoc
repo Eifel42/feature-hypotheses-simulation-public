@@ -1,0 +1,23 @@
+= C4 Model - Architecture Views
+
+== The C4 Model
+The C4 model provides a simple way to think about the static structures of a software system in terms of containers, components and code.
+
+== Our Application of C4
+We adapt the C4 model to show how Financial Risk Management concepts are democratized for product development teams.
+
+== Levels
+* *link:context.adoc[Level 1: System Context]* - How the platform fits into the product development ecosystem
+* *link:containers.adoc[Level 2: Containers]* - High-level technology choices and system boundaries
+* *link:components.adoc[Level 3: Components]* - Internal structure of simulation engine
+* *link:code.adoc[Level 4: Code]* - Key classes and modules
+* *link:deployment.adoc[Deployment View]* - How containers are deployed across three runtime environments (Lima VM, Docker, Local Python)
+
+== Design Principles
+* *User-Centric*: Diagrams show value for Product Owners, Scrum Teams, Business
+* *Technology Abstraction*: Focus on capabilities, not implementation details
+* *Progressive Detail*: Start simple, add complexity as needed
+* *Business Context*: Always connect technical components to business value
+
+---
+_C4 Model Documentation for Feature Hypotheses Simulation_
