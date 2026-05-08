@@ -1,0 +1,119 @@
+ADR-005: UX Simulation Integration
+
+== Status
+Accepted
+
+== Context
+Traditional financial risk assessment focuses purely on financial metrics:
+* Value at Risk (VaR)
+* Conditional VaR (CVaR)
+* Portfolio optimization
+* Market risk factors
+
+However, product development risk has additional dimensions:
+* User experience and usability
+* Task completion rates and learning curves
+* Accessibility and inclusion factors
+* SUS (System Usability Scale) scores
+
+The question is whether to:
+1. Keep pure financial risk assessment
+2. Add UX as separate concern
+3. Integrate UX factors into risk calculations
+
+== Decision
+We will *integrate UX simulation into the core risk assessment framework* through:
+* *UserProfile* modeling with demographics and capabilities
+* *TaskScenario* definitions with complexity and accessibility factors
+* *UXSimulator* for user experience simulation
+* *SUS score integration* with traditional VaR metrics
+* *Learning curve analysis* over multiple iterations
+
+Integration approach:
+```python
+# UX-adjusted risk analysis
+user = UserProfile("Farmer", age=45, tech_savviness=0.4, accessibility_needs=["vision"])
+task = TaskScenario("Dashboard", complexity=0.6, accessibility_impact={"vision": 0.3})
+
+ux_sim = UXSimulator()
+completion_time, success_rate = ux_sim.simulate_task_completion(user, task)
+learning_data = ux_sim.simulate_learning_curve(user, task, iterations=10)
+sus_score = ux_sim.calculate_sus_score(learning_data)
+
+# Combine with traditional risk metrics
+feature_adjusted = feature.adjust_for_ux(success_rate, completion_time)
+result = simulator.simulate_feature(feature_adjusted, scenarios=1000)
+```
+
+== Consequences
+
+=== Positive
+* *Holistic risk assessment* - combines financial and usability risk
+* *User-centered design* - explicit modeling of user capabilities
+* *Accessibility consideration* - impact of accessibility needs quantified
+* *Learning effect modeling* - improvement over time captured
+* *SUS score integration* - standard usability metric included
+* *Business relevance* - connects UX directly to financial outcomes
+
+=== Negative
+* *Increased complexity* - more parameters to model and validate
+* *Subjective elements* - UX assessment less objective than financial metrics
+* *Validation challenges* - harder to benchmark against known outcomes
+* *Parameter sensitivity* - many UX factors affect results
+
+=== Mitigation
+* *Progressive disclosure* - basic users can ignore UX features
+* *Default parameter sets* - sensible defaults for common scenarios
+* *Validation against real user testing* - calibrate models with actual data
+* *Sensitivity analysis* - understand parameter impact on results
+
+== User Profile Model
+
+=== Demographics
+* Age ranges (18-65+)
+* Technology affinity (0.0-1.0)
+* Domain experience level (0.0-1.0)
+* Education background
+
+=== Capability Factors
+* Smartphone usage patterns
+* Learning rate characteristics
+* Task completion reliability
+* Error recovery capability
+
+=== Accessibility Modeling
+* Visual impairments and their impact
+* Motor impairments and their impact
+* Cognitive load considerations
+* Assistive technology usage
+
+== Task Scenario Model
+
+=== Complexity Factors
+* Number of interaction steps
+* Cognitive load requirements
+* Domain knowledge prerequisites
+* Technical skill requirements
+
+=== Accessibility Impact
+* Visual accessibility penalties
+* Motor accessibility penalties
+* Cognitive accessibility penalties
+* Assistive technology compatibility
+
+== Integration with Core Risk Framework
+
+=== Risk Adjustment Formula
+```
+adjusted_conversion_rate = base_conversion_rate * success_rate * accessibility_factor
+adjusted_uncertainty = base_uncertainty + ux_uncertainty
+```
+
+=== Portfolio-Level UX Risk
+* Aggregate SUS scores across features
+* User segment risk distribution
+* Learning curve portfolio effects
+* Accessibility compliance risk
+
+'''
+_Architecture Decision Record_

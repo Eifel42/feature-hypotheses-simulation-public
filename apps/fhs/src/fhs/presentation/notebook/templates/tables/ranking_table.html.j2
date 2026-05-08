@@ -1,0 +1,7 @@
+{# ranking_table.html.j2 — Ranked feature table with traffic-light risk #}
+<div style="{{ card_wrapper(padding='24px 28px') }};color:{{ COLORS.neutral }};"><h3 style="margin-top:0;color:{{ COLORS.neutral }};font-size:18px;font-weight:bold;">{{ title }}</h3><table style="{{ table_base(font_size='14px', margin='0') }}"><tr style="background:{{ COLORS.surface }};font-weight:bold;color:{{ COLORS.neutral }};"><th style="padding:10px;text-align:left;width:30px;">#</th><th style="padding:10px;text-align:left;">Feature</th><th style="padding:10px;text-align:right;">Expected Business Value</th><th style="padding:10px;text-align:right;">VaR95 Floor</th><th style="padding:10px;text-align:center;">Risk</th></tr>
+{% for r in rows %}
+{% set icon = risk_icon(r.risk_ratio) %}
+<tr><td style="padding:10px;font-weight:bold;color:{{ COLORS.neutral }};">{{ loop.index }}</td><td style="padding:10px;font-weight:bold;color:{{ COLORS.neutral }};">{{ r.feature }}</td><td style="padding:10px;text-align:right;color:{{ COLORS.secondary }};">EUR {{ '{:,.0f}'.format(r.expected_business_value) }}</td><td style="padding:10px;text-align:right;color:{{ COLORS.danger }};">EUR {{ '{:,.0f}'.format(r.var_95_business_value) }}</td><td style="padding:10px;text-align:center;">{{ icon }} {{ '{:.0%}'.format(r.risk_ratio) }}</td></tr>
+{% endfor %}
+</table></div>

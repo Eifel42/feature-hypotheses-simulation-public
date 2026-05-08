@@ -1,0 +1,240 @@
+# Project: FHS (Feature Hypotheses Simulation)
+# Copyright: Eifel42 Stefan Zils 2026
+# License: See LICENSE and README.md
+# Disclaimer: This file is provided "as is" without warranty.
+
+project:
+  name: Feature Hypotheses Simulation
+  short_name: FHS
+  version: "1.0.0"
+  author: eifel42.dev
+  github_url: https://github.com/Eifel42/feature-hypotheses-simulation-public
+  github_artifacts_raw: .
+  default_scenarios: "10,000"
+
+quality_goals:
+  - priority: "1"
+    goal: Correctness
+    motivation: Risk calculations must be statistically sound. Product Owners, Portfolio Owners, Agile leaders, and Risk Managers rely on the numbers for real business decisions.
+  - priority: "2"
+    goal: Simplicity
+    motivation: Results must be understandable without a finance background. Plain language, EUR figures, and clear labels are required.
+  - priority: "3"
+    goal: Transparency
+    motivation: Every metric must be explained in context, not only displayed as a number.
+  - priority: "4"
+    goal: Practical Value
+    motivation: Insights must connect directly to actionable decisions on priority, build/skip, and budget fit.
+
+quality_scenarios:
+  - attribute: Correctness
+    scenario: A Monte Carlo simulation with 10,000 scenarios produces VaR 95% values within +/-1% of the theoretical value across five independent runs with the same seed.
+    target: Deviation <= 1%
+  - attribute: Usability
+    scenario: A Product Owner with no financial background opens 01-getting-started.ipynb and completes a first feature risk assessment without external help.
+    target: Complete within 15 minutes
+  - attribute: Performance
+    scenario: A Monte Carlo simulation with 10,000 scenarios completes in under 2 seconds on standard laptop hardware.
+    target: < 2 seconds
+  - attribute: Maintainability
+    scenario: A new distribution type can be added to monte_carlo.py without changing simulator.py, risk_calculator.py, or any notebook.
+    target: Change isolated to one module
+
+primary_users:
+  - user: Product Owner
+    interaction: Defines feature parameters, runs simulations, and reviews expected business value, business value floor, and decision recommendations.
+  - user: Portfolio Owner / Agile leader
+    interaction: Uses portfolio views to compare roadmap options, budget fit, and delivery confidence.
+  - user: Risk Manager
+    interaction: Runs portfolio analysis including CVaR, correlation matrix, stress tests, and budget frontier.
+  - user: Business Stakeholder
+    interaction: Reviews exported notebook reports with quantified risk exposure in EUR.
+
+stakeholders:
+  - role: Product Owner
+    expectations: Risk-informed feature prioritization, sprint planning, and stakeholder communication.
+    pain_points: Uncertainty in ROI predictions and difficulty justifying backlog decisions with data.
+    occasions: Sprint planning, backlog refinement, roadmap review, investment committee prep.
+  - role: Portfolio Owner / Agile leader
+    expectations: Clear roadmap trade-offs, budget-fit decisions, and prioritization across initiatives.
+    pain_points: Hard-to-compare feature proposals and weak downside visibility before commitment.
+    occasions: Quarterly planning, budget allocation, portfolio review, initiative go/no-go decisions.
+  - role: Risk Manager
+    expectations: Portfolio-level risk metrics including CVaR, stress tests, correlation analysis, and budget frontier.
+    pain_points: Limited tooling for applying financial risk methods to product portfolios.
+    occasions: Risk committee reviews, portfolio stress testing, audit preparation, budget frontier analysis.
+  - role: Business Stakeholder
+    expectations: Clear, quantified risk exposure with EUR figures and confidence intervals.
+    pain_points: Surprises in product outcomes and weak data-driven support before budget commitment.
+    occasions: Decision briefings, executive reviews, pre-approval sign-off.
+
+technology_decisions:
+  - decision: Programming Language
+    choice: Python 3.14+
+    rationale: Modern Python with access to the latest scientific tooling and language features.
+  - decision: Risk Calculations
+    choice: NumPy / SciPy
+    rationale: Optimized mathematical libraries for Monte Carlo simulation and statistical analysis.
+  - decision: User Interface
+    choice: Jupyter Notebooks
+    rationale: Interactive analysis environment with code, results, and explanations in one document.
+  - decision: Deployment
+    choice: Docker + GitHub Actions
+    rationale: Consistent environments across machines with automated CI/CD.
+  - decision: Documentation
+    choice: Arc42 + docToolchain
+    rationale: Enterprise-standard architecture documentation.
+
+notebook_tracks:
+  - track: Core (01-07)
+    audience: Product Owners, Portfolio Owners, and Agile leaders new to FHS
+    focus: Single-feature analysis, portfolio advising, risk layers, delivery-risk case study, and executive decision synthesis.
+  - track: Tutorial (T01)
+    audience: Product Owners first, Risk Managers second
+    focus: Distribution selection and uncertainty-model guidance.
+  - track: Advanced (A01-A02)
+    audience: Portfolio Owners, Agile leaders, and Risk Managers
+    focus: Portfolio optimization, budget constraints, stress tests, and executive summaries.
+
+notebooks:
+  core:
+    - id: 01 Getting Started
+      purpose: First simulation with feature model, Monte Carlo, VaR, and expected business value.
+    - id: 02 Blockchain Case Study
+      purpose: Three hypotheses with strategic categories and EUR business values using central blockchain.yaml configuration.
+    - id: 03 Capital Budgeting
+      purpose: Budget-constrained feature selection and budget-fit analysis.
+    - id: 04 Portfolio Advisor
+      purpose: Ranked feature list, budget recommendation, and executive summary workflow.
+    - id: 05 Risk Analysis
+      purpose: Risk layer simulation, Shapley attribution, and sensitivity analysis.
+    - id: 06 Delivery Risk
+      purpose: Bernoulli gate model, break-even probability, expected loss, LaR 95%, and sunk cost at cancellation.
+    - id: 07 Executive Decision
+      purpose: Board-ready synthesis across notebooks 02-06 with five investment dimensions, traffic-light recommendation, and next actions.
+  supporting:
+    - id: GLOSSARY
+      purpose: Canonical glossary of product decision and risk terms.
+    - id: README / config reference
+      purpose: Scenario config schema reference and supporting configuration notes.
+  tutorial:
+    - id: T01 Distribution Guide
+      purpose: Normal, Lognormal, and Beta guidance for uncertainty modeling.
+  advanced:
+    - id: A01 Portfolio Advisor
+      purpose: Opportunity cost, ranking, budget optimization, concentration risk, and PO report export.
+    - id: A02 Portfolio Risk Dashboard
+      purpose: Portfolio value table, stress scenarios, risk contribution, and budget frontier chart.
+
+constraints:
+  technical:
+    - constraint: Python 3.14+
+      rationale: Baseline requires-python is 3.14+, validated on current runtime versions.
+    - constraint: Jupyter Lab
+      rationale: Primary user interface where code, results, and explanations are combined.
+    - constraint: Docker
+      rationale: Zero-setup installation and reproducible environment startup.
+    - constraint: Linux / macOS
+      rationale: Scripts and Makefiles target Linux and macOS workflows.
+  organisational:
+    - constraint: No financial training required
+      rationale: Product Owners, Portfolio Owners, Agile leaders, and Risk Managers must run simulations without statistical expertise.
+    - constraint: Agile context
+      rationale: Risk assessments must fit into sprint planning sessions.
+
+glossary:
+  financial:
+    - term: Business Value Floor (BVF 95%)
+      definition: The simulated business value exceeded in 95 out of 100 scenarios. The primary downside boundary metric in FHS. Equivalent to a VaR-style 5th percentile of the business value distribution — not a loss metric.
+    - term: VaR (Value at Risk)
+      definition: Financial industry term for the loss not exceeded at a given confidence level. In FHS, the equivalent concept is the Business Value Floor (BVF 95%) — the value floor, not a loss floor. See BVF 95%.
+    - term: Expected Shortfall (CVaR / ES)
+      definition: Average outcome across the worst 5 percent of scenarios. More conservative than BVF 95% because it captures the severity of tail outcomes, not just the threshold.
+    - term: Loss at Risk (LaR 95%)
+      definition: 95th percentile of the loss distribution — the maximum loss not exceeded in 95 out of 100 scenarios. Used for delivery risk and cost-overrun analysis.
+    - term: Risk Appetite
+      definition: The maximum level of risk an organization is willing to accept when pursuing its objectives. In FHS, expressed as thresholds on BVF 95%, CVaR loss, break-even probability, and concentration limits.
+    - term: Assumption Quality
+      definition: A metadata label (e.g., expert-estimate, reviewed, validated) describing how rigorously the input parameters for a simulation have been derived. Low assumption quality reduces confidence in simulation outputs even when the math is correct.
+    - term: Decision Grade
+      definition: A composite confidence label (GO / Conditional GO / Review) assigned to a feature or portfolio recommendation based on risk metrics and assumption quality. Intended for Product Owners, Portfolio Owners, and Investment Committees.
+    - term: Value Driver
+      definition: A strategic category for features that are expected to generate direct business value with positive ROI. It broadens an older sales-first label so cost savings, risk reduction, and operational improvements fit the same category.
+    - term: Monte Carlo Simulation
+      definition: 10,000 randomized scenarios per feature.
+    - term: Expected Business Value
+      definition: Mean outcome across all scenarios.
+    - term: Risk Ratio
+      definition: Standard deviation divided by expected business value.
+    - term: Budget Frontier
+      definition: Optimal portfolio selections balancing risk and budget via ILP/SLSQP solvers.
+    - term: Correlation
+      definition: How features move together.
+    - term: Diversification
+      definition: Risk reduction from uncorrelated features.
+    - term: HHI (Concentration Index)
+      definition: Portfolio diversification measure.
+    - term: Stress Testing
+      definition: Scenario analysis with adverse conditions.
+
+  delivery:
+    - term: Break-Even Probability
+      definition: Percentage of Monte Carlo scenarios in which total project profit is positive.
+    - term: Expected Loss
+      definition: Average monetary loss across all scenarios in which profit is negative.
+    - term: LaR 95% (Loss at Risk, 95th percentile)
+      definition: Maximum loss not exceeded in 95 out of 100 scenarios.
+    - term: Sunk Cost at Cancellation
+      definition: Expected development spend that is unrecoverable when a project is cancelled mid-delivery.
+    - term: Bernoulli Gate
+      definition: Binary random variable (delivered or not delivered) used in delivery risk simulation.
+
+  multi_year:
+    - term: Multi-Year Simulation
+      definition: Per-feature Monte Carlo projection across multiple years with independent per-year sampling.
+    - term: YearResult
+      definition: Value object with one year's expected, BVF 95% (floor), P95 (ceiling), and spread.
+    - term: NPV (Net Present Value)
+      definition: Sum of discounted future business values minus upfront development cost.
+
+  product:
+    - term: Portfolio
+      definition: All features in a sprint or release viewed as an investment portfolio with risk and correlation.
+    - term: Feature Hypothesis
+      definition: Testable assumption about feature impact represented as a Feature model.
+    - term: Strategic Feature Category
+      definition: Strategic intent classification — Value Driver, Efficiency, Risk Reduction, Regulatory Compliance, Strategic Option, or Resilience. Free-text field; the canonical set is documented in the Cross-cutting Concepts chapter.
+    - term: Opportunity Cost
+      definition: Expected business value lost by not building a feature.
+    - term: Net Value
+      definition: Expected business value minus development cost.
+    - term: ROI (Return on Investment)
+      definition: (Expected Business Value minus Development Cost) divided by Development Cost.
+    - term: Decision Policy
+      definition: A configurable set of thresholds (min break-even probability, min BVF ratio, max CVaR loss) that maps simulation results to GO / Conditional GO / Review recommendations. Product Owner-facing language for risk appetite rules.
+    - term: Risk Appetite Policy
+      definition: A bank-grade formalization of the Decision Policy adding concentration limits, sunk-cost caps, and assumption quality requirements. Targeted at Risk Managers, Portfolio Owners, and Investment Committees.
+
+  architecture:
+    - term: Jupyter Notebook
+      definition: Interactive computing environment combining code, visualizations, and text.
+    - term: NumPy / SciPy
+      definition: Python libraries for numerical and scientific computing.
+    - term: Matplotlib / Plotly
+      definition: Charting libraries for static and interactive visualization.
+    - term: Docker
+      definition: Container platform used for reproducible documentation and notebook environments.
+    - term: Pydantic
+      definition: Python library for schema and model validation.
+    - term: C4 Model
+      definition: Architecture diagramming model with context, container, component, and code views.
+    - term: Arc42
+      definition: Template for software architecture documentation.
+    - term: UX Simulator
+      definition: Module that models user behavior (task completion rates, survey responses, segmentation).
+    - term: PlantUML
+      definition: Diagram-as-code tool for architecture visualizations.
+    - term: Semantic Colour Palette
+      definition: 16-token color system with WCAG 2.1 AA contrast support.
+    - term: WCAG 2.1 AA
+      definition: Accessibility level requiring at least 4.5 to 1 contrast for normal text.

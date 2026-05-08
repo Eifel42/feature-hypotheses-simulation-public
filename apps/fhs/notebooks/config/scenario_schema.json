@@ -1,0 +1,361 @@
+{
+  "$defs": {
+    "DeliveryRiskConfig": {
+      "description": "Sprint-based delivery risk simulation configuration.",
+      "properties": {
+        "sprint_length_days": {
+          "default": 14,
+          "minimum": 1,
+          "description": "Duration of one sprint in calendar days.",
+          "title": "Sprint Length Days",
+          "type": "integer"
+        },
+        "quarterly_capacity_sprints": {
+          "default": 6,
+          "minimum": 1,
+          "description": "Available development capacity per quarter in full sprints.",
+          "title": "Quarterly Capacity Sprints",
+          "type": "integer"
+        },
+        "delay_model": {
+          "description": "Sprint delay distribution configuration using truncated lognormal model.",
+          "properties": {
+            "sprint_uncertainty": {
+              "default": 30,
+              "minimum": 5,
+              "maximum": 100,
+              "description": "Sprint duration volatility as percentage (5–100). E.g., 30 = ±30% variation around planned duration.",
+              "type": "number"
+            },
+            "sprint_ceiling": {
+              "default": 3.0,
+              "exclusiveMinimum": 1.0,
+              "maximum": 10.0,
+              "description": "Hard upper bound on sprint duration as multiple of planned (e.g., 3.0 = max 3× planned).",
+              "type": "number"
+            }
+          },
+          "title": "Delay Model",
+          "type": "object"
+        },
+        "cost_model": {
+          "description": "Sprint cost assumptions.",
+          "properties": {
+            "burn_rate_per_sprint": {
+              "default": 15000.0,
+              "minimum": 0,
+              "description": "Team cost per sprint in EUR.",
+              "type": "number"
+            },
+            "overhead_factor": {
+              "default": 1.15,
+              "minimum": 1.0,
+              "description": "Overhead multiplier (e.g. 1.15 = 15%).",
+              "type": "number"
+            }
+          },
+          "title": "Cost Model",
+          "type": "object"
+        },
+        "cancellation": {
+          "description": "Cancellation rules when overrun exceeds threshold.",
+          "properties": {
+            "max_sprints_over_plan": {
+              "default": 4,
+              "minimum": 1,
+              "description": "Sprints over plan before cancellation is considered.",
+              "type": "integer"
+            },
+            "cancellation_probability": {
+              "default": 0.5,
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "description": "Probability of cancellation when overrun exceeds threshold.",
+              "type": "number"
+            }
+          },
+          "title": "Cancellation",
+          "type": "object"
+        }
+      },
+      "title": "DeliveryRiskConfig",
+      "type": "object"
+    },
+    "Feature": {
+      "description": "Represents a feature hypothesis for risk analysis.\n\nAttributes:\n    name: Feature identifier/name\n    expected_users: Expected number of users (must be positive)\n    conversion_rate: Success rate (0.0-1.0)\n    uncertainty: Relative uncertainty as decimal (0.0-1.0, e.g., 0.3 = \u00b130%)\n    business_value_per_conversion: Business value per conversion (e.g., EUR per conversion)\n    development_cost: Development cost to implement feature (e.g., EUR)\n    likelihood_of_non_delivery: Risk that feature is not delivered (0.0-1.0)\n    dependency_cluster: Optional dependency cluster identifier\n        (e.g., \"Team Alpha\", \"Payment API\", \"Power Users\")\n    planned_release: Optional release identifier (e.g., \"R3\")\n    acceptance_model: How user acceptance is modeled in simulation:\n        - \"rate\": continuous acceptance-rate simulation (legacy behavior)\n        - \"binomial\": per-user yes/no acceptance simulation",
+      "properties": {
+        "name": {
+          "description": "Feature name",
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "expected_users": {
+          "description": "Expected number of users",
+          "exclusiveMinimum": 0,
+          "title": "Expected Users",
+          "type": "integer"
+        },
+        "conversion_rate": {
+          "description": "Conversion rate (0-1)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Conversion Rate",
+          "type": "number"
+        },
+        "uncertainty": {
+          "description": "Uncertainty level (0-1)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Uncertainty",
+          "type": "number"
+        },
+        "business_value_per_conversion": {
+          "default": 1.0,
+          "description": "Business value per conversion (e.g., EUR per conversion)",
+          "title": "Business Value Per Conversion",
+          "type": "number"
+        },
+        "development_cost": {
+          "default": 0.0,
+          "description": "Development cost to implement feature (e.g., EUR)",
+          "minimum": 0.0,
+          "title": "Development Cost",
+          "type": "number"
+        },
+        "installment_years": {
+          "default": 1,
+          "description": "Number of annual installments for the development cost (straight-line). Default 1 = full cost charged in year 1. Example: 3 = cost spread equally over 3 annual installments (EUR/year).",
+          "maximum": 30,
+          "minimum": 1,
+          "title": "Installment Years",
+          "type": "integer"
+        },
+        "development_weeks": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Estimated development duration in working weeks (optional). Required for sprint capacity planning via PortfolioAdvisor.optimize_portfolio_by_sprint().",
+          "title": "Development Weeks"
+        },
+        "annual_growth_rate": {
+          "default": 0.0,
+          "description": "Annual business value growth rate (e.g., 0.15 = 15% YoY growth). Used by multi-year Monte Carlo simulation.",
+          "maximum": 5.0,
+          "minimum": -1.0,
+          "title": "Annual Growth Rate",
+          "type": "number"
+        },
+        "likelihood_of_non_delivery": {
+          "default": 0.0,
+          "description": "Likelihood that feature is not delivered (0.0-1.0)",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Likelihood Of Non Delivery",
+          "type": "number"
+        },
+        "dependency_cluster": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Dependency cluster identifier for correlation modeling (e.g., 'Team Alpha', 'Payment API', 'Power Users')",
+          "title": "Dependency Cluster"
+        },
+        "planned_release": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Planned release identifier (e.g., 'R3')",
+          "title": "Planned Release"
+        },
+        "acceptance_model": {
+          "default": "rate",
+          "description": "User-acceptance simulation model: 'rate' (continuous) or 'binomial' (per-user yes/no acceptance).",
+          "title": "Acceptance Model",
+          "type": "string"
+        },
+        "annual_operating_cost": {
+          "default": 0.0,
+          "minimum": 0.0,
+          "description": "Annual cost to run this feature in production (EUR/year). Covers hosting, cloud infrastructure, licenses, and support.",
+          "title": "Annual Operating Cost",
+          "type": "number"
+        }
+      },
+      "required": [
+        "name",
+        "expected_users",
+        "conversion_rate",
+        "uncertainty"
+      ],
+      "title": "Feature",
+      "type": "object"
+    },
+    "ScenarioMetadata": {
+      "description": "Metadata for a scenario.",
+      "properties": {
+        "created": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created"
+        },
+        "last_modified": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Modified"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        },
+        "author": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Author"
+        },
+        "config_source": {
+          "default": "yaml",
+          "title": "Config Source",
+          "type": "string"
+        },
+        "config_path": {
+          "default": "N/A",
+          "title": "Config Path",
+          "type": "string"
+        }
+      },
+      "title": "ScenarioMetadata",
+      "type": "object"
+    }
+  },
+  "description": "Configuration model for a full scenario.\nValidates the structure of scenario YAML files.",
+  "properties": {
+    "scenario_id": {
+      "minLength": 1,
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "name": {
+      "default": "Unnamed Scenario",
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "budget": {
+      "default": 100000.0,
+      "minimum": 0.0,
+      "title": "Budget",
+      "type": "number"
+    },
+    "discount_rate": {
+      "default": 0.10,
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "title": "Discount Rate",
+      "description": "Annual discount rate for NPV calculations (e.g. 0.10 = 10 %)",
+      "type": "number"
+    },
+    "cost_inflation_max": {
+      "default": 0.25,
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "title": "Cost Inflation Max",
+      "description": "Maximum annual operating cost inflation rate (e.g. 0.25 = up to 25%). One factor drawn per scenario, applied to all features equally.",
+      "type": "number"
+    },
+    "delivery_risk": {
+      "anyOf": [
+        { "$ref": "#/$defs/DeliveryRiskConfig" },
+        { "type": "null" }
+      ],
+      "default": null,
+      "description": "Optional sprint-based delivery risk configuration.",
+      "title": "Delivery Risk"
+    },
+    "features": {
+      "items": {
+        "$ref": "#/$defs/Feature"
+      },
+      "title": "Features",
+      "type": "array"
+    },
+    "strategy": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "title": "Strategy",
+      "type": "object"
+    },
+    "metadata": {
+      "$ref": "#/$defs/ScenarioMetadata"
+    }
+  },
+  "required": [
+    "scenario_id",
+    "features"
+  ],
+  "title": "ScenarioConfig",
+  "type": "object"
+}

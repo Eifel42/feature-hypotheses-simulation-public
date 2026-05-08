@@ -1,0 +1,9 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="2,4", options="header"]
+|===
+|Notebook |Purpose
+
+|T01 Distribution Guide
+|Normal, Lognormal, and Beta guidance for uncertainty modeling.
+
+|===

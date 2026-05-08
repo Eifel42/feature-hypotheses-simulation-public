@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FHS Docs — Not Built Yet</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+           background: #f5f7fa; display: flex; align-items: center;
+           justify-content: center; min-height: 100vh; margin: 0; }
+    .card { background: #fff; border-radius: 8px; padding: 2.5rem 3rem;
+            max-width: 520px; box-shadow: 0 2px 12px rgba(0,0,0,.1); }
+    h1 { margin: 0 0 .5rem; font-size: 1.4rem; color: #1a1a2e; }
+    p  { color: #555; line-height: 1.6; margin: .75rem 0; }
+    code { background: #f0f0f0; padding: .2em .45em; border-radius: 4px;
+           font-size: .9em; }
+    .hint { font-size: .85rem; color: #888; margin-top: 1.5rem;
+            border-top: 1px solid #eee; padding-top: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Documentation not built yet</h1>
+    <p>The arc42 documentation for <strong>Feature Hypotheses Simulation</strong>
+       has not been generated in this environment.</p>
+    <p>Run the following command from the repository root to build and serve it:</p>
+    <p><code>make up</code></p>
+    <p class="hint">
+      The docs are built by the <code>docs-builder</code> container and served
+      from <code>docs/html5/arc42-docs.html</code> via nginx on port&nbsp;8085.
+    </p>
+  </div>
+</body>
+</html>

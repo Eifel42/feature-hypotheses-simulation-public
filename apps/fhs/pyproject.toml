@@ -1,0 +1,165 @@
+# Project: FHS (Feature Hypotheses Simulation)
+# Copyright: Eifel42 Stefan Zils 2026
+# License: See LICENSE and README.md
+# Disclaimer: This file is provided "as is" without warranty.
+
+# Feature Hypotheses Simulation
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "feature-hypotheses-simulation"
+version = "1.0.0"
+description = "Democratizing Financial Risk Management for Product Development"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "eifel42.dev", email = "contact@example.com"}
+]
+maintainers = [
+    {name = "eifel42.dev", email = "contact@example.com"}
+]
+keywords = ["risk-management", "product-development", "monte-carlo", "simulation", "financial-modeling"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+]
+requires-python = ">=3.14"
+dependencies = [
+    "numpy>=1.26.0",
+    "numpy-financial>=1.0.0",
+    "scipy>=1.11.0",
+    "statsmodels>=0.14.0",
+    "matplotlib>=3.8.0",
+    "pandas>=2.2.0",
+    "pydantic>=2.0.0",
+    "plotly>=5.0.0",
+    "pyyaml>=5.4.0",
+    "jinja2>=3.1.0",
+]
+
+[project.scripts]
+fhs = "fhs.cli:main"
+
+[project.optional-dependencies]
+notebooks = [
+    "jupyter>=1.1.1",
+    "jupyterlab>=4.5.7",
+    "ipywidgets>=8.0.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "hypothesis>=6.0.0",
+    "beautifulsoup4>=4.12.0",
+    "scikit-learn>=1.5.0",
+    "ruff>=0.5.0",
+    "mypy>=1.11.0",
+    "types-PyYAML>=6.0.12",
+    "pre-commit>=3.6.0",
+]
+docs = [
+    "pillow>=10.1.0",
+    # mkdocs dependencies removed as project uses docToolchain
+]
+
+[project.urls]
+Homepage = "https://github.com/Eifel42/feature-hypotheses-simulation-public"
+Documentation = "https://eifel42.github.io/feature-hypotheses-simulation"
+Repository = "https://github.com/Eifel42/feature-hypotheses-simulation-public.git"
+Issues = "https://github.com/Eifel42/feature-hypotheses-simulation-public/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "C4", "RUF", "BLE", "PT", "SIM"]
+ignore = [
+    "E501",    # line-too-long — formatter handles width
+    "UP009",   # utf8-encoding-declaration — header removal is AP 12
+    "RUF001",  # ambiguous-unicode-char in string — German text in docstrings
+    "RUF002",  # ambiguous-unicode-char in docstring — same
+    "RUF003",  # ambiguous-unicode-char in comment — same
+    "SIM108",  # ternary operator — readability tradeoff
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Test files: pytest style rules deferred to AP 14 (test quality)
+"tests/**/*.py" = ["PT011", "PT015", "PT018", "PT019", "PT006", "B017", "B011", "RUF043"]
+"src/fhs/presentation/**/*.py" = ["E501"]  # widget HTML may be long
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unreachable = true
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_any_explicit = true
+enable_error_codes = ["possibly-undefined", "redundant-expr", "truthy-bool"]
+
+[tool.coverage.html]
+extra_css = "coverage-back-button.css"
+
+[tool.coverage.run]
+branch = true
+source = ["src/fhs"]
+omit = [
+    "src/fhs/notebook/*",
+    "src/fhs/notebook/**/*",
+    "src/fhs/presentation/*",
+    "src/fhs/presentation/**/*",
+    "src/fhs/plotting/*",
+    "src/fhs/plotting/**/*",
+    "src/fhs/notebook_style.py",
+    "*/fhs/notebook/*",
+    "*/fhs/presentation/*",
+    "*/fhs/plotting/*",
+    "*/fhs/notebook_style.py",
+]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+    "\\.\\.\\.",
+    "@overload",
+    "@abstractmethod",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config --cov=src/fhs --cov-branch --cov-fail-under=100 --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py",
+    "*_test.py",
+]
+markers = [
+    "slow: slower-running integration and spike tests",
+]

@@ -1,0 +1,26 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="2,3,3,3", options="header"]
+|===
+|Role |Expectations |Pain Points Addressed |When They Use FHS
+
+|Product Owner
+|Risk-informed feature prioritization, sprint planning, and stakeholder communication.
+|Uncertainty in ROI predictions and difficulty justifying backlog decisions with data.
+|Sprint planning, backlog refinement, roadmap review, investment committee prep.
+
+|Portfolio Owner / Agile leader
+|Clear roadmap trade-offs, budget-fit decisions, and prioritization across initiatives.
+|Hard-to-compare feature proposals and weak downside visibility before commitment.
+|Quarterly planning, budget allocation, portfolio review, initiative go/no-go decisions.
+
+|Risk Manager
+|Portfolio-level risk metrics including CVaR, stress tests, correlation analysis, and budget frontier.
+|Limited tooling for applying financial risk methods to product portfolios.
+|Risk committee reviews, portfolio stress testing, audit preparation, budget frontier analysis.
+
+|Business Stakeholder
+|Clear, quantified risk exposure with EUR figures and confidence intervals.
+|Surprises in product outcomes and weak data-driven support before budget commitment.
+|Decision briefings, executive reviews, pre-approval sign-off.
+
+|===
