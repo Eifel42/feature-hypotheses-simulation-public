@@ -1,0 +1,559 @@
+<mxfile host="app.diagrams.net" modified="2026-05-16T00:00:00.000Z" agent="GitHub Copilot" version="24.7.17" type="device">
+  <diagram id="decision-canvas" name="Roadmap Decision Canvas">
+    <mxGraphModel dx="1800" dy="1200" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1800" height="1200" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hero" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E8EAED;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="0" y="0" width="1800" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="accRule" value="" style="rounded=0;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="32" width="4" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="title" value="ROADMAP DECISION" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=32;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="80" y="30" width="900" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="subTitle" value="Blockchain backlog  ·  selected portfolio: H2 + H3 (2 of 3)  ·  Notebooks 02-07 analysis" style="text;html=1;align=left;verticalAlign=middle;fontColor=#9AA0A6;fontSize=13;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="80" y="76" width="900" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol1Lbl" value="ENVELOPE" style="text;html=1;align=left;verticalAlign=middle;fontColor=#9AA0A6;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="36" width="180" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol1Val" value="EUR 155,000" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=18;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="56" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol1Cap" value="Budget commitment view" style="text;html=1;align=left;verticalAlign=middle;fontColor=#9AA0A6;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="84" width="200" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="metaDiv1" value="" style="rounded=0;fillColor=#E8EAED;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1290" y="34" width="1" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol2Lbl" value="STATUS" style="text;html=1;align=left;verticalAlign=middle;fontColor=#9AA0A6;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="36" width="120" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="statusDot" value="" style="ellipse;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="64" width="10" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol2Val" value="CONDITIONAL GO" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=18;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1326" y="56" width="280" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol2Cap" value="Gates required before scale-up" style="text;html=1;align=left;verticalAlign=middle;fontColor=#9AA0A6;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1310" y="84" width="280" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="metaDiv2" value="" style="rounded=0;fillColor=#E8EAED;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="34" width="1" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol3Lbl" value="UPDATED" style="text;html=1;align=left;verticalAlign=middle;fontColor=#9AA0A6;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="36" width="120" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol3Val" value="2026-05-16" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=18;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="56" width="120" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="metaCol3Cap" value="Iteration 07" style="text;html=1;align=left;verticalAlign=middle;fontColor=#9AA0A6;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="84" width="120" height="14" as="geometry" />
+        </mxCell>
+
+        <mxCell id="caption" value="FEATURE HYPOTHESES SIMULATION  ·  Final choice: fund/test H2 + H3, hold H1  ·  Source: apps/fhs/notebooks/config/blockchain.yaml  ·  Example data, not a project forecast." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="132" width="1680" height="24" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eb1" value="THE DECISION" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="176" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="eb1Bar" value="" style="rounded=0;fillColor=#3D4F66;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="200" width="40" height="3" as="geometry" />
+        </mxCell>
+
+        <mxCell id="heroCard" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E8EAED;arcSize=2;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="216" width="1680" height="226" as="geometry" />
+        </mxCell>
+
+        <mxCell id="selectedPortfolioGlow" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FBFF;strokeColor=#1F6FEB;strokeWidth=2;arcSize=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="76" y="236" width="650" height="136" as="geometry" />
+        </mxCell>
+        <mxCell id="selectedPortfolioRibbon" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3D4F66;strokeColor=none;arcSize=50;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="486" y="232" width="226" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="selectedPortfolioRibbonText" value="SELECTED PORTFOLIO  ·  2 OF 3" style="text;html=1;align=center;verticalAlign=middle;fontColor=#FFFFFF;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="486" y="236" width="226" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="a1Bar" value="" style="rounded=0;fillColor=#1E8E3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="84" y="246" width="6" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="a1Big" value="FUND H2" style="text;html=1;align=left;verticalAlign=middle;fontColor=#1E8E3E;fontSize=36;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="104" y="244" width="260" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="a1Tag" value="TRACEABILITY" style="rounded=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#1E8E3E;fontStyle=1;fontSize=10;align=center;verticalAlign=middle;arcSize=50;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="362" y="258" width="110" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="a1Sub" value="Value anchor. Run customer test, then fund the next development slice." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="104" y="292" width="600" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a2Bar" value="" style="rounded=0;fillColor=#1F6FEB;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="84" y="316" width="6" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="a2Big" value="TEST H3" style="text;html=1;align=left;verticalAlign=middle;fontColor=#1F6FEB;fontSize=36;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="104" y="314" width="260" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="a2Tag" value="EXPIRATION ALERTS" style="rounded=1;fillColor=#E8F0FE;strokeColor=none;fontColor=#1F6FEB;fontStyle=1;fontSize=10;align=center;verticalAlign=middle;arcSize=50;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="362" y="328" width="146" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="a2Sub" value="Small bet, early scope gate. Continue only if cost and value pass." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="104" y="362" width="600" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="selectedPortfolioPlus" value="+" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#FFFFFF;strokeColor=#1F6FEB;strokeWidth=2;fontColor=#1F6FEB;fontSize=18;fontStyle=1;fontFamily=Helvetica;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="688" y="295" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="a3Bar" value="" style="rounded=0;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="84" y="386" width="6" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="a3Big" value="HOLD H1" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=36;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="104" y="384" width="260" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="a3Tag" value="SIMPLIFIED UI" style="rounded=1;fillColor=#FEF7E0;strokeColor=none;fontColor=#A37500;fontStyle=1;fontSize=10;align=center;verticalAlign=middle;arcSize=50;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="362" y="398" width="110" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="a3Sub" value="Rework scope or value case before any commitment." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=12;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="104" y="432" width="600" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="vDiv" value="" style="rounded=0;fillColor=#E8EAED;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="752" y="244" width="1" height="170" as="geometry" />
+        </mxCell>
+
+        <mxCell id="k1Bar" value="" style="rounded=0;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="784" y="248" width="4" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="k1Lbl" value="COMMITTED" style="text;html=1;align=left;verticalAlign=top;fontColor=#5F6368;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="800" y="250" width="200" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="k1Val" value="EUR 65,509" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=28;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="800" y="266" width="320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="k1Cap" value="42.3 % of envelope · 2 of 3 selected: H2 + H3" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="800" y="306" width="320" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="k2Bar" value="" style="rounded=0;fillColor=#1F6FEB;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="248" width="4" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="k2Lbl" value="RESERVE HELD" style="text;html=1;align=left;verticalAlign=top;fontColor=#5F6368;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="250" width="200" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="k2Val" value="EUR 89,491" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=28;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="266" width="320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="k2Cap" value="57.7 % protected until next decision gate" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="306" width="320" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="k3Bar" value="" style="rounded=0;fillColor=#1E8E3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="784" y="338" width="4" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="k3Lbl" value="VALUE BEFORE RISK" style="text;html=1;align=left;verticalAlign=top;fontColor=#5F6368;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="800" y="340" width="200" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="k3Val" value="EUR 139,208" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=28;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="800" y="356" width="320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="k3Cap" value="Expected business value of selected H2 + H3" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="800" y="396" width="320" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="k4Bar" value="" style="rounded=0;fillColor=#D7263D;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1244" y="338" width="4" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="k4Lbl" value="VALUE AFTER RISK" style="text;html=1;align=left;verticalAlign=top;fontColor=#5F6368;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="340" width="200" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="k4Val" value="EUR 49,942" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=28;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="356" width="320" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="k4Cap" value="36 % retained · development is the main eraser" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="396" width="320" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eb2" value="ANALYSIS" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="466" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="eb2Bar" value="" style="rounded=0;fillColor=#3D4F66;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="490" width="40" height="3" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev1Card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E8EAED;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="506" width="540" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1Title" value="Value waterfall — what each risk layer removes" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=15;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="524" width="500" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1Sub" value="From base expected value (EUR 139,208) to value after risk (EUR 49,942)." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="546" width="500" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1Axis" value="" style="rounded=0;fillColor=#DADCE0;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="100" y="752" width="440" height="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="wb1" value="" style="rounded=0;fillColor=#7A9FCC;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="116" y="592" width="60" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="wb1v" value="139,208" style="text;html=1;align=center;verticalAlign=middle;fontColor=#FFFFFF;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="116" y="600" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="wb1l" value="Base" style="text;html=1;align=center;verticalAlign=top;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="116" y="758" width="60" height="14" as="geometry" />
+        </mxCell>
+
+        <mxCell id="wb2" value="" style="rounded=0;fillColor=#7A9FCC;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="204" y="690" width="60" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="wb2v" value="53,795" style="text;html=1;align=center;verticalAlign=middle;fontColor=#FFFFFF;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="204" y="694" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="wb2d" value="-85,413" style="text;html=1;align=center;verticalAlign=middle;fontColor=#D7263D;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="204" y="670" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="wb2l" value="-Development" style="text;html=1;align=center;verticalAlign=top;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="204" y="758" width="60" height="14" as="geometry" />
+        </mxCell>
+
+        <mxCell id="wb3" value="" style="rounded=0;fillColor=#7A9FCC;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="292" y="692" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wb3v" value="52,205" style="text;html=1;align=center;verticalAlign=middle;fontColor=#FFFFFF;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="292" y="694" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="wb3d" value="-1,590" style="text;html=1;align=center;verticalAlign=middle;fontColor=#D7263D;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="292" y="672" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="wb3l" value="-Market" style="text;html=1;align=center;verticalAlign=top;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="292" y="758" width="60" height="14" as="geometry" />
+        </mxCell>
+
+        <mxCell id="wb4" value="" style="rounded=0;fillColor=#7A9FCC;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="380" y="694" width="60" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="wb4v" value="50,953" style="text;html=1;align=center;verticalAlign=middle;fontColor=#FFFFFF;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="380" y="696" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="wb4d" value="-1,251" style="text;html=1;align=center;verticalAlign=middle;fontColor=#D7263D;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="380" y="674" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="wb4l" value="-Component" style="text;html=1;align=center;verticalAlign=top;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="376" y="758" width="68" height="14" as="geometry" />
+        </mxCell>
+
+        <mxCell id="wb5" value="" style="rounded=0;fillColor=#1E8E3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="468" y="695" width="60" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wb5v" value="49,942" style="text;html=1;align=center;verticalAlign=middle;fontColor=#FFFFFF;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="468" y="697" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="wb5d" value="-1,012" style="text;html=1;align=center;verticalAlign=middle;fontColor=#D7263D;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="468" y="675" width="60" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="wb5l" value="After global" style="text;html=1;align=center;verticalAlign=top;fontColor=#1E8E3E;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="464" y="758" width="68" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="ev1Foot" value="64 % of expected business value is removed by risk layers. Development dominates." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="784" width="492" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev2Card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E8EAED;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="630" y="506" width="540" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2Title" value="Risk decomposition — where the loss really sits" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=15;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="524" width="500" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2Sub" value="Expected business value lost per risk layer (selected 2-feature H2 + H3 portfolio)." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="546" width="500" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rb1lbl" value="DEVELOPMENT" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="586" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rb1" value="" style="rounded=0;fillColor=#D7263D;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="752" y="586" width="328" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rb1v" value="EUR 85,413  ·  95.7 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#FFFFFF;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="762" y="586" width="318" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rb2lbl" value="MARKET" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="624" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rb2" value="" style="rounded=0;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="752" y="624" width="8" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rb2v" value="EUR 1,590  ·  1.8 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="770" y="624" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rb3lbl" value="COMPONENT" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="662" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rb3" value="" style="rounded=0;fillColor=#1F6FEB;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="752" y="662" width="6" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rb3v" value="EUR 1,251  ·  1.4 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="768" y="662" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="rb4lbl" value="GLOBAL" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="700" width="90" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rb4" value="" style="rounded=0;fillColor=#9AA0A6;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="752" y="700" width="4" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rb4v" value="EUR 1,012  ·  1.1 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="766" y="700" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev2Insight" value="" style="rounded=1;fillColor=#FCE8E6;strokeColor=none;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="654" y="744" width="492" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2InsightT" value="Insight" style="text;html=1;align=left;verticalAlign=top;fontColor=#A32F22;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="668" y="750" width="120" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="ev2InsightTxt" value="Halving development failure probability lifts expected value after risk from EUR 50k to EUR 90k. Market, component, global controls return little." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontColor=#3D4F66;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="668" y="764" width="466" height="34" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev3Card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E8EAED;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="506" width="540" height="310" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3Title" value="Development pressure — can the team carry the work?" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=15;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="524" width="500" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3Sub" value="Sprint capacity check and budget vs development tail (CVaR 95 %)." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="546" width="500" height="16" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cgLbl" value="QUARTERLY SPRINTS  ·  SELECTED H2 + H3 (2 FEATURES)" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="578" width="400" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="cgPlan" value="" style="rounded=0;fillColor=#1E8E3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="600" width="210" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="cgPlanT" value="5 SPRINTS PLANNED" style="text;html=1;align=left;verticalAlign=middle;fontColor=#FFFFFF;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1234" y="600" width="200" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="cgCap" value="" style="rounded=0;fillColor=none;strokeColor=#3D4F66;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="600" width="252" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="cgCapT" value="capacity = 6" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1404" y="632" width="80" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="cgOverT" value="1 free" style="text;html=1;align=left;verticalAlign=middle;fontColor=#1E8E3E;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1484" y="632" width="80" height="14" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bpLbl" value="EUR  ·  PLANNED VS DEVELOPMENT TAIL (CVaR 95 %)" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="668" width="400" height="14" as="geometry" />
+        </mxCell>
+        <mxCell id="bpPlan" value="" style="rounded=0;fillColor=#1F6FEB;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="690" width="218" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="bpPlanT" value="EUR 65,509 planned" style="text;html=1;align=left;verticalAlign=middle;fontColor=#FFFFFF;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1234" y="690" width="200" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="bpCvar" value="" style="rounded=0;fillColor=#D7263D;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="718" width="423" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="bpCvarT" value="EUR 126,938 portfolio CVaR 95 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#FFFFFF;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1234" y="718" width="300" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="bpPress" value="+94 % portfolio pressure  ·  H3 alone +100 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#D7263D;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="746" width="500" height="18" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ev3Insight" value="" style="rounded=1;fillColor=#FEF7E0;strokeColor=none;arcSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="772" width="492" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="ev3InsightTxt" value="Scope gate: keep H3 small until sprint velocity and unit cost are inside tolerance." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="772" width="466" height="32" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eb3" value="FEATURE ACTIONS" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="840" width="200" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="eb3Bar" value="" style="rounded=0;fillColor=#3D4F66;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="864" width="40" height="3" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f1Card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E8EAED;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="60" y="882" width="540" height="244" as="geometry" />
+        </mxCell>
+        <mxCell id="f1Strip" value="" style="rounded=0;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="882" width="540" height="6" as="geometry" />
+        </mxCell>
+        <mxCell id="f1Name" value="H1  ·  Simplified UI" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=18;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="902" width="360" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="f1Action" value="HOLD" style="rounded=1;fillColor=#FEF7E0;strokeColor=none;fontColor=#A37500;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;arcSize=50;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="520" y="906" width="60" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f1evL" value="Expected value" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="940" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f1ev" value="" style="rounded=0;fillColor=#1E8E3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="210" y="942" width="55" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f1evV" value="EUR 30,800" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="940" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f1flL" value="Floor 95 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="966" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f1fl" value="" style="rounded=0;fillColor=#A5D6A7;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="210" y="968" width="46" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f1flV" value="EUR 25,886" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="966" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f1inL" value="Investment" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="992" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f1in" value="" style="rounded=0;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="210" y="994" width="133" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f1inV" value="EUR 75,000" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="992" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f1cvL" value="Development CVaR 95 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="1018" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f1cv" value="" style="rounded=0;fillColor=#D7263D;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="210" y="1020" width="266" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f1cvV" value="EUR 150,000" style="text;html=1;align=right;verticalAlign=middle;fontColor=#D7263D;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="480" y="1018" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f1Reason" value="&lt;b style=&quot;color:#3D4F66&quot;&gt;Why HOLD&lt;/b&gt;&lt;br&gt;Value is stable, but EUR 75,000 is too much capital for EUR 30,800 expected value. Tail cost equals twice the investment." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="84" y="1050" width="492" height="68" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f2Card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E8EAED;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="630" y="882" width="540" height="244" as="geometry" />
+        </mxCell>
+        <mxCell id="f2Strip" value="" style="rounded=0;fillColor=#1E8E3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="630" y="882" width="540" height="6" as="geometry" />
+        </mxCell>
+        <mxCell id="f2Name" value="H2  ·  Traceability" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=18;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="902" width="360" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="f2Action" value="FUND NEXT" style="rounded=1;fillColor=#E6F4EA;strokeColor=none;fontColor=#1E8E3E;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;arcSize=50;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1066" y="906" width="84" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f2evL" value="Expected value" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="940" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f2ev" value="" style="rounded=0;fillColor=#1E8E3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="780" y="942" width="153" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f2evV" value="EUR 86,400" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="940" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f2flL" value="Floor 95 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="966" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f2fl" value="" style="rounded=0;fillColor=#A5D6A7;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="780" y="968" width="131" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f2flV" value="EUR 74,240" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="966" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f2inL" value="Investment" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="992" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f2in" value="" style="rounded=0;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="780" y="994" width="97" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f2inV" value="EUR 55,000" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="992" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f2cvL" value="Development CVaR 95 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="1018" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f2cv" value="" style="rounded=0;fillColor=#D7263D;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="780" y="1020" width="194" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f2cvV" value="EUR 110,000" style="text;html=1;align=right;verticalAlign=middle;fontColor=#D7263D;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="1018" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f2Reason" value="&lt;b style=&quot;color:#3D4F66&quot;&gt;Why FUND NEXT&lt;/b&gt;&lt;br&gt;Strongest value anchor. EV exceeds investment with a healthy floor. Next step: live customer test (provenance label, premium SKU lines)." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="654" y="1050" width="492" height="68" as="geometry" />
+        </mxCell>
+
+        <mxCell id="f3Card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#E8EAED;arcSize=2;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="882" width="540" height="244" as="geometry" />
+        </mxCell>
+        <mxCell id="f3Strip" value="" style="rounded=0;fillColor=#1F6FEB;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="882" width="540" height="6" as="geometry" />
+        </mxCell>
+        <mxCell id="f3Name" value="H3  ·  Expiration Alerts" style="text;html=1;align=left;verticalAlign=middle;fontColor=#3D4F66;fontSize=18;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="902" width="360" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="f3Action" value="TEST FIRST" style="rounded=1;fillColor=#E8F0FE;strokeColor=none;fontColor=#1F6FEB;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;arcSize=50;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1636" y="906" width="84" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="f3evL" value="Expected value" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="940" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f3ev" value="" style="rounded=0;fillColor=#1E8E3E;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="942" width="93" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f3evV" value="EUR 52,800" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="940" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f3flL" value="Floor 95 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="966" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f3fl" value="" style="rounded=0;fillColor=#A5D6A7;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="968" width="76" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f3flV" value="EUR 43,230" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="966" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f3inL" value="Investment" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="992" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f3in" value="" style="rounded=0;fillColor=#F4C500;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="994" width="19" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f3inV" value="EUR 10,509" style="text;html=1;align=right;verticalAlign=middle;fontColor=#3D4F66;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="992" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f3cvL" value="Development CVaR 95 %" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=10;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="1018" width="120" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f3cv" value="" style="rounded=0;fillColor=#D7263D;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1350" y="1020" width="38" height="12" as="geometry" />
+        </mxCell>
+        <mxCell id="f3cvV" value="EUR 21,018" style="text;html=1;align=right;verticalAlign=middle;fontColor=#D7263D;fontSize=10;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1620" y="1018" width="96" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="f3Reason" value="&lt;b style=&quot;color:#3D4F66&quot;&gt;Why TEST FIRST&lt;/b&gt;&lt;br&gt;Capital-light with attractive value, but relative development pressure is still highest (+100 %). Keep scope small and gate by sprint outcome." style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1224" y="1050" width="492" height="68" as="geometry" />
+        </mxCell>
+
+        <mxCell id="footerLine" value="" style="rounded=0;fillColor=#E8EAED;strokeColor=none;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1142" width="1680" height="1" as="geometry" />
+        </mxCell>
+        <mxCell id="footerL" value="NOTEBOOK ANALYSIS   02 Value   ·   03 Finance   ·   04 Portfolio   ·   05 Risk   ·   06 Development   ·   07 Synthesis" style="text;html=1;align=left;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1152" width="1200" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="footerR" value="FEATURE HYPOTHESES SIMULATION  ·  Decision Canvas" style="text;html=1;align=right;verticalAlign=middle;fontColor=#5F6368;fontSize=11;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="1280" y="1152" width="460" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

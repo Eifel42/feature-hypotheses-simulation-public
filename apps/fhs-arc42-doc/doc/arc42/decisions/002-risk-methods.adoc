@@ -1,0 +1,46 @@
+ADR-002: Risk Calculation Methods
+
+== Status
+Accepted
+
+== Context
+Financial risk management uses sophisticated mathematical methods that are:
+* Complex for non-financial professionals
+* Computationally intensive
+* Originally designed for trading portfolios
+* Need adaptation for product development context
+
+== Decision
+We will implement simplified but mathematically sound versions of:
+* *Value at Risk (VaR)* using Monte Carlo simulation
+* *Conditional Value at Risk (CVaR)* for portfolio-level sprint risk
+* *Bootstrap sampling* for confidence intervals
+* *Scenario-based stress testing* for extreme cases
+
+All methods will be:
+* Explained in business terms
+* Visualized clearly
+* Limited to essential parameters
+* Validated against known benchmarks
+
+== Consequences
+
+=== Positive
+* Brings proven risk methods to product development
+* Provides quantitative basis for decisions
+* Enables portfolio-level sprint planning
+* Creates common risk language across teams
+
+=== Negative
+* Simplification may reduce accuracy
+* Requires education for proper interpretation
+* Risk of false precision in estimates
+
+=== Mitigation
+* Clear documentation of limitations
+* Multiple scenario analysis
+* Regular validation against actual outcomes
+* Progressive disclosure of complexity
+
+---
+_Architecture Decision Record_

@@ -1,0 +1,18 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="2,3,3", options="header"]
+|===
+|Track |Audience |Focus
+
+|Core (01-07)
+|Product Owners, Portfolio Owners, and Agile leaders new to FHS
+|Single-feature analysis, portfolio advising, risk layers, delivery-risk case study, and executive decision synthesis.
+
+|Tutorial (T01)
+|Product Owners first, Risk Managers second
+|Distribution selection and uncertainty-model guidance.
+
+|Advanced (A01-A02)
+|Portfolio Owners, Agile leaders, and Risk Managers
+|Portfolio optimization, budget constraints, stress tests, and executive summaries.
+
+|===

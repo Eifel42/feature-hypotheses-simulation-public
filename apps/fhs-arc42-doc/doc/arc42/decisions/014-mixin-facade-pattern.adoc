@@ -1,0 +1,102 @@
+= ADR-014: Mixin-based Presentation Facade (FHSDisplay)
+
+== Status
+
+Accepted (2026-03-22)
+
+== Context
+
+The FHS presentation layer exposes a `show` object that notebook authors use to render charts, tables, and HTML widgets without touching implementation details. As the feature set grew (risk layers, Shapley attribution, delivery risk, multi-year simulation, capital budgeting), the number of `show.*` methods exceeded 30.
+
+A single monolithic module caused:
+
+* Long files with unrelated concerns mixed together (>800 LOC)
+* Difficulty locating methods when authoring notebooks
+* High merge conflict frequency on a hot path touched by multiple features
+* No clear ownership boundary per business domain
+
+Alternative approaches considered:
+
+[cols="2,4,2"]
+|===
+|Approach |Description |Rejected reason
+
+|Monolithic class
+|All `show.*` methods in one class
+|Already failing — too large, no domain cohesion
+
+|Module-level functions
+|`from fhs.presentation import show_risk_profile`
+|Breaks the unified `show.*` call surface notebooks rely on
+
+|Namespace objects
+|`show = SimpleNamespace(risk=risk_module, portfolio=portfolio_module)`
+|Loses IDE autocompletion; no shared state
+
+|Mixin composition
+|`FHSDisplay(Mixin1, Mixin2, ...)` ← chosen
+|Preserves `show.*` surface; domain cohesion per mixin
+
+|===
+
+== Decision
+
+`FHSDisplay` is assembled from six mixins, each owning one business-domain slice of the `show.*` API:
+
+[source,python]
+----
+class FHSDisplay(
+    _RiskMixin,
+    _PortfolioMixin,
+    _CapitalBudgetingMixin,
+    _DeliveryMixin,
+    _DistributionMixin,
+    _PrimitivesMixin,
+):
+    """Unified presentation facade for FHS notebooks."""
+----
+
+Each mixin lives in its own file under `presentation/notebook/widgets/` or
+`presentation/notebook/display/`, carrying only the methods for that domain.
+
+=== Constraints
+
+* **No method name collisions** across mixins — enforced by code review and a unit test that validates `FHSDisplay.__mro__` has no duplicate method names.
+* **`TYPE_CHECKING` guards** — all domain value object imports used solely for type hints are wrapped in `if TYPE_CHECKING:` to prevent circular imports at runtime.
+* **No `Any` in public signatures** — concrete types from `fhs.core.model.value_objects.*` are used; `Any` triggers a ruff/mypy warning.
+
+=== Mixin responsibilities
+
+[cols="2,4"]
+|===
+|Mixin |Methods
+
+|`_RiskMixin`
+|`show.risk_profile()`, `show.risk_contribution()`, `show.risk_layers()`, `show.stress_test()`, `show.shapley()`, `show.sensitivity()`
+
+|`_PortfolioMixin`
+|`show.portfolio()`, `show.ranking()`, `show.multi_year()`, `show.sprint_plan()`, `show.ilp_selection()`
+
+|`_CapitalBudgetingMixin`
+|`show.capital_budgeting_summary()`, `show.budget_optimizer()`, `show.budget_risk_path()`
+
+|`_DeliveryMixin`
+|`show.delivery_risk()`, `show.delivery_metrics()`, `show.profitability()`
+
+|`_DistributionMixin`
+|`show.distributions()`, `show.samples()`, `show.metrics()`, `show.beta_sample_size()`
+
+|`_PrimitivesMixin`
+|`show.kpi_row()`, `show.info_box()`, `show.section_heading()`
+
+|===
+
+== Consequences
+
+* Each mixin file is independently testable with focused unit tests.
+* Notebook call sites are unchanged: `show.risk_profile(...)` continues to work.
+* New business domains are added by creating a new mixin and adding it to `FHSDisplay`'s base classes — no modification of existing mixins.
+* Developers must be aware of Python MRO when adding methods; a `test_no_mixin_method_conflicts` test guards against silent shadowing.
+
+'''
+_Part of Arc42 Architecture Documentation_

@@ -1,0 +1,142 @@
+= Feature Hypotheses Simulation - Architecture Documentation
+:author: eifel42.dev
+:revnumber: 1.0.0
+:revdate: {docdate}
+:description: Arc42 Documentation for Quantitative Risk Methods in Product Development
+:keywords: Arc42, Risk Assessment, Product Development, Statistical Methods
+:doctype: book
+:toclevels: 3
+:sectanchors:
+:sectlinks:
+:sectnums:
+:sectnumlevels: 4
+:appendix-caption: Appendix
+:appendix-refsig: Appendix
+:appendix-number-format: A
+:toc: left
+:icons: font
+:source-highlighter: highlight.js
+:docinfodir: docinfo
+:stylesdir: css
+:stylesheet: arc42-docs.min.css
+:experimental:
+:docinfo: shared-head
+:imagesdir: images
+:lang: en
+:toc-title: Table of Contents
+:chapter-label: Chapter
+:section-refsig: Section
+:figure-caption: Figure
+:table-caption: Table
+:example-caption: Example
+
+include::_generated/_attributes.adoc[]
+
+[abstract]
+Abstract
+
+This document describes the architecture of the Feature Hypotheses Simulation (FHS) — a Python library and set of Jupyter notebooks that help Product Owners, Portfolio Owners, and Agile leaders make clearer backlog and roadmap decisions with proven risk methods such as Monte Carlo, VaR-style value floors, and CVaR. Risk Managers remain the second audience for governance, review, and validation. No statistics background required: open a notebook, define your feature, run the simulation, read the result.
+
+[discrete]
+== Documentation Overview
+
+Streamlined architecture documentation for a focused risk simulation platform.
+
+[cols="1,3"]
+|===
+|Section |Content
+
+|<<_introduction_and_goals>>
+|1. Introduction and Goals
+
+|<<_architecture_constraints>>
+|2. Architecture Constraints
+
+|<<_system_scope_and_context>>
+|3. System Scope and Context
+
+|<<_solution_strategy>>
+|4. Solution Strategy
+
+|<<_building_block_view>>
+|5. Building Block View
+
+|<<_runtime_view>>
+|6. Runtime View
+
+|<<_deployment_view>>
+|7. Deployment View
+
+|<<_cross_cutting_concepts>>
+|8. Cross-cutting Concepts
+
+|<<_architecture_decisions>>
+|9. Architecture Decisions
+
+|<<_quality_requirements>>
+|10. Quality Requirements
+
+|<<_risks_and_technical_debt>>
+|11. Risks and Technical Debt
+
+|<<_glossary>>
+|12. Glossary
+|===
+
+// Core architecture sections
+include::arc42/01-introduction.adoc[leveloffset=+1]
+
+include::arc42/02-constraints.adoc[leveloffset=+1]
+
+include::arc42/03-context.adoc[leveloffset=+1]
+
+include::arc42/04-solution.adoc[leveloffset=+1]
+
+include::arc42/05-building-blocks.adoc[leveloffset=+1]
+
+include::arc42/06-runtime.adoc[leveloffset=+1]
+
+include::arc42/07-deployment.adoc[leveloffset=+1]
+
+include::arc42/08-crosscutting.adoc[leveloffset=+1]
+
+include::arc42/09-decisions.adoc[leveloffset=+1]
+
+include::arc42/10-quality-requirements.adoc[leveloffset=+1]
+
+include::arc42/11-risks-and-technical-debts.adoc[leveloffset=+1]
+
+include::arc42/12-glossary.adoc[leveloffset=+1]
+
+== About This Documentation
+
+Generated with https://doctoolchain.org[docToolchain] v3.4.1 using the https://arc42.org[arc42] template.
+
+[cols="2,3"]
+|===
+|Build Tool |docToolchain v3.4.1
+|Template |https://arc42.org[arc42]
+|Inception Canvas |link:architecture-inception-canvas.html[Architecture Inception Canvas] — one-page architecture overview
+|Communication Canvas |link:architecture-communication-canvas.html[Architecture Communication Canvas] — one-page communication and decision view
+|Format |AsciiDoc
+|Generated |{docdate}
+|Version |{project-version}
+|===
+
+[appendix]
+[[c4-reference]]
+= C4 Reference
+
+:!sectnums:
+
+include::arc42/appendix-c4-notation.adoc[]
+
+[appendix]
+[[architecture-canvases-reference]]
+= Architecture Canvases
+
+include::arc42/appendix-architecture-canvases.adoc[]
+
+:sectnums:
+
+include::_shared/back-to-index.adoc[]

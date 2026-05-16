@@ -1,0 +1,148 @@
+ADR-007: Package Structure and Testing
+
+== Status
+Accepted
+
+== Context
+Python package organization and testing strategies vary significantly:
+
+**Package Structure Options:**
+* Flat structure: All modules in root directory
+* Nested modules: Complex hierarchical organization
+* src/ layout: Industry standard for packaging
+* apps/ with modules/: Domain-specific organization
+
+**Testing Approaches:**
+* No tests (dangerous for statistical software)
+* Basic unit tests only
+* Comprehensive test suites with fixtures
+* Property-based testing for mathematical functions
+
+Given that FHS performs statistical calculations that teams rely on for business decisions, testing strategy is critical.
+
+== Decision
+We will implement a *comprehensive testing strategy* with:
+
+**Package Structure:**
+```
+apps/fhs/
+├── src/fhs/              # Main package (src layout)
+│   ├── models.py         # Core data structures
+│   ├── monte_carlo.py    # Simulation engine
+│   ├── risk_calculator.py # Risk calculations
+│   ├── simulator.py      # Main orchestration
+│   └── user_profiles.py  # UX simulation
+├── tests/                # Comprehensive test suite
+│   ├── test_models.py    # Data structure tests
+│   ├── test_monte_carlo.py # Simulation tests
+│   ├── test_risk_calculator.py # Risk calculation tests
+│   ├── test_simulator.py # Integration tests
+│   ├── test_user_profiles.py # UX simulation tests
+│   └── conftest.py       # Shared fixtures
+├── config/               # Configuration and dependencies
+└── notebooks/            # Analysis templates
+```
+
+**Testing Strategy:**
+* *165+ comprehensive tests* covering all modules
+* *Parametrized tests* for different input combinations
+* *Edge case testing* including empty datasets and extreme values
+* *Statistical validation* for Monte Carlo accuracy
+* *Reproducibility testing* with fixed seeds
+* *Performance testing* for large dataset handling
+
+== Consequences
+
+=== Positive
+* *High confidence* in statistical calculations
+* *Regression prevention* - changes don't break existing functionality
+* *Documentation through tests* - tests show expected usage patterns
+* *Refactoring safety* - can improve code without fear
+* *Standard Python packaging* - follows community best practices
+* *Easy installation* - works with pip, poetry, conda
+
+=== Negative
+* *Development overhead* - tests take time to write and maintain
+* *Test maintenance* - tests must be updated when behavior changes
+* *Complexity* - new developers must understand test patterns
+* *CI/CD dependency* - tests must pass before merging
+
+=== Mitigation
+* *Clear test documentation* - pytest conventions and fixture usage
+* *Test utilities* - shared fixtures reduce duplication
+* *Automated testing* - CI runs tests on every change
+* *Coverage reporting* - identify untested code paths
+
+== Testing Strategy Details
+
+=== Statistical Accuracy Testing
+```python
+def test_monte_carlo_convergence():
+    """Test that Monte Carlo results converge to expected values."""
+    # Known analytical result for validation
+    feature = Feature(name="Test", expected_users=1000, conversion_rate=0.15, uncertainty=0.0)  # No uncertainty
+    result = simulator.simulate_feature(feature, scenarios=10000)
+    expected = 1000 * 0.15  # 150
+    assert abs(result.mean - expected) < 5  # Allow small variance
+```
+
+=== Edge Case Coverage
+```python
+@pytest.mark.parametrize("edge_case", [
+    np.array([]),           # Empty dataset
+    np.array([42]),         # Single value
+    np.full(100, 150),      # Identical values
+    np.array([1, 2, 3, 1000000]),  # Extreme outliers
+])
+def test_var_calculation_edge_cases(edge_case):
+    """Test VaR calculation with problematic datasets."""
+```
+
+=== Reproducibility Validation
+```python
+def test_simulation_reproducibility():
+    """Test that same seed produces identical results."""
+    sim1 = FeatureSimulator(seed=42)
+    sim2 = FeatureSimulator(seed=42)
+    result1 = sim1.simulate_feature(feature, scenarios=1000)
+    result2 = sim2.simulate_feature(feature, scenarios=1000)
+    np.testing.assert_array_equal(result1.results, result2.results)
+```
+
+== Code Quality Standards
+
+=== Formatting and Linting
+* **ruff format**: Code formatting with 88-character line length
+* **ruff check**: Linting and import organization (known_first_party = ["fhs"])
+* **Type hints**: Throughout the codebase for better IDE support
+
+=== Development Workflow
+```bash
+# Quality check pipeline
+make format    # ruff format + ruff check --fix
+make lint      # ruff check
+make test      # pytest with coverage
+make quality   # All quality checks together
+```
+
+=== Package Configuration
+* **pyproject.toml**: Modern Python packaging with all configuration
+* **src/ layout**: Industry standard for proper packaging
+* **Optional dependencies**: [dev] group for development tools
+* **Entry points**: If needed for CLI tools
+
+== Test Coverage Requirements
+
+=== Minimum Coverage Targets
+* **Overall coverage**: >90% of lines
+* **Critical modules**: >95% (models, monte_carlo, risk_calculator)
+* **Integration paths**: All major user workflows tested
+* **Error conditions**: Exception handling and edge cases
+
+=== Coverage Exclusions
+* **Type annotations**: Don't count toward coverage
+* **Defensive assertions**: Some defensive code may be excluded
+* **Platform-specific code**: OS-specific functionality
+
+'''
+_Architecture Decision Record_
