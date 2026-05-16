@@ -1,0 +1,6 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+== Multi-Year Simulation Terms
+
+* **Multi-Year Simulation** - Per-feature Monte Carlo projection across multiple years with independent per-year sampling.
+* **YearResult** - Value object with one year's expected, BVF 95% (floor), P95 (ceiling), and spread.
+* **NPV (Net Present Value)** - Sum of discounted future business values minus upfront development cost.

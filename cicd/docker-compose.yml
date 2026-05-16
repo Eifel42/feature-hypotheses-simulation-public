@@ -1,0 +1,160 @@
+# Project: FHS (Feature Hypotheses Simulation)
+# Copyright: Eifel42 Stefan Zils 2026
+# License: See LICENSE and README.md
+# Disclaimer: This file is provided "as is" without warranty.
+
+services:
+  # FHS Development and Testing Environment
+  fhs-dev:
+    build:
+      context: ../
+      dockerfile: cicd/containers/Dockerfile.fhs
+    volumes:
+      - ../apps/fhs:/workspace
+    working_dir: /workspace
+    environment:
+      - PYTHONPATH=/workspace/src
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+      - OPENBLAS_NUM_THREADS=${FHS_DEV_OPENBLAS_NUM_THREADS:-1}
+      - MKL_NUM_THREADS=${FHS_DEV_MKL_NUM_THREADS:-1}
+      - OMP_NUM_THREADS=${FHS_DEV_OMP_NUM_THREADS:-1}
+      - NUMEXPR_MAX_THREADS=${FHS_DEV_NUMEXPR_MAX_THREADS:-1}
+      - MALLOC_ARENA_MAX=${FHS_DEV_MALLOC_ARENA_MAX:-2}
+    deploy:
+      resources:
+        limits:
+          memory: ${FHS_DEV_MEMORY_LIMIT:-8g}
+    profiles:
+      - dev
+
+  # FHS CI/CD Test Runner
+  fhs-test:
+    extends: fhs-dev
+    command: >
+      bash -c "
+      set -e &&
+      echo '=== Architecture Tests ===' &&
+      pytest tests/architecture/ -v --no-cov &&
+      echo '=== Unit Tests ===' &&
+      pytest tests/ -v --junitxml=/workspace/build-output/test-results/junit.xml --tb=short &&
+      echo '=== Code Quality ===' &&
+      ruff format --check src/ tests/ &&
+      ruff check src/ tests/ &&
+      echo '=== Type Checking ===' &&
+      mypy --config-file config/pyproject.toml --disable-error-code arg-type --disable-error-code call-overload --disable-error-code no-any-return --disable-error-code attr-defined --disable-error-code override src/
+      "
+    profiles:
+      - ci
+
+  # FHS Jupyter Platform
+  jupyter:
+    container_name: fhs-jupyter
+    build:
+      context: ../
+      dockerfile: cicd/containers/Dockerfile.fhs
+    ports:
+      - "${JUPYTER_PORT:-8888}:8888"
+    volumes:
+      - ../apps/fhs:/workspace
+      - jupyter_data:/home/fhsuser/.jupyter
+    working_dir: /workspace
+    environment:
+      - JUPYTER_ENABLE_LAB=${JUPYTER_ENABLE_LAB:-yes}
+      - PYTHONPATH=${PYTHONPATH:-/workspace/src}
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:?Set JUPYTER_TOKEN before starting the fhs profile}
+      - JUPYTER_ALLOW_REMOTE_ACCESS=${JUPYTER_ALLOW_REMOTE_ACCESS:-1}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED:-1}
+      - PYTHONDONTWRITEBYTECODE=${PYTHONDONTWRITEBYTECODE:-1}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - OPENBLAS_NUM_THREADS=${OPENBLAS_NUM_THREADS:-12}
+      - MKL_NUM_THREADS=${MKL_NUM_THREADS:-12}
+      - OMP_NUM_THREADS=${OMP_NUM_THREADS:-12}
+      - NUMEXPR_MAX_THREADS=${NUMEXPR_MAX_THREADS:-12}
+    deploy:
+      resources:
+        limits:
+          memory: ${JUPYTER_MEMORY_LIMIT:-8g}
+    profiles:
+      - dev
+
+  # Notebook compilation check — executes every notebook and fails if any errors
+  notebook-check:
+    build:
+      context: ../
+      dockerfile: cicd/containers/Dockerfile.fhs
+    volumes:
+      - ../apps/fhs:/workspace
+      - ../cicd/check-notebooks.sh:/usr/local/bin/check-notebooks.sh:ro
+    working_dir: /workspace
+    environment:
+      - PYTHONPATH=${PYTHONPATH:-/workspace/src}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED:-1}
+      - MPLBACKEND=Agg
+      - NOTEBOOK_DIR=/workspace/notebooks
+      - NOTEBOOK_TIMEOUT=${NOTEBOOK_TIMEOUT:-300}
+      - OPENBLAS_NUM_THREADS=${NOTEBOOK_CHECK_OPENBLAS_NUM_THREADS:-1}
+      - MKL_NUM_THREADS=${NOTEBOOK_CHECK_MKL_NUM_THREADS:-1}
+      - OMP_NUM_THREADS=${NOTEBOOK_CHECK_OMP_NUM_THREADS:-1}
+      - NUMEXPR_MAX_THREADS=${NOTEBOOK_CHECK_NUMEXPR_MAX_THREADS:-1}
+      - MALLOC_ARENA_MAX=${NOTEBOOK_CHECK_MALLOC_ARENA_MAX:-2}
+    deploy:
+      resources:
+        limits:
+          memory: ${NOTEBOOK_CHECK_MEMORY_LIMIT:-16g}
+    profiles:
+      - dev
+    command: ["bash", "/usr/local/bin/check-notebooks.sh"]
+
+  # Dagger-based documentation pipeline.
+  # Runs docs_pipeline.py inside a container with Docker-socket access (DinD via socket).
+  # HOST_PATH must be the repo root path on the OUTER Docker host (set by Makefile).
+  docs-pipeline:
+    image: python:3.14-slim
+    volumes:
+      - ../:/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /workspace
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HOST_PATH=${HOST_PATH:-}
+    command: >
+      sh -c "pip install --quiet --disable-pip-version-check -r cicd/dagger/requirements.txt &&
+             python3 cicd/dagger/docs_pipeline.py"
+    profiles:
+      - docs
+
+  # Arc42 documentation builder (docToolchain + Structurizr + PlantUML)
+  docs-builder:
+    build:
+      context: ../apps/fhs-arc42-doc
+      dockerfile: ../../cicd/containers/Dockerfile.docs-builder
+    volumes:
+      - ../apps/fhs-arc42-doc:/workspace
+      - ../docs:/build
+    working_dir: /workspace
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["bash", "scripts/build-docs.sh"]
+    profiles:
+      - docs
+
+  # Arc42 documentation web server (nginx)
+  docs:
+    container_name: fhs-docs
+    build:
+      context: ../
+      dockerfile: cicd/containers/Dockerfile.docs-server
+    ports:
+      - "${DOCS_PORT:-8085}:8085"
+    volumes:
+      - ../docs:/usr/share/nginx/html:ro
+    deploy:
+      resources:
+        limits:
+          memory: ${DOCS_MEMORY_LIMIT:-2g}
+    profiles:
+      - dev
+
+volumes:
+  jupyter_data:

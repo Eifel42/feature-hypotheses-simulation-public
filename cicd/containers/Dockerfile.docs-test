@@ -1,0 +1,18 @@
+FROM python:3.14-slim
+
+# Install test dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# Install pytest and any other test dependencies
+RUN pip install --no-cache-dir pytest
+
+# Optionally: install dev requirements if you have them
+# COPY config/requirements-dev.txt ./
+# RUN pip install --no-cache-dir -r requirements-dev.txt
+
+CMD ["pytest", "tests/"]

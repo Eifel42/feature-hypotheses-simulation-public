@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="description" content="One-page architecture communication overview based on the Architecture Communication Canvas by arc42">
+<meta name="author" content="eifel42.dev">
+<title>Feature Hypotheses Simulation - Architecture Communication Canvas</title>
+<style>
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+</head>
+<body class="article toc2 toc-left acc-page">
+<div id="header">
+<h1>Feature Hypotheses Simulation - Architecture Communication Canvas</h1>
+<div class="details">
+<span id="author" class="author">eifel42.dev</span><br>
+<span id="revnumber">version 1.0.0,</span>
+<span id="revdate">2026-05-16</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Canvas Sections</div>
+<ul class="sectlevel1">
+<li><a href="#_value_proposition">1. Value Proposition</a></li>
+<li><a href="#_core_functions">2. Core Functions</a></li>
+<li><a href="#_key_stakeholders">3. Key Stakeholders</a></li>
+<li><a href="#_quality_requirements">4. Quality Requirements</a></li>
+<li><a href="#_core_decisions">5. Core Decisions</a></li>
+<li><a href="#_technologies">6. Technologies</a></li>
+<li><a href="#_business_context">7. Business Context</a></li>
+<li><a href="#_components_modules">8. Components / Modules</a></li>
+<li><a href="#_core_risks_and_missing_information">9. Core Risks and Missing Information</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1 canvas-value">
+<h2 id="_value_proposition"><a class="anchor" href="#_value_proposition"></a><a class="link" href="#_value_proposition">1. Value Proposition</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Quantifies downside risk (VaR/CVaR) for features and portfolios before budget approval.</p>
+</li>
+<li>
+<p>Recommends a portfolio that fits risk appetite and budget instead of single-feature ranking.</p>
+</li>
+<li>
+<p>Produces transparent notebook and CLI reports in minutes for decision meetings.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-functions">
+<h2 id="_core_functions"><a class="anchor" href="#_core_functions"></a><a class="link" href="#_core_functions">2. Core Functions</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Load scenarios from YAML/CSV or notebook forms and validate inputs.</p>
+</li>
+<li>
+<p>Run Monte Carlo simulations (10k+ runs) with optional correlations per feature.</p>
+</li>
+<li>
+<p>Compute risk metrics (VaR, CVaR, percentiles), stress tests, and sensitivities.</p>
+</li>
+<li>
+<p>Optimize portfolios for budget via exact plus hybrid solvers and rank features.</p>
+</li>
+<li>
+<p>Export Markdown/CSV reports and visualizations for stakeholders.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-stakeholders">
+<h2 id="_key_stakeholders"><a class="anchor" href="#_key_stakeholders"></a><a class="link" href="#_key_stakeholders">3. Key Stakeholders</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Product Owner: owns backlog, defines feature hypotheses, and steers priority.</p>
+</li>
+<li>
+<p>Portfolio Owner / Agile leader: balances roadmap trade-offs, budget fit, and delivery confidence.</p>
+</li>
+<li>
+<p>Risk Manager: defines risk appetite and correlation assumptions.</p>
+</li>
+<li>
+<p>Engineering Lead/Architect: provides technical constraints and operates tooling.</p>
+</li>
+<li>
+<p>Executive Sponsor / Product Manager: approves investment based on reports.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-quality">
+<h2 id="_quality_requirements"><a class="anchor" href="#_quality_requirements"></a><a class="link" href="#_quality_requirements">4. Quality Requirements</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Correctness: seeded runs keep VaR 95% within approximately +/-1%.</p>
+</li>
+<li>
+<p>Transparency: every metric is paired with plain-language text and EUR values.</p>
+</li>
+<li>
+<p>Usability: first assessment completed in under 15 minutes via notebook/CLI.</p>
+</li>
+<li>
+<p>Performance: 10k simulations should finish in seconds on a laptop with reproducible seeds.</p>
+</li>
+<li>
+<p>Reliability: strong input validation to prevent misleading outputs.</p>
+</li>
+<li>
+<p>Accessibility: semantic colour palette (16 WCAG 2.1 AA tokens); notebook code cells source-hidden for Product Owner / Portfolio Owner / Agile leader / Risk Manager audiences.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-decisions">
+<h2 id="_core_decisions"><a class="anchor" href="#_core_decisions"></a><a class="link" href="#_core_decisions">5. Core Decisions</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Local-first (no REST API, no database) to minimize operations overhead.</p>
+</li>
+<li>
+<p>Notebook-first presentation; CLI for automation and CI usage.</p>
+</li>
+<li>
+<p>DDD-inspired layering: presentation &#8594; application &#8594; domain &#8592; infrastructure.</p>
+</li>
+<li>
+<p>Correlation-aware simulations plus exact/hybrid optimization.</p>
+</li>
+<li>
+<p>Configuration via YAML plus seeded randomness for reproducibility.</p>
+</li>
+<li>
+<p>ADR-014: <code>FHSDisplay</code> assembled from six domain mixins (risk, portfolio, capital budgeting, delivery, distributions, primitives) — unified <code>show.*</code> API without monolithic class.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-technologies">
+<h2 id="_technologies"><a class="anchor" href="#_technologies"></a><a class="link" href="#_technologies">6. Technologies</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Python 3.14+, NumPy/SciPy/Pandas, and PyYAML.</p>
+</li>
+<li>
+<p>Plotly plus Matplotlib for visualization.</p>
+</li>
+<li>
+<p>Click-based CLI and Jupyter Notebooks for interaction.</p>
+</li>
+<li>
+<p>Docker and Docker Compose for reproducible environments.</p>
+</li>
+<li>
+<p>docToolchain and Asciidoctor for arc42 documentation.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-context">
+<h2 id="_business_context"><a class="anchor" href="#_business_context"></a><a class="link" href="#_business_context">7. Business Context</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Inputs: backlog features via YAML/CSV, notebook forms, and optional manual correlation matrices.</p>
+</li>
+<li>
+<p>Runtime: local execution in Jupyter or CLI; no runtime external services or databases.</p>
+</li>
+<li>
+<p>Outputs: Markdown/CSV reports, plots, and arc42 documentation pages.</p>
+</li>
+<li>
+<p>Integrations: git repository, documentation site, optional spreadsheet export.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-components">
+<h2 id="_components_modules"><a class="anchor" href="#_components_modules"></a><a class="link" href="#_components_modules">8. Components / Modules</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>core/model</code>: domain entities (<code>Feature</code>, value objects, Pydantic models, events).</p>
+</li>
+<li>
+<p><code>core/services/monte_carlo</code>, <code>simulator</code>: sampling and simulation orchestration.</p>
+</li>
+<li>
+<p><code>core/services/risk</code>: VaR/CVaR, Shapley attribution, sensitivity, risk layers.</p>
+</li>
+<li>
+<p><code>core/services/portfolio</code>: portfolio risk, optimizer, budget frontier (ILP/SLSQP).</p>
+</li>
+<li>
+<p><code>application/AdvancedPortfolioService</code>: domain sub-facades — <code>risk.<strong></code> · <code>delivery.</strong></code> · <code>multi_year.<strong></code> · <code>decisions.</strong></code> · <code>layers.*</code>.</p>
+</li>
+<li>
+<p><code>application/scenario_service</code>: YAML loading, validation, versioning, event audit.</p>
+</li>
+<li>
+<p><code>presentation/notebook/</code>: <code>FHSDisplay</code> facade (six mixins), semantic styling (16 WCAG-AA palette tokens, light/dark themes), charts, ipywidgets, Jinja2 templates.</p>
+</li>
+<li>
+<p><code>notebook/</code>: <code>load_scenario()</code> entry point; 7 Core + 2 Advanced + 1 Tutorial notebooks.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-risks">
+<h2 id="_core_risks_and_missing_information"><a class="anchor" href="#_core_risks_and_missing_information"></a><a class="link" href="#_core_risks_and_missing_information">9. Core Risks and Missing Information</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Correlation and input data quality remain uncertain and require documented sources.</p>
+</li>
+<li>
+<p>Sampling bias under high uncertainty requires lognormal/bounded alternatives.</p>
+</li>
+<li>
+<p>Optimization may not scale for very large portfolios and needs solver tuning.</p>
+</li>
+<li>
+<p>Outcomes depend on realistic cost/value estimates; risk of false precision.</p>
+</li>
+<li>
+<p>User adoption depends on concise reports and well-maintained documentation.</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p><span class="small">Based on the <a href="https://canvas.arc42.org/architecture-communication-canvas">Architecture Communication Canvas</a> by <a href="https://arc42.org">arc42</a>.<br>
+Architecture Inception Canvas: <a href="architecture-inception-canvas.html">Architecture Inception Canvas</a>.<br>
+Assets: <a href="./architecture-communication-canvas.drawio">Architecture Communication Canvas source</a>.</span></p>
+</div>
+<a href="index.html"
+   class="back-to-index"
+   rel="home"
+   aria-label="Back to the documentation index"
+   title="Back to documentation index">
+  <span class="back-to-index__icon" aria-hidden="true">
+    <i class="fa fa-arrow-left"></i>
+  </span>
+  <span class="back-to-index__copy">
+    <span class="back-to-index__eyebrow">Documentation Hub</span>
+    <span class="back-to-index__title">Return to index</span>
+  </span>
+</a>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated 2026-05-16 16:54:04 UTC
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+</body>
+</html>

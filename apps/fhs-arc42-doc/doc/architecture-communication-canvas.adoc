@@ -1,0 +1,115 @@
+= Feature Hypotheses Simulation - Architecture Communication Canvas
+:author: eifel42.dev
+:revnumber: 1.0.0
+:revdate: {docdate}
+:description: One-page architecture communication overview based on the Architecture Communication Canvas by arc42
+:doctype: article
+:docrole: acc-page
+:toc: left
+:toclevels: 2
+:sectanchors:
+:sectlinks:
+:sectnums:
+:icons: font
+:source-highlighter: highlight.js
+:docinfodir: docinfo
+:stylesdir: css
+:stylesheet: arc42-canvas.min.css
+:docinfo: shared-head
+:imagesdir: images
+:lang: en
+:toc-title: Canvas Sections
+:project-name: Feature Hypotheses Simulation
+:project-version: 1.0.0
+:github-artifacts-raw: .
+
+[.canvas-value]
+== Value Proposition
+
+* Quantifies downside risk (VaR/CVaR) for features and portfolios before budget approval.
+* Recommends a portfolio that fits risk appetite and budget instead of single-feature ranking.
+* Produces transparent notebook and CLI reports in minutes for decision meetings.
+
+[.canvas-functions]
+== Core Functions
+
+* Load scenarios from YAML/CSV or notebook forms and validate inputs.
+* Run Monte Carlo simulations (10k+ runs) with optional correlations per feature.
+* Compute risk metrics (VaR, CVaR, percentiles), stress tests, and sensitivities.
+* Optimize portfolios for budget via exact plus hybrid solvers and rank features.
+* Export Markdown/CSV reports and visualizations for stakeholders.
+
+[.canvas-stakeholders]
+== Key Stakeholders
+
+* Product Owner: owns backlog, defines feature hypotheses, and steers priority.
+* Portfolio Owner / Agile leader: balances roadmap trade-offs, budget fit, and delivery confidence.
+* Risk Manager: defines risk appetite and correlation assumptions.
+* Engineering Lead/Architect: provides technical constraints and operates tooling.
+* Executive Sponsor / Product Manager: approves investment based on reports.
+
+[.canvas-quality]
+== Quality Requirements
+
+* Correctness: seeded runs keep VaR 95% within approximately +/-1%.
+* Transparency: every metric is paired with plain-language text and EUR values.
+* Usability: first assessment completed in under 15 minutes via notebook/CLI.
+* Performance: 10k simulations should finish in seconds on a laptop with reproducible seeds.
+* Reliability: strong input validation to prevent misleading outputs.
+* Accessibility: semantic colour palette (16 WCAG 2.1 AA tokens); notebook code cells source-hidden for Product Owner / Portfolio Owner / Agile leader / Risk Manager audiences.
+
+[.canvas-decisions]
+== Core Decisions
+
+* Local-first (no REST API, no database) to minimize operations overhead.
+* Notebook-first presentation; CLI for automation and CI usage.
+* DDD-inspired layering: presentation -> application -> domain <- infrastructure.
+* Correlation-aware simulations plus exact/hybrid optimization.
+* Configuration via YAML plus seeded randomness for reproducibility.
+* ADR-014: `FHSDisplay` assembled from six domain mixins (risk, portfolio, capital budgeting, delivery, distributions, primitives) — unified `show.*` API without monolithic class.
+
+[.canvas-technologies]
+== Technologies
+
+* Python 3.14+, NumPy/SciPy/Pandas, and PyYAML.
+* Plotly plus Matplotlib for visualization.
+* Click-based CLI and Jupyter Notebooks for interaction.
+* Docker and Docker Compose for reproducible environments.
+* docToolchain and Asciidoctor for arc42 documentation.
+
+[.canvas-context]
+== Business Context
+
+* Inputs: backlog features via YAML/CSV, notebook forms, and optional manual correlation matrices.
+* Runtime: local execution in Jupyter or CLI; no runtime external services or databases.
+* Outputs: Markdown/CSV reports, plots, and arc42 documentation pages.
+* Integrations: git repository, documentation site, optional spreadsheet export.
+
+[.canvas-components]
+== Components / Modules
+
+* `core/model`: domain entities (`Feature`, value objects, Pydantic models, events).
+* `core/services/monte_carlo`, `simulator`: sampling and simulation orchestration.
+* `core/services/risk`: VaR/CVaR, Shapley attribution, sensitivity, risk layers.
+* `core/services/portfolio`: portfolio risk, optimizer, budget frontier (ILP/SLSQP).
+* `application/AdvancedPortfolioService`: domain sub-facades — `risk.*` · `delivery.*` · `multi_year.*` · `decisions.*` · `layers.*`.
+* `application/scenario_service`: YAML loading, validation, versioning, event audit.
+* `presentation/notebook/`: `FHSDisplay` facade (six mixins), semantic styling (16 WCAG-AA palette tokens, light/dark themes), charts, ipywidgets, Jinja2 templates.
+* `notebook/`: `load_scenario()` entry point; 7 Core + 2 Advanced + 1 Tutorial notebooks.
+
+[.canvas-risks]
+== Core Risks and Missing Information
+
+* Correlation and input data quality remain uncertain and require documented sources.
+* Sampling bias under high uncertainty requires lognormal/bounded alternatives.
+* Optimization may not scale for very large portfolios and needs solver tuning.
+* Outcomes depend on realistic cost/value estimates; risk of false precision.
+* User adoption depends on concise reports and well-maintained documentation.
+
+'''
+
+[small]#Based on the https://canvas.arc42.org/architecture-communication-canvas[Architecture Communication Canvas] by https://arc42.org[arc42]. +
+Architecture Inception Canvas: link:architecture-inception-canvas.html[Architecture Inception Canvas]. +
+Assets: link:{github-artifacts-raw}/architecture-communication-canvas.drawio[Architecture Communication Canvas source].#
+
+include::_shared/back-to-index.adoc[]

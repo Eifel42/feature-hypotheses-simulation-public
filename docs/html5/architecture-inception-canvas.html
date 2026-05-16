@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.18">
+<meta name="description" content="One-page architecture overview based on the Architecture Inception Canvas by arc42">
+<meta name="author" content="eifel42.dev">
+<title>Feature Hypotheses Simulation - Architecture Inception Canvas</title>
+<style>
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
+</head>
+<body class="article toc2 toc-left aic-page">
+<div id="header">
+<h1>Feature Hypotheses Simulation - Architecture Inception Canvas</h1>
+<div class="details">
+<span id="author" class="author">eifel42.dev</span><br>
+<span id="revnumber">version 1.0.0,</span>
+<span id="revdate">2026-05-16</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Canvas Sections</div>
+<ul class="sectlevel1">
+<li><a href="#_business_case">1. Business Case</a></li>
+<li><a href="#_functional_overview">2. Functional Overview</a></li>
+<li><a href="#_quality_goals">3. Quality Goals</a></li>
+<li><a href="#_architecture_hypotheses">4. Architecture Hypotheses</a></li>
+<li><a href="#_business_context">5. Business Context</a></li>
+<li><a href="#_technical_challenges_and_risks">6. Technical Challenges and Risks</a></li>
+<li><a href="#_organisational_constraints">7. Organisational Constraints</a></li>
+<li><a href="#_technical_constraints">8. Technical Constraints</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1 canvas-business">
+<h2 id="_business_case"><a class="anchor" href="#_business_case"></a><a class="link" href="#_business_case">1. Business Case</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Product teams make backlog decisions under uncertainty (users, conversion, business value, and development cost).
+Poor prioritization wastes capacity and budget.</p>
+</div>
+<div class="paragraph">
+<p>FHS applies Monte Carlo simulation plus VaR/CVaR to feature portfolios so Product Owners, Portfolio Owners, and Agile leaders can quantify downside in EUR before funding decisions. Risk Managers use the same outputs for review and governance.</p>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-functional">
+<h2 id="_functional_overview"><a class="anchor" href="#_functional_overview"></a><a class="link" href="#_functional_overview">2. Functional Overview</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Local-first Python package with Jupyter notebooks and planning CLI.</p>
+</li>
+<li>
+<p>No REST API, no database, no server-side platform.</p>
+</li>
+<li>
+<p>Main flow: scenario input &#8594; simulation &#8594; risk metrics &#8594; budget recommendation.</p>
+</li>
+<li>
+<p>Core modules: <code>core/services/simulation</code>, <code>core/services/risk</code>, <code>core/services/portfolio</code>, <code>core/services/application</code>, <code>application/scenario_service</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">fhs plan --features backlog.yaml --budget 150000 --output report.md</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-quality">
+<h2 id="_quality_goals"><a class="anchor" href="#_quality_goals"></a><a class="link" href="#_quality_goals">3. Quality Goals</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Correctness:</strong> VaR 95% within +/-1% for fixed seeds.</p>
+</li>
+<li>
+<p><strong>Simplicity:</strong> first assessment in &lt;15 minutes without coaching.</p>
+</li>
+<li>
+<p><strong>Transparency:</strong> all key metrics shown in EUR with plain-language explanation.</p>
+</li>
+<li>
+<p><strong>Decision support:</strong> output directly supports build/skip, priority, and budget-fit decisions.</p>
+</li>
+<li>
+<p><strong>Accessibility:</strong> all chart colours reference semantic palette tokens (WCAG 2.1 AA, ≥ 4.5:1 contrast); no hardcoded hex literals in presentation code.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-hypotheses">
+<h2 id="_architecture_hypotheses"><a class="anchor" href="#_architecture_hypotheses"></a><a class="link" href="#_architecture_hypotheses">4. Architecture Hypotheses</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>H1:</strong> KISS over infrastructure&#8201;&#8212;&#8201;local library + CLI minimize deployment/ops complexity.</p>
+</li>
+<li>
+<p><strong>H2:</strong> Notebooks are first-class presentation components; DDD layering keeps business logic separated.</p>
+</li>
+<li>
+<p><strong>H3:</strong> Correlation-aware portfolio analysis improves realism over naive diversification assumptions.</p>
+</li>
+<li>
+<p><strong>H4:</strong> Exact combinatorial selection (fixed feature count) plus greedy budget/sprint optimization keeps runtime practical.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-context">
+<h2 id="_business_context"><a class="anchor" href="#_business_context"></a><a class="link" href="#_business_context">5. Business Context</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Product Owner:</strong> defines features and compares expected business value, business value floor, and delivery confidence.</p>
+</li>
+<li>
+<p><strong>Portfolio Owner / Agile leader:</strong> uses the portfolio view for roadmap trade-offs, budget fit, and sequencing.</p>
+</li>
+<li>
+<p><strong>Risk Manager:</strong> evaluates CVaR, correlation, stress scenarios, and portfolio trade-offs.</p>
+</li>
+<li>
+<p><strong>Business Stakeholder:</strong> consumes notebook and CLI reports for investment decisions.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/structurizr-SystemContext.svg" alt="System Context" width="700" height="280">
+</div>
+</div>
+<div class="paragraph">
+<p>Communication Canvas: <a href="architecture-communication-canvas.html">HTML</a> | <a href="./architecture-communication-canvas.drawio">draw.io source</a><br>
+Inception Canvas (draw.io): <a href="./architecture-inception-canvas.drawio">Architecture Inception Canvas source</a></p>
+</div>
+<div class="paragraph">
+<p><strong>System boundary:</strong> simulation and advisory engine for product backlogs.</p>
+</div>
+<div class="paragraph">
+<p><strong>Out of scope:</strong> financial trading, real-time market feeds, multi-tenant SaaS, API gateway, persistent database backend.</p>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-risks">
+<h2 id="_technical_challenges_and_risks"><a class="anchor" href="#_technical_challenges_and_risks"></a><a class="link" href="#_technical_challenges_and_risks">6. Technical Challenges and Risks</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Sampling bias:</strong> high uncertainty can distort normal sampling; mitigation via lognormal/bounded alternatives.</p>
+</li>
+<li>
+<p><strong>Weak correlation data:</strong> teams often lack historical evidence; mitigation via explicit correlation source and manual matrices.</p>
+</li>
+<li>
+<p><strong>Optimization scaling:</strong> combinatorial search does not scale linearly; mitigation via exact mode for small sets and greedy optimization for budget/capacity constraints.</p>
+</li>
+<li>
+<p><strong>Input quality risk:</strong> weak assumptions can mislead; mitigation via validation, confidence intervals, and scenario communication.</p>
+</li>
+<li>
+<p><strong>Statistical stability:</strong> enforce minimum scenario counts (1,000 minimum, 10,000 default).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-org-constraints">
+<h2 id="_organisational_constraints"><a class="anchor" href="#_organisational_constraints"></a><a class="link" href="#_organisational_constraints">7. Organisational Constraints</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Usable by Product Owners, Portfolio Owners, Agile leaders, and Risk Managers without formal finance training.</p>
+</li>
+<li>
+<p>Must fit into sprint/release planning sessions.</p>
+</li>
+<li>
+<p>Documentation language: US English.</p>
+</li>
+<li>
+<p>License: MIT License - Copyright &#169; 2026 Stefan Zils.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1 canvas-tech-constraints">
+<h2 id="_technical_constraints"><a class="anchor" href="#_technical_constraints"></a><a class="link" href="#_technical_constraints">8. Technical Constraints</a></h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Python baseline: 3.14+</p>
+</li>
+<li>
+<p>Required stack: NumPy, SciPy, Pandas, Matplotlib, Plotly.</p>
+</li>
+<li>
+<p>Primary interfaces: Jupyter notebooks and <code>fhs plan</code> CLI.</p>
+</li>
+<li>
+<p>Linux/macOS workflows with Docker quick-start profile.</p>
+</li>
+<li>
+<p>Notebook code cells must be source-hidden (<code>source_hidden: true</code> metadata) — target audience is Product Owners, Portfolio Owners, Agile leaders, and Risk Managers, not engineers.</p>
+</li>
+<li>
+<p>Pydantic models enforce input validation at all domain boundaries.</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p><span class="small">Based on the <a href="https://canvas.arc42.org/architecture-inception-canvas">Architecture Inception Canvas</a> by <a href="https://arc42.org">arc42</a>.<br>
+Full documentation: <a href="arc42-docs.html">Arc42 Architecture Documentation</a>.<br>
+Communication Canvas: <a href="architecture-communication-canvas.html">HTML</a> | <a href="./architecture-communication-canvas.drawio">draw.io source</a>.<br>
+Assets: <a href="./architecture-inception-canvas.drawio">Architecture Inception Canvas source</a>.</span></p>
+</div>
+<a href="index.html"
+   class="back-to-index"
+   rel="home"
+   aria-label="Back to the documentation index"
+   title="Back to documentation index">
+  <span class="back-to-index__icon" aria-hidden="true">
+    <i class="fa fa-arrow-left"></i>
+  </span>
+  <span class="back-to-index__copy">
+    <span class="back-to-index__eyebrow">Documentation Hub</span>
+    <span class="back-to-index__title">Return to index</span>
+  </span>
+</a>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated 2026-05-16 16:54:04 UTC
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
+</body>
+</html>

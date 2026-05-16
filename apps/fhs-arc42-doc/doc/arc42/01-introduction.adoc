@@ -1,0 +1,82 @@
+= Introduction and Goals
+
+== Requirements Overview
+
+The Feature Hypotheses Simulation (FHS) applies financial risk assessment methods to product backlog decisions.
+It enables product teams to:
+
+* Quantify feature uncertainty using proven statistical methods (Monte Carlo simulation, VaR, CVaR)
+* Support Product Owners, Portfolio Owners, and Agile leaders with data-driven prioritization and budget-fit insights
+* Provide Risk Managers with portfolio-level analysis (correlation, stress tests, budget frontier)
+* Make complex risk concepts accessible without requiring specialized statistical training
+
+== Quality Goals
+
+The quality goals below are ordered by priority.
+*Correctness* is non-negotiable: stakeholders act on the numbers, so a statistically wrong result causes worse decisions than no result at all.
+*Simplicity* and *Transparency* are co-constraints that ensure results remain understandable and contextualized for product and governance audiences.
+*Practical Value* closes the loop: an insight that cannot be acted on in a sprint or budget meeting is not useful.
+
+include::../_generated/_quality-goals-table.adoc[]
+
+== Scope
+
+=== In Scope
+
+* Monte Carlo simulation for individual features and portfolios
+* Portfolio-level risk analysis: VaR, CVaR, correlation, stress tests, budget frontier (ILP/SLSQP)
+* Jupyter notebooks as the primary user interface
+* Data visualization with Matplotlib and Plotly
+* Local deployment only (Lima VM or Docker)
+
+=== Out of Scope
+
+* Financial trading or investment execution
+* Real-time market data feeds
+* Multi-tenant SaaS operations
+* REST API or database backend
+* Personal data processing (see <<appendix-gdpr,GDPR Appendix>>)
+
+== Stakeholders
+
+include::../_generated/_stakeholders-table.adoc[]
+
+== Architecture Canvases
+
+See xref:appendix-architecture-canvases.adoc[Appendix: Architecture Canvases] for the full canvas views (Inception Canvas and Communication Canvas).
+
+== Reading Guide
+
+Different readers need different parts of this documentation.
+The table below gives a 30-minute reading path per role.
+
+[cols="2,3,5", options="header"]
+|===
+|Role |Goal |Recommended reading path
+
+|*Product Owner*
+|Understand what FHS does and how to run a first simulation
+|Kap. 1 (this page) → Kap. 4 (Solution Strategy) → `apps/fhs/notebooks/01-getting-started.ipynb` → Kap. 8 (Strategic Feature Categories)
+
+|*Portfolio Owner / Agile leader*
+|Understand portfolio-level analysis and budget decisions
+|Kap. 1 → Kap. 5 (Building Blocks — notebook tracks) → Kap. 4 → Advanced notebooks (A01/A02) → Kap. 12 (Glossary)
+
+|*Risk Manager*
+|Understand risk methods, governance, and assumptions quality
+|Kap. 1 → ADR-002 (risk methods) → Kap. 8 (Statistical Accuracy, Security, Governance) → Kap. 11 (Risks) → Kap. 12 (Glossary)
+
+|*Architect (new to the project)*
+|Understand architecture structure and key decisions
+|Kap. 1 → Kap. 5 (DDD layers) → Kap. 6 (Runtime sequences) → Kap. 7 (Deployment) → Kap. 8 (Cross-cutting) → Kap. 9 (ADRs) → Kap. 10 (Quality)
+
+|*CFO / Business Stakeholder*
+|Understand value, risk exposure, and decision outputs
+|Kap. 1 → Kap. 4 (solution) → `BEGINNERS_GUIDE.md` → xref:appendix-architecture-canvases.adoc[Architecture Canvases]
+
+|===
+
+*Key Goal*: Apply financial risk methods that analysts already trust — VaR, CVaR, Monte Carlo — to product decisions, in language that Product Owners, Portfolio Owners, Agile leaders, and Risk Managers can act on immediately.
+
+'''
+_Part of Arc42 Architecture Documentation_

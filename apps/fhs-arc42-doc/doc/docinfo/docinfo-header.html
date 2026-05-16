@@ -1,0 +1,212 @@
+<!-- Modern HTML5 Design for arc42 Documentation - Header -->
+
+<!-- GDPR Compliance Notice -->
+<!-- This documentation uses external CDNs that may process IP addresses -->
+<!-- External resources: Google Fonts, Cloudflare CDN (Highlight.js, Font Awesome), jsDelivr CDN (Mermaid), Tailwind CSS, QR Server API -->
+<!-- Legal basis: Legitimate interest for content delivery (Article 6(1)(f) GDPR) -->
+<!-- User control: Block via browser/DNS settings. See Privacy & GDPR section for details -->
+<!-- Privacy Policy: Complete GDPR compliance documentation included -->
+
+<!-- Meta tags for better mobile experience -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2156a5">
+
+<!-- Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Noto+Serif:wght@400;700&display=swap">
+
+<!-- Highlight.js for code highlighting (light + dark themes) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css" media="(prefers-color-scheme: dark)">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelectorAll('pre code').forEach((block) => {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    corePlugins: {
+      preflight: false, // Disable Tailwind's base styles to prevent conflicts
+    },
+    theme: {
+      extend: {
+        colors: {
+          primary: 'var(--primary-color)',
+          secondary: 'var(--secondary-color)',
+          background: 'var(--background-color)',
+          text: 'var(--text-color)',
+          heading: 'var(--heading-color)',
+          link: 'var(--link-color)',
+          'link-hover': 'var(--link-hover-color)',
+        },
+      },
+    },
+  };
+</script>
+
+<!-- Mermaid for diagrams -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'linear'
+      },
+      c4: {
+        diagramMarginX: 50,
+        diagramMarginY: 10,
+        c4ShapeMargin: 50,
+        c4ShapeInRow: 4,
+        c4BoundaryInRow: 2
+      },
+      er: {
+        layoutDirection: 'TB',
+        entityPadding: 15,
+        useMaxWidth: true
+      }
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    const isIndex = path.endsWith('/index.html') || path === '/' || path === '';
+
+    if (isIndex || document.querySelector('.back-to-index')) {
+      return;
+    }
+
+    const pageTitle =
+      document.querySelector('#content h1, #header h1')?.textContent?.trim() ||
+      document.title.replace(/\s+-\s+.*$/, '').trim() ||
+      'Current page';
+
+    const link = document.createElement('a');
+    link.href = 'index.html';
+    link.className = 'back-to-index';
+    link.setAttribute('rel', 'home');
+    link.setAttribute('aria-label', `Back from ${pageTitle} to the documentation index`);
+    link.setAttribute('title', 'Back to documentation index');
+    link.innerHTML = `
+      <span class="back-to-index__icon" aria-hidden="true">
+        <i class="fa fa-arrow-left"></i>
+      </span>
+      <span class="back-to-index__copy">
+        <span class="back-to-index__eyebrow">Documentation Hub</span>
+        <span class="back-to-index__title">Return to index</span>
+      </span>
+    `;
+    document.body.appendChild(link);
+  });
+</script>
+
+<!-- Additional styles for modern appearance -->
+<style>
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Improved focus styles for accessibility */
+  a:focus, button:focus, input:focus, select:focus, textarea:focus {
+    outline: 2px solid #2156a5;
+    outline-offset: 2px;
+  }
+
+  /* Dark mode: all variables are defined in arc42-custom.css */
+  /* Highlight.js theme is handled via media-query link tags above */
+
+  /* Print QR code for mobile viewing */
+  @media print {
+    #qr-code {
+      display: block;
+      margin: 2em auto;
+      text-align: center;
+    }
+  }
+
+  /* Hide QR code on screen */
+  #qr-code {
+    display: none;
+  }
+</style>
+
+<!-- Add QR code for printed documentation -->
+<div id="qr-code">
+  <p>Scan to view this documentation on your mobile device:</p>
+  <img id="qr-code-img" alt="QR Code" width="150" height="150">
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      const qrImg = document.getElementById('qr-code-img');
+      if (qrImg) {
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(window.location.href)}`;
+      }
+    });
+  </script>
+</div>
+
+<!-- Disclaimer footer injected on all arc42 pages -->
+<style>
+  #fhs-disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #cbd5e1;
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.6;
+  }
+  #fhs-disclaimer a {
+    color: #2156a5;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  #fhs-disclaimer .disclaimer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-bottom: 6px;
+  }
+  #fhs-disclaimer .disclaimer-note {
+    color: #94a3b8;
+    font-size: 0.75rem;
+  }
+  @media print {
+    #fhs-disclaimer { display: none; }
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const footer = document.createElement('div');
+    footer.id = 'fhs-disclaimer';
+    footer.innerHTML = `
+      <div class="disclaimer-links">
+        <span>&#169; 2026 Stefan Zils &mdash; MIT License</span>
+        <a href="https://github.com/Eifel42/feature-hypotheses-simulation-public" target="_blank" rel="noopener">GitHub Repository</a>
+        <a href="https://github.com/Eifel42/feature-hypotheses-simulation-public/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        <a href="https://github.com/Eifel42/feature-hypotheses-simulation-public/issues" target="_blank" rel="noopener">Report an Issue</a>
+        <a href="https://www.eifel42.dev/page/compliance/imprint/#en" target="_blank" rel="noopener">Site Notice</a>
+        <a href="https://www.eifel42.dev/page/compliance/gdpr/#en" target="_blank" rel="noopener">Privacy Policy</a>
+        <a href="index.html">Documentation Index</a>
+      </div>
+      <p class="disclaimer-note">
+        Auto-generated architecture documentation hosted on GitHub Pages.
+        Provided for educational and analytical purposes only.
+        Simulations and risk metrics are illustrative and do not constitute financial advice.
+      </p>
+    `;
+    document.body.appendChild(footer);
+  });
+</script>
