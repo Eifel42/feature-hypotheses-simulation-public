@@ -1,0 +1,39 @@
+= Architecture Constraints
+
+== Technical Constraints
+
+include::../_generated/_constraints-technical-table.adoc[]
+
+== Organizational Constraints
+
+include::../_generated/_constraints-organisational-table.adoc[]
+
+== Additional Technical Constraints
+
+[cols="3,5", options="header"]
+|===
+|Constraint |Rationale
+
+|MIT License (open source)
+|Third-party libraries (NumPy, SciPy, Pydantic, Matplotlib, Plotly, JupyterLab, PuLP) are all permissively licensed. The FHS library itself is MIT. No GPL or AGPL transitive dependencies are permitted.
+
+|Browser: modern Chromium/Firefox (ES2020+)
+|JupyterLab 4.x requires a modern browser. Internet Explorer and legacy Edge are not supported. Interactive Plotly widgets require WebGL.
+
+|Memory: minimum 2 GB free RAM for 100,000-scenario runs
+|NumPy arrays for 100 k scenarios × 10 features fit in approximately 80 MB. JupyterLab kernel overhead and Plotly rendering bring the practical minimum to ~2 GB. Reduce `scenarios` to 10,000 on memory-constrained machines.
+
+|No persistent storage beyond local filesystem
+|No database, no cloud sync, no remote state. Scenario YAML files and exported notebooks are the only persistent artifacts.
+
+|===
+
+== Conventions
+
+* *Documentation language:* US English
+* *Code style:* PEP 8, formatted with ruff (88-character line length)
+* *License:* MIT License — Copyright © 2026 Stefan Zils
+* *Versioning:* Semantic versioning
+
+'''
+_Part of Arc42 Architecture Documentation_

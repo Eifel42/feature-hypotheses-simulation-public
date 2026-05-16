@@ -1,0 +1,254 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+# Keep build directory for documentation output but ignore temporary files
+build/*
+!build/README.md
+build-output/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+junit*.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+cicd/.env.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+site/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+*.bak
+plantuml.jar
+node_modules/
+.claude/
+.gradle/
+
+# Documentation build artifacts
+/build/
+!/build/README.md
+
+# Generated HTML artifacts (regenerated in CI)
+docs/*.html
+docs/*.drawio
+# docs/html5/ is vendored as the GitHub Pages source for the public mirror.
+# Only the asciidoctor cache is excluded.
+docs/html5/.asciidoctor/
+docs/.asciidoctor/
+
+# DocToolchain and Structurizr downloads (automatically installed)
+deployment/docs-builder/lib/
+deployment/docs-builder/structurizr-cli*.jar
+deployment/docs-builder/structurizr-cli*.zip
+deployment/docs-builder/structurizr.sh
+deployment/docs-builder/structurizr.bat
+deployment/docs-builder/docToolchain/
+deployment/docs-builder/dtcw*
+
+# Structurizr CLI downloads (CI/CD)
+structurizr-cli/
+structurizr-cli.zip
+
+# Temporary diagram files
+/tmp/structurizr-export/
+*.d2
+*.mmd
+
+# Generated diagrams (auto-regenerated)
+/src/docs/fhs-product-doc/images/*.png
+/src/docs/fhs-product-doc/images/*.svg
+!/src/docs/fhs-product-doc/images/README.md
+
+# Structurizr-generated SVGs — rebuilt on every docs build, never commit
+apps/fhs-arc42-doc/doc/images/structurizr-*.svg
+
+# Config files copied from config/ during build
+/Config.groovy
+/gradle.properties
+
+# Build outputs
+build-output/
+temp-docs/
+/test-export-sbom
+/test-export-sbom/python
+/test-report
+/reports
+
+# AI tools and credentials
+.aider*
+.junie/
+
+# Local code-quality tool outputs
+.qodana/
+.scannerwork/
+
+# Claude Code (settings are OK, but auth/session data should not be committed)
+.claude/credentials*
+.claude/auth*
+.claude/session*
+.claude/.tokens
+
+# GitHub CLI credentials and auth state
+.config/gh/
+gh-token*
+
+# GitHub Copilot auth (VS Code stores tokens here)
+.copilot/
+copilot-token*
+
+# API keys and secrets (never commit)
+.env
+.env.example.local
+.env.local
+.env.*.local
+*.secret
+*.secrets
+*credentials*.json
+*token*.json
+
+# SSH keys
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+!*.pub
+
+# Export artifacts (demo outputs)
+exports/
+
+# Notebook generated reports (keep README.md and GLOSSARY.md)
+apps/fhs/notebooks/*_report.md
+apps/fhs/notebooks/*_output.md
+
+# Local quality tooling
+.scannerwork/
+second-qodana.sarif.json
+qodana.sarif.json
+*qodana*.sarif.json

@@ -1,0 +1,149 @@
+= Architecture Decisions
+
+The decisions below shape the current architecture and its trade-offs.
+Full ADR files are available in `doc/arc42/decisions/`.
+
+== ADR-001: Python Stack
+
+*Decision:* Python 3.14+ baseline with NumPy, SciPy, Matplotlib, Plotly, and Jupyter Lab.
+
+*Rationale:* The scientific computing ecosystem provides all the mathematical building blocks (vectorized simulation, statistical quantiles, distribution sampling) without custom implementations. Jupyter notebooks give non-technical users an interactive environment that combines code, results, and explanations in a single document.
+
+*Rationale:* Python 3.14+ with modern type hinting, pattern matching, and `numpy.random.default_rng` for reproducible seeded simulation.
+
+*Trade-off:* Performance is lower than compiled languages, but 10,000 Monte Carlo scenarios complete in under 2 seconds — fast enough for interactive use.
+
+---
+
+== ADR-002: Risk Calculation Methods (VaR / CVaR / Monte Carlo)
+
+*Decision:* Implement non-parametric VaR and CVaR via Monte Carlo simulation using NumPy/SciPy. Alternatives considered and rejected:
+
+[cols="2,4,2", options="header"]
+|===
+|Approach |Description |Rejected reason
+
+|*Parametric VaR* (variance-covariance)
+|Closed-form VaR assuming Normal distribution
+|Assumes Normality; underestimates tail risk; wrong for skewed business outcomes
+
+|*Historical simulation*
+|VaR from real past outcomes
+|No historical data exists for new product features
+
+|*Extreme Value Theory (EVT)*
+|Models distribution tails explicitly
+|Requires large sample sizes and statistical expertise beyond the target audience
+
+|*Cornish-Fisher expansion*
+|Semi-parametric VaR with skewness/kurtosis correction
+|Adds complexity without proportional benefit for 10,000-scenario runs
+
+|*Monte Carlo + Normal/Lognormal* ← chosen
+|Flexible simulation with configurable distributions (Normal, Lognormal, Beta, bounded)
+|Simple to explain, easy to extend, statistically sound for the uncertainty range of product estimates
+
+|===
+
+*Trade-off:* Monte Carlo with Normal distribution underestimates tail risk in heavy-tailed real-world distributions. Mitigated by: high scenario counts (10k–100k+), explicit clipping-bias warnings, and guidance to use Beta distribution for bounded parameters. See also: Risks in <<_risks_and_technical_debt>>.
+
+Full ADR: link:decisions/002-risk-methods.adoc[ADR-002]
+
+---
+
+== ADR-003: KISS Architecture — Direct Library, No API
+
+*Decision:* Notebooks import the FHS library directly (`from fhs import Feature, FeatureSimulator`). No REST API, no database, no message queue.
+
+*Rationale:*
+[source,python]
+----
+# What we chose — one line, no infrastructure
+result = simulator.simulate_feature(feature, scenarios=10_000)
+
+# What we rejected — API, network, JSON round-trips
+response = requests.post('/api/simulations/run', json=payload)
+----
+
+*Trade-off:* Single-user, local use only. JupyterHub can add multi-user support later without changing the library.
+
+---
+
+== ADR-004: Notebooks as First-Class Components
+
+*Decision:* Each notebook is an architectural component in the C4 model with a defined audience and a defined place in the learning path (Core / Tutorial / Advanced — see <<_level_3_component_view>>).
+
+*Trade-off:* Notebooks are harder to unit-test than pure Python. Mitigated by keeping all business logic in the library and using notebooks only for orchestration and presentation.
+
+---
+
+== ADR-009: Development Cost and Net Value
+
+*Decision:* `Feature` accepts a `development_cost` parameter. `SimulationResult` exposes `net_value` (expected business value minus cost) and `roi`.
+
+*Rationale:* A feature with high expected business value but a development cost that exceeds it has negative net value. Without the cost, the Portfolio Advisor cannot make budget-constrained recommendations.
+
+*Example:*
+
+[source,python]
+----
+feature = Feature(
+    name="Mobile Checkout",
+    expected_users=20_000,
+    conversion_rate=0.12,
+    uncertainty=0.20,
+    business_value_per_conversion=45.0,
+    development_cost=25_000,
+)
+result = simulator.simulate_feature(feature)
+print(f"Net value: EUR {result.net_value:,.0f}")   # expected business value - 25,000
+print(f"ROI:       {result.roi:.1%}")
+----
+
+---
+
+== ADR-013: Centralized Scenario Data (YAML + ScenarioService)
+
+*Decision (current):* Use YAML scenario files (`apps/fhs/notebooks/config/*.yaml`) as canonical source, loaded via `ScenarioService` and `load_scenario()`.
+
+*Rationale:* Notebook scenario data and budget settings must be editable, versionable, and auditable without code edits. YAML + repository/application services separate persistence from domain logic and keep notebooks thin.
+
+*Trade-off:* Additional orchestration complexity (repository + service layer), but improved consistency, validation, and change traceability.
+
+---
+
+== ADR-014: Mixin-based Presentation Facade
+
+*Decision:* The `FHSDisplay` facade is implemented as a composition of six mixins (`_RiskMixin`, `_PortfolioMixin`, `_CapitalBudgetingMixin`, `_DeliveryMixin`, `_DistributionMixin`, `_PrimitivesMixin`), each owning one business-domain slice of the presentation API.
+
+*Rationale:* A single monolithic `show` module became unmaintainable as the number of display methods grew past 30. Mixins provide domain cohesion without sacrificing the unified `show.*` call surface that notebooks rely on.
+
+*Trade-off:* Python MRO must be respected; no two mixins may define the same method name. All sub-module imports use `TYPE_CHECKING` guards to avoid circular imports at runtime. See `decisions/014-mixin-facade-pattern.adoc` for full ADR.
+
+---
+
+== All Decisions — Reference Table
+
+[cols="1,3,1,1,2"]
+|===
+|ADR |Decision |Status |Date |Detail
+
+|ADR-001 |Python Stack Selection |Accepted |2025-06 |link:decisions/001-python-stack.adoc[ADR-001]
+|ADR-002 |Risk Assessment Methods (VaR/CVaR/Monte Carlo) |Accepted |2025-06 |link:decisions/002-risk-methods.adoc[ADR-002]
+|ADR-003 |KISS Architecture — No API |Accepted |2025-06 |link:decisions/003-kiss-architecture.adoc[ADR-003]
+|ADR-004 |Jupyter Notebooks as Components |Accepted |2025-06 |link:decisions/004-jupyter-components.adoc[ADR-004]
+|ADR-005 |UX Simulation Integration |Accepted |2025-06 |link:decisions/005-ux-simulation.adoc[ADR-005]
+|ADR-006 |C4 Model + Arc42 Documentation |Accepted |2025-06 |link:decisions/006-c4-documentation.adoc[ADR-006]
+|ADR-007 |Package Structure and Testing |Accepted |2025-06 |link:decisions/007-package-testing.adoc[ADR-007]
+|ADR-008 |Container Strategy |Accepted |2025-06 |link:decisions/008-container-strategy.adoc[ADR-008]
+|ADR-009 |Development Cost and ROI |Accepted |2026-02 |link:decisions/009-development-cost-roi.adoc[ADR-009]
+|ADR-010 |Correlation Modeling Strategy |Accepted |2026-02 |link:decisions/010-correlation-modeling.adoc[ADR-010]
+|ADR-011 |Budget Optimization Algorithm |Accepted |2026-02 |link:decisions/011-budget-optimization-algorithm.adoc[ADR-011]
+|ADR-012 |Budget Constraint Scope (Portfolio-level) |Accepted |2026-02 |link:decisions/012-budget-constraint-scope.adoc[ADR-012]
+|ADR-013 |Centralized Scenario Data (YAML + ScenarioService) |Accepted |2026-02 |link:decisions/013-centralized-example-data.adoc[ADR-013]
+|ADR-014 |Mixin-based Presentation Facade (`FHSDisplay`) |Accepted |2026-03 |link:decisions/014-mixin-facade-pattern.adoc[ADR-014]
+
+|===
+
+'''
+_Part of Arc42 Architecture Documentation_

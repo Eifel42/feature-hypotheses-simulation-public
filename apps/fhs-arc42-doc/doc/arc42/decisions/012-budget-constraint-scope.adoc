@@ -1,0 +1,355 @@
+= ADR-012: Budget Constraint Application: Feature-Level vs. Portfolio-Level
+
+== Status
+✅ Accepted (Implemented Q1 2026)
+
+== Context
+When optimizing feature selection under budget constraints, should budgets apply to individual features or to the portfolio as a whole?
+
+Two fundamental approaches:
+
+**Option 1: Feature-Level Budgets**
+```
+Feature A: individual budget = 50k
+Feature B: individual budget = 40k
+Feature C: individual budget = 60k
+User must manage individual allocations and think per-feature
+```
+
+**Option 2: Portfolio-Level Budget**
+```
+Total Q2 Budget: 200k EUR
+System recommends feature subset with total cost ≤ 200k
+User thinks holistically about portfolio
+```
+
+Real-world scenario:
+> "We have 200k EUR to spend on development in Q2. Which features should we build?"
+
+NOT:
+> "Feature A gets 50k, Feature B gets 40k..." (doesn't match how teams work)
+
+== Decision
+Apply budget constraint at **portfolio level**:
+
+- User specifies single total budget (e.g., "200k EUR for Q2")
+- System recommends feature subset whose total `sum(development_cost)` ≤ budget
+- Implementation: `PortfolioAdvisor.optimize_portfolio_by_budget(budget=200000)`
+
+```text
+advisor = PortfolioAdvisor(features=[...])
+result = advisor.optimize_portfolio_by_budget(budget=200000)
+
+# Returns:
+{
+    "recommended_features": [Feature1, Feature3, Feature5],
+    "total_development_cost": 150000,  # sum of selected feature costs
+    "portfolio_net_value": 85000,      # total profit
+    "portfolio_roi": 0.567,            # (revenue - cost) / cost
+    "budget": 200000,
+    "budget_remaining": 50000,         # 200k - 150k
+    "alternatives": [Feature2, Feature4]  # would exceed budget
+}
+```
+
+== Rationale
+
+=== 1. Real-World Match (PRIMARY)
+- **How companies allocate budgets:** Quarterly/annual budgets for teams, projects, departments
+- **NOT by feature:** Rarely do companies say "Mobile feature gets 50k, Web gets 40k"
+- **Match organizational reality:** Budget owner thinks: "I have X to spend"
+
+=== 2. Simplicity
+- **One parameter:** `budget: float`
+- **Alternative:** `feature_budgets: dict` (10+ parameters for 10 features)
+- **Cognitive load:** Single number vs. managing 10 constraints
+
+=== 3. Flexibility
+- **Can spread budget across many features:** Build 3 features for 200k vs. 1 feature at 200k
+- **No fragmentation:** No forced per-feature allocations
+- **Natural expression:** "Build as many valuable features as possible within budget"
+
+=== 4. Natural Integration
+- **Matches budget allocation process:** Finance gives team 200k budget
+- **Matches product planning:** PO prioritizes within budget
+- **Matches development:** Team estimates total effort for selected features
+
+=== 5. Backward Compatibility
+- **Old code:** Still works (development_cost optional, defaults to 0)
+- **Existing features:** Can be used without budget constraints
+- **Gradual adoption:** Teams adopt budget optimization when ready
+
+== Consequences
+
+=== Positive
+
+- **Intuitive:** Matches how teams actually think about budgets
+- **Simple:** One number instead of vector of constraints
+- **Flexible:** Can build multiple features within total
+- **No Dependencies:** Doesn't require modeling feature relationships
+- **Clear Trade-offs:** User sees alternatives (features included/excluded)
+- **Sustainable:** Aligns with organizational budget cycles
+
+=== Negative
+
+- **Scope Limitations:**
+  - ❌ Does NOT model feature dependencies (A requires B)
+  - ❌ Does NOT model team constraints (different teams have different budgets)
+  - ❌ Does NOT model time constraints (which features build in which quarter)
+  - ❌ Does NOT model resource types (dev hours, QA hours, design hours differ)
+  - ❌ Does NOT model priorities (some features must be built first)
+
+- **User Responsibility:**
+  - User must ensure budget estimate is realistic
+  - User must handle dependencies manually
+  - User must coordinate multi-team budgets separately
+
+=== Implicit Assumptions
+
+```
+Assumptions made by portfolio-level budgeting:
+1. All features can be built in parallel (no time sequencing)
+2. No feature dependencies (A doesn't require B)
+3. Budget applies equally to all development (no resource scaling)
+4. Single team/source of budget (no multi-team coordination)
+5. All feature estimates have equal confidence (no estimation risk)
+```
+
+== Alternatives Considered
+
+### Alternative 1: Feature-Level Individual Budgets
+
+```text
+def optimize_feature_budgets(feature_budgets: dict[str, float]) -> dict:
+    """
+    Args:
+        feature_budgets: {"Feature A": 50000, "Feature B": 40000, ...}
+    Returns:
+        Optimization results per feature
+    """
+```
+
+**Pros:**
+- Fine-grained control per feature
+- Can allocate unequally (critical feature gets more budget)
+- Matches some organization structures
+
+**Cons:**
+- Too many parameters (10 features = 10 budget constraints)
+- Doesn't match team budgeting (teams have total budgets, not per-feature)
+- Feature budgets must be set before optimization (chicken-and-egg)
+- More complex algorithm (multiple constraints)
+
+**Use Case:** Individual R&D allocations (not mainstream feature development)
+**Decision:** Rejected for MVP; potential future feature
+
+---
+
+### Alternative 2: Team-Level Budgets
+
+```text
+def optimize_team_budgets(
+    features: list[Feature],
+    team_budgets: dict[str, float]  # {"Mobile Team": 100k, "Backend": 100k}
+) -> dict:
+    """Multi-team portfolio optimization"""
+```
+
+**Pros:**
+- Matches organizational structure (Mobile team, Backend team, etc.)
+- Enables coordinated planning across teams
+- Realistic for multi-team products
+
+**Cons:**
+- Requires feature-to-team mapping
+- Out of scope for single-team MVP
+- Requires org structure metadata
+- More complex constraint solving
+
+**Use Case:** Multi-team products (Stripe, Uber, etc.)
+**Decision:** Rejected for MVP; backlog for Phase 3 (Q4 2026)
+
+---
+
+### Alternative 3: Time-Based Capacity Planning
+
+```text
+def optimize_with_capacity(
+    features: list[Feature],
+    team_capacity: dict[str, float]  # {"resources": hours, "quarters": 2}
+) -> dict:
+    """Schedule features within capacity over time"""
+```
+
+**Pros:**
+- More realistic (teams have capacity, not budgets)
+- Enables multi-quarter planning
+- Better matches Scrum planning
+
+**Cons:**
+- Requires effort estimates (not revenue estimates)
+- Requires team/resource assignment
+- Complex scheduling algorithm
+- Different data model (hours, not EUR)
+
+**Use Case:** Capacity-constrained planning
+**Decision:** Rejected for MVP; alternative track (Q2 2026+)
+
+---
+
+### Alternative 4: Cost/Capacity Scaling
+
+```text
+def optimize_with_scaling(
+    features: list[Feature],
+    budget: float,
+    cost_scaling: dict[str, float]  # {"offshore": 0.4, "onshore": 1.0}
+) -> dict:
+    """Adjust costs by team/location"""
+```
+
+**Pros:**
+- Realistic (offshore developers cost less)
+- Enables geographic/outsourcing decisions
+- More accurate ROI
+
+**Cons:**
+- Adds complexity
+- Cost varies by developer skill
+- Still feature-level cost, not truly multi-team
+
+**Use Case:** Global product teams
+**Decision:** Rejected for MVP; future enhancement
+
+---
+
+## Scope Definition
+
+### IN SCOPE (Portfolio-Level)
+- ✅ "What can we build with 200k EUR?"
+- ✅ "Which features maximize value within budget?"
+- ✅ "What's our expected ROI for recommended portfolio?"
+- ✅ "Which features should we skip due to budget?"
+
+### OUT OF SCOPE (Future/Separate)
+- ❌ "Which team should build which feature?" → Team assignment (Phase 3)
+- ❌ "Which features should we build first?" → Sequencing (Phase 3)
+- ❌ "Can we fit 100 hours of work in 2 weeks?" → Capacity planning (Phase 2)
+- ❌ "Does Feature A need Feature B to work?" → Dependencies (Phase 3)
+- ❌ "How do we split budget across 3 teams?" → Multi-team coordination (Phase 3)
+
+== Design Decisions
+
+=== Budget Scope
+
+```text
+# Portfolio-level budget constraint
+def optimize_portfolio_by_budget(budget: float) -> dict:
+    """
+    Constraint: sum(selected_features.development_cost) ≤ budget
+
+    NOT: individual feature budgets
+    NOT: team budgets within portfolio
+    NOT: time-phased budgets
+    """
+```
+
+=== Budget Interpretation
+
+```
+"budget=200000" means:
+✅ Total development cost must not exceed 200k EUR
+✅ Can build any combination of features totaling ≤ 200k
+✅ If cheaper features selected, budget_remaining > 0
+
+NOT:
+❌ "Must spend exactly 200k" (no, can spend less)
+❌ "Per-feature budget of 200k/n_features" (no, flexible allocation)
+❌ "Budget per quarter—multiple quarters" (no, assumed single period)
+```
+
+=== Edge Cases
+
+**What if budget < smallest feature cost?**
+```text
+budget = 50000
+features = [Feature(cost=60k), Feature(cost=70k)]
+
+result = advisor.optimize_portfolio_by_budget(budget)
+# Returns:
+#   recommended_features: []  # empty
+#   budget_remaining: 50000   # unused
+#   alternatives: [all features]
+```
+
+**What if multiple combinations fit budget?**
+```
+Budget: 100k
+Features:
+  A: cost=60k, value=50k
+  B: cost=50k, value=40k
+  C: cost=40k, value=35k
+  D: cost=100k, value=80k (exactly budget)
+
+Greedy algorithm picks:
+  1. Check D (value=80): fits? Yes → select D
+  2. Budget=0, stop
+
+Returns:
+  recommended: [D]
+  alternatives: [A, B, C]
+
+Note: Greedy is locally optimal, not globally optimal
+```
+
+== Related ADRs
+
+- ADR-009: Development Cost Model (cost field in Feature)
+- ADR-011: Greedy Algorithm (why used for budget optimization)
+- ADR-003: KISS (portfolio-level is simpler than feature-level)
+
+== Risk Mitigations
+
+**Risk:** Users expect feature-level budget control
+**Mitigation:** Documentation; documentation shows portfolio-level examples; future: team-level as Phase 3
+
+**Risk:** Budget doesn't match organizational structure
+**Mitigation:** Alternative: Phase 3 will support team-level budgets
+
+**Risk:** Budget estimates are wrong
+**Mitigation:** Sensitivity analysis (future): "What if budget ±20%?"
+
+== Future Roadmap
+
+| Phase | Feature | Timeline | Scope |
+|---|---|---|---|
+| **Phase 1** | Portfolio-level budget | ✅ Q1 2026 | Single budget constraint |
+| **Phase 2** | Capacity planning | Q2 2026 | Effort-based allocation + time |
+| **Phase 3** | Multi-team budgets | Q4 2026 | Team-level + dependencies |
+| **Phase 4** | Resource scaling | 2027 | Cost multipliers by team |
+
+== See Also
+
+- `apps/fhs/src/fhs/core/portfolio_advisor.py::optimize_portfolio_by_budget`
+- `test_portfolio_advisor.py::TestOptimizeByBudget`
+- Notebook: `apps/fhs/notebooks/advanced/01-portfolio-advisor.ipynb` (examples)
+
+== Implementation Notes
+
+```python
+# Current implementation
+class PortfolioAdvisor:
+    def optimize_portfolio_by_budget(self, budget: float) -> dict:
+        """Portfolio-level budget optimization"""
+        # Sort by net_value, select greedily until budget exhausted
+        # Return: recommended, alternatives, budget_remaining
+```
+
+== Changelog
+
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-02-21 | Initial acceptance | Implementation Team |
+
+'''
+_Part of Arc42 Architecture Documentation_

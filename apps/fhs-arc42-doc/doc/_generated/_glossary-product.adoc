@@ -1,0 +1,11 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+== Product and Portfolio Terms
+
+* **Portfolio** - All features in a sprint or release viewed as an investment portfolio with risk and correlation.
+* **Feature Hypothesis** - Testable assumption about feature impact represented as a Feature model.
+* **Strategic Feature Category** - Strategic intent classification — Value Driver, Efficiency, Risk Reduction, Regulatory Compliance, Strategic Option, or Resilience. Free-text field; the canonical set is documented in the Cross-cutting Concepts chapter.
+* **Opportunity Cost** - Expected business value lost by not building a feature.
+* **Net Value** - Expected business value minus development cost.
+* **ROI (Return on Investment)** - (Expected Business Value minus Development Cost) divided by Development Cost.
+* **Decision Policy** - A configurable set of thresholds (min break-even probability, min BVF ratio, max CVaR loss) that maps simulation results to GO / Conditional GO / Review recommendations. Product Owner-facing language for risk appetite rules.
+* **Risk Appetite Policy** - A bank-grade formalization of the Decision Policy adding concentration limits, sunk-cost caps, and assumption quality requirements. Targeted at Risk Managers, Portfolio Owners, and Investment Committees.

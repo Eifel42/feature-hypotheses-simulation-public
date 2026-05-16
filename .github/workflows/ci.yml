@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test & SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # SonarCloud needs full history for blame
+
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: apps/fhs/pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          cd apps/fhs
+          pip install -e ".[dev]"
+
+      - name: Run tests with coverage
+        run: |
+          cd apps/fhs
+          python3 -m pytest tests/ \
+            --cov=src/fhs \
+            --cov-report=xml:../../build-output/quality/coverage.xml \
+            --junitxml=../../build-output/test-results/junit-quality.xml \
+            -q
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

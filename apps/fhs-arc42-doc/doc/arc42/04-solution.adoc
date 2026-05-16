@@ -1,0 +1,45 @@
+= Solution Strategy
+
+== Technology Decisions
+
+include::../_generated/_technology-decisions-table.adoc[]
+
+== Architectural Approach
+
+The solution follows a *KISS (Keep It Simple) principle* — a direct Python library with Jupyter notebooks as the primary interface:
+
+* *No REST API, no microservices* — notebooks import the FHS library directly; this eliminates network overhead and deployment complexity
+* *Layered architecture (DDD-inspired)* — domain (`core/model`), services (`core/services`), application (`application`), infrastructure (`infra`), and notebook facade (`notebook`)
+* *Statistical accuracy* — NumPy/SciPy provide proven mathematical methods for Monte Carlo simulation, VaR, and CVaR
+* *Progressive disclosure* — three notebook tracks (core, tutorial, advanced) let users go as deep as their role requires
+* *Business context* — every metric is presented in EUR with a plain-language explanation alongside the number
+
+== Notebook Track Design
+
+The learning path is organized into three tracks, each with a distinct audience and complexity level:
+
+include::../_generated/_notebook-tracks-table.adoc[]
+
+== Performance Strategy
+
+The quality scenario requires a 10,000-scenario simulation to complete in under 2 seconds on standard laptop hardware.
+The strategy to meet this target:
+
+* *Vectorized NumPy operations* — all Monte Carlo draws and risk calculations use array operations; no Python loops over scenarios.
+* *Lazy seeding* — each feature simulation receives a deterministic seed offset (`base_seed + feature_index`); the seed is set once per feature, not per scenario.
+* *No redundant re-simulation* — the `AdvancedPortfolioService` sub-facades share a single simulation run; each sub-facade reads from the same result objects rather than re-running Monte Carlo.
+* *100,000 scenarios as the audit default* — development workflows use 1,000–5,000 scenarios; the full 100,000-scenario run is reserved for stable tail-metric reporting and CI validation.
+
+== Correctness Strategy
+
+Risk calculations must be statistically sound.
+The strategy to ensure correctness:
+
+* *Proven libraries* — NumPy `np.percentile` and `np.mean` are used for VaR and CVaR rather than hand-rolled implementations.
+* *Seed-based reproducibility* — the same seed + same YAML always produces the same results, enabling diff-based regression detection.
+* *Property-based tests* — the test suite includes Hypothesis-driven property tests for distribution sampling (non-negativity, range constraints, ordering invariants).
+* *Architecture boundary tests* — `cicd/run-cicd.sh arch` verifies that no notebook imports from `fhs.core.*` directly, enforcing the DDD dependency rule.
+* *BVF 95% ordering invariant* — tests assert `p5 ≤ expected ≤ p95` for every simulated feature result.
+
+'''
+_Part of Arc42 Architecture Documentation_
