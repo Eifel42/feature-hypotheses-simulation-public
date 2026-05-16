@@ -1,0 +1,46 @@
+= System Scope and Context
+
+== System Context
+
+.System Context Diagram
+image::structurizr-SystemContext.svg[System Context Diagram,900,600]
+
+*Legend:* <<c4-reference,C4 Notation Reference>>
+
+*Canvas Views:* link:architecture-inception-canvas.html[Architecture Inception Canvas] and link:architecture-communication-canvas.html[Architecture Communication Canvas]
+
+== Business Context
+
+=== Primary Users
+
+include::../_generated/_primary-users-table.adoc[]
+
+== Technical Context
+
+[cols="2,2,4"]
+|===
+|Interface / Dependency |Direction |Purpose
+
+|`apps/fhs/notebooks/config/*.yaml`
+|Input
+|Scenario source of truth (features, budget, strategy metadata) loaded via `ScenarioService` and `YamlFeatureRepository`.
+
+|`fhs plan --features <file>`
+|Input
+|CLI ingest of YAML/JSON/CSV feature sets for ad-hoc planning and report generation.
+
+|NumPy / SciPy / Pandas
+|Internal dependency
+|Numerical simulation, risk metrics, and tabular portfolio analysis.
+
+|Matplotlib / Plotly
+|Output
+|Visual communication of simulation distributions and portfolio risk summaries in notebooks/reports.
+
+|Markdown / notebook exports
+|Output
+|Decision artifacts for Product Owner and stakeholder review (local files, no remote API push).
+|===
+
+'''
+_Part of Arc42 Architecture Documentation_

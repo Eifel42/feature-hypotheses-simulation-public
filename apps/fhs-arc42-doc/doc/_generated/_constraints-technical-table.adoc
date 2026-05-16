@@ -1,0 +1,18 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="3,5", options="header"]
+|===
+|Constraint |Rationale
+
+|Python 3.14+
+|Baseline requires-python is 3.14+, validated on current runtime versions.
+
+|Jupyter Lab
+|Primary user interface where code, results, and explanations are combined.
+
+|Docker
+|Zero-setup installation and reproducible environment startup.
+
+|Linux / macOS
+|Scripts and Makefiles target Linux and macOS workflows.
+
+|===

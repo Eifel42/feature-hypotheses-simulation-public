@@ -1,0 +1,7 @@
+{# metric_table.html.j2 — striped two-column metrics table #}
+<table style="{{ table_base(border='1px solid ' ~ COLORS.border) }}">{{ table_caption(title) }}{{ table_header_row([metric_header, value_header]) }}<tbody>
+{% for metric, value, value_color in rows %}
+{% set color_style = 'color:' ~ value_color ~ ';' if value_color else 'color:' ~ COLORS.neutral ~ ';' %}
+<tr style="background:{{ alternating_bg(loop.index0) }};"><td style="padding:10px;font-weight:bold;">{{ metric }}</td><td style="padding:10px;font-size:18px;font-weight:bold;{{ color_style }}">{{ value }}</td></tr>
+{% endfor %}
+</tbody></table>

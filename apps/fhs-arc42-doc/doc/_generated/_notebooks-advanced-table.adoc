@@ -1,0 +1,12 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="2,4", options="header"]
+|===
+|Notebook |Purpose
+
+|A01 Portfolio Advisor
+|Opportunity cost, ranking, budget optimization, concentration risk, and PO report export.
+
+|A02 Portfolio Risk Dashboard
+|Portfolio value table, stress scenarios, risk contribution, and budget frontier chart.
+
+|===

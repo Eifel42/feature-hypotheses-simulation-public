@@ -1,0 +1,12 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="2,4", options="header"]
+|===
+|Notebook |Purpose
+
+|GLOSSARY
+|Canonical glossary of product decision and risk terms.
+
+|README / config reference
+|Scenario config schema reference and supporting configuration notes.
+
+|===

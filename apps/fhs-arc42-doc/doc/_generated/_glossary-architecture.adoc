@@ -1,0 +1,14 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+== Architecture and Technical Terms
+
+* **Jupyter Notebook** - Interactive computing environment combining code, visualizations, and text.
+* **NumPy / SciPy** - Python libraries for numerical and scientific computing.
+* **Matplotlib / Plotly** - Charting libraries for static and interactive visualization.
+* **Docker** - Container platform used for reproducible documentation and notebook environments.
+* **Pydantic** - Python library for schema and model validation.
+* **C4 Model** - Architecture diagramming model with context, container, component, and code views.
+* **Arc42** - Template for software architecture documentation.
+* **UX Simulator** - Module that models user behavior (task completion rates, survey responses, segmentation).
+* **PlantUML** - Diagram-as-code tool for architecture visualizations.
+* **Semantic Colour Palette** - 16-token color system with WCAG 2.1 AA contrast support.
+* **WCAG 2.1 AA** - Accessibility level requiring at least 4.5 to 1 contrast for normal text.

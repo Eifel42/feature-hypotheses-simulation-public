@@ -1,0 +1,27 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="2,4", options="header"]
+|===
+|Notebook |Purpose
+
+|01 Getting Started
+|First simulation with feature model, Monte Carlo, VaR, and expected business value.
+
+|02 Blockchain Case Study
+|Three hypotheses with strategic categories and EUR business values using central blockchain.yaml configuration.
+
+|03 Capital Budgeting
+|Budget-constrained feature selection and budget-fit analysis.
+
+|04 Portfolio Advisor
+|Ranked feature list, budget recommendation, and executive summary workflow.
+
+|05 Risk Analysis
+|Risk layer simulation, Shapley attribution, and sensitivity analysis.
+
+|06 Delivery Risk
+|Bernoulli gate model, break-even probability, expected loss, LaR 95%, and sunk cost at cancellation.
+
+|07 Executive Decision
+|Board-ready synthesis across notebooks 02-06 with five investment dimensions, traffic-light recommendation, and next actions.
+
+|===
