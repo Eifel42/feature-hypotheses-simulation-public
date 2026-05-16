@@ -1,0 +1,22 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="1,3,4", options="header"]
+|===
+|Priority |Quality Goal |Motivation
+
+|1
+|Correctness
+|Risk calculations must be statistically sound. Product Owners, Portfolio Owners, Agile leaders, and Risk Managers rely on the numbers for real business decisions.
+
+|2
+|Simplicity
+|Results must be understandable without a finance background. Plain language, EUR figures, and clear labels are required.
+
+|3
+|Transparency
+|Every metric must be explained in context, not only displayed as a number.
+
+|4
+|Practical Value
+|Insights must connect directly to actionable decisions on priority, build/skip, and budget fit.
+
+|===

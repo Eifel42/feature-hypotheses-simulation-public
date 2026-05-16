@@ -1,0 +1,19 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+== Financial Risk Terms
+
+* **Business Value Floor (BVF 95%)** - The simulated business value exceeded in 95 out of 100 scenarios. The primary downside boundary metric in FHS. Equivalent to a VaR-style 5th percentile of the business value distribution — not a loss metric.
+* **VaR (Value at Risk)** - Financial industry term for the loss not exceeded at a given confidence level. In FHS, the equivalent concept is the Business Value Floor (BVF 95%) — the value floor, not a loss floor. See BVF 95%.
+* **Expected Shortfall (CVaR / ES)** - Average outcome across the worst 5 percent of scenarios. More conservative than BVF 95% because it captures the severity of tail outcomes, not just the threshold.
+* **Loss at Risk (LaR 95%)** - 95th percentile of the loss distribution — the maximum loss not exceeded in 95 out of 100 scenarios. Used for delivery risk and cost-overrun analysis.
+* **Risk Appetite** - The maximum level of risk an organization is willing to accept when pursuing its objectives. In FHS, expressed as thresholds on BVF 95%, CVaR loss, break-even probability, and concentration limits.
+* **Assumption Quality** - A metadata label (e.g., expert-estimate, reviewed, validated) describing how rigorously the input parameters for a simulation have been derived. Low assumption quality reduces confidence in simulation outputs even when the math is correct.
+* **Decision Grade** - A composite confidence label (GO / Conditional GO / Review) assigned to a feature or portfolio recommendation based on risk metrics and assumption quality. Intended for Product Owners, Portfolio Owners, and Investment Committees.
+* **Value Driver** - A strategic category for features that are expected to generate direct business value with positive ROI. It broadens an older sales-first label so cost savings, risk reduction, and operational improvements fit the same category.
+* **Monte Carlo Simulation** - 10,000 randomized scenarios per feature.
+* **Expected Business Value** - Mean outcome across all scenarios.
+* **Risk Ratio** - Standard deviation divided by expected business value.
+* **Budget Frontier** - Optimal portfolio selections balancing risk and budget via ILP/SLSQP solvers.
+* **Correlation** - How features move together.
+* **Diversification** - Risk reduction from uncorrelated features.
+* **HHI (Concentration Index)** - Portfolio diversification measure.
+* **Stress Testing** - Scenario analysis with adverse conditions.

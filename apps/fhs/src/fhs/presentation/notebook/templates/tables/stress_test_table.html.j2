@@ -1,0 +1,7 @@
+{# stress_test_table.html.j2 #}
+<div style="{{ card_wrapper(padding='20px') }};color:{{ COLORS.neutral }};"><h3 style="margin-top:0;color:{{ COLORS.neutral }};">{{ title }}</h3><table style="{{ table_base(font_size='13px', margin='0') }}"><tr style="background:{{ COLORS.surface }};font-weight:bold;color:{{ COLORS.neutral }};"><th style="padding:10px;text-align:left;">Scenario</th><th style="padding:10px;text-align:right;">Baseline</th><th style="padding:10px;text-align:right;">Stressed</th><th style="padding:10px;text-align:right;">Change</th></tr>
+{% for scenario in scenarios %}
+{% set color = scenario.get('color', COLORS.neutral) if scenario.get is defined else scenario.color|default(COLORS.neutral) %}
+<tr><td style="padding:10px;font-weight:bold;color:{{ COLORS.neutral }};">{{ scenario.name if scenario.name is defined else scenario['name'] }}</td><td style="padding:10px;text-align:right;color:{{ COLORS.neutral }};">EUR {{ '{:,.0f}'.format(baseline) }}</td><td style="padding:10px;text-align:right;color:{{ color }};">EUR {{ '{:,.0f}'.format(scenario.stressed_value if scenario.stressed_value is defined else scenario['stressed_value']) }}</td><td style="padding:10px;text-align:right;font-weight:bold;color:{{ color }};">{{ '{:+.1f}'.format(scenario.change_pct if scenario.change_pct is defined else scenario['change_pct']) }}%</td></tr>
+{% endfor %}
+</table></div>

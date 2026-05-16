@@ -1,0 +1,171 @@
+ADR-008: Container Strategy
+
+== Status
+Accepted
+
+== Context
+Development and deployment of data science applications can be challenging due to:
+* Complex dependency management (NumPy, SciPy, scientific stack)
+* Platform differences (macOS, Linux)
+* Python version compatibility issues
+* Jupyter environment setup complexity
+* Development environment consistency across team members
+
+Options for addressing these challenges:
+1. **No containerization** - rely on local Python environments
+2. **Development containers only** - Docker for development, local for production
+3. **Full containerization** - Docker for development and production
+4. **Hybrid approach** - containers for optional development environment
+
+== Decision
+We will implement a *hybrid container strategy* that supports both local and containerized development:
+
+**Local Development (Primary)**:
+* Direct Python installation with pip/conda
+* Local Jupyter Lab installation
+* Native performance and easy debugging
+* Direct file system access
+
+**Containerized Development (Optional)**:
+* Docker Compose setup for consistent environments
+* Pre-configured Jupyter Lab with all dependencies
+* Isolated environment for experimentation
+* Easy onboarding for new team members
+
+**Container Configuration**:
+```yaml
+# docker-compose.yml
+services:
+  fhs-platform:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/workspace
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser
+```
+
+== Consequences
+
+=== Positive
+* *Flexible development* - developers can choose local or containerized
+* *Easy onboarding* - new team members can start with Docker
+* *Consistent environments* - containers eliminate "works on my machine"
+* *Platform independence* - same environment on macOS and Linux
+* *Experimentation safety* - containers can be destroyed and recreated
+* *CI/CD compatibility* - containers work well in build pipelines
+
+=== Negative
+* *Additional complexity* - two development paths to maintain
+* *Docker learning curve* - team needs basic Docker knowledge
+* *Performance overhead* - containers slower than native Python
+* *File permissions* - potential issues with bind mounts
+* *Storage overhead* - Docker images take disk space
+
+=== Mitigation
+* *Clear documentation* - README with both local and Docker setup
+* *Makefile integration* - `make run` for easy container startup
+* *Volume optimization* - persistent volumes for Jupyter data
+* *Performance tuning* - optimized Docker configuration
+* *Regular cleanup* - automated removal of unused containers/images
+
+== Container Architecture
+
+=== Base Image Strategy
+```dockerfile
+FROM python:3.14-bookworm
+
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python dependencies
+COPY config/pyproject.toml ./pyproject.toml
+RUN pip install --no-cache-dir -e ".[dev,notebooks]"
+
+# Application code
+COPY src/ src/
+COPY notebooks/ notebooks/
+RUN pip install -e .
+```
+
+=== Security Considerations
+* **Non-root user**: Container runs as `fhsuser` not root
+* **Minimal base image**: Only necessary system packages
+* **Dependency pinning**: Dependencies managed in `pyproject.toml`
+* **No secrets**: No API keys or credentials in images
+
+=== Development Workflow
+
+**Local Development**:
+```bash
+# Setup
+pip install -e .[dev]
+make test
+
+# Development
+jupyter lab
+make format
+make quality
+```
+
+**Container Development**:
+```bash
+# Setup
+make docker-build
+make docker-up
+
+# Access Jupyter at http://localhost:8888
+# Development files automatically sync via volume mount
+```
+
+== Deployment Strategy
+
+=== Development Deployment
+* **Local**: Direct Python execution for development teams
+* **Container**: Docker Compose for consistent development environments
+* **CI/CD**: Containers for testing and validation pipelines
+
+=== Production Deployment Options
+1. **JupyterHub**: Multi-user Jupyter environment
+2. **Cloud notebooks**: AWS SageMaker, Google Colab, Azure Notebooks
+3. **Package installation**: Direct pip install on target systems
+4. **Container orchestration**: Kubernetes for enterprise deployments
+
+=== Environment Parity
+* **Development**: Local or containerized Python environment
+* **Testing**: Containerized CI/CD pipelines
+* **Production**: Depends on deployment target (cloud vs on-premise)
+
+== Resource Requirements
+
+=== Local Development
+* **Python**: 3.14+ with scientific computing libraries
+* **Memory**: 4GB+ for large simulations
+* **Disk**: 2GB+ for dependencies and data
+* **CPU**: Any modern processor, benefits from multiple cores
+
+=== Container Development
+* **Docker**: Desktop version with sufficient memory allocation
+* **Memory**: 6GB+ total (2GB for Docker overhead)
+* **Disk**: 5GB+ for images and volumes
+* **CPU**: Container overhead minimal
+
+== Maintenance Strategy
+
+=== Image Updates
+* **Base image**: Monthly updates for security patches
+* **Dependencies**: Regular dependency updates with testing
+* **Python version**: Annual Python version updates
+
+=== Container Lifecycle
+* **Build automation**: CI builds new images on dependency changes
+* **Registry strategy**: Private registry for enterprise, Docker Hub for open source
+* **Cleanup procedures**: Regular removal of old images and containers
+
+'''
+_Architecture Decision Record_

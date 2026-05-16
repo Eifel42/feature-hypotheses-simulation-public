@@ -1,0 +1,18 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="2,4", options="header"]
+|===
+|User |Interaction
+
+|Product Owner
+|Defines feature parameters, runs simulations, and reviews expected business value, business value floor, and decision recommendations.
+
+|Portfolio Owner / Agile leader
+|Uses portfolio views to compare roadmap options, budget fit, and delivery confidence.
+
+|Risk Manager
+|Runs portfolio analysis including CVaR, correlation matrix, stress tests, and budget frontier.
+
+|Business Stakeholder
+|Reviews exported notebook reports with quantified risk exposure in EUR.
+
+|===

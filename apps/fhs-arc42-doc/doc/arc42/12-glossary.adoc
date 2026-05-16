@@ -1,0 +1,16 @@
+= Glossary
+
+*Single source of truth:* all terms are defined in `apps/fhs-arc42-doc/doc/registry/architecture-data.yaml` under the `glossary:` key.
+The generated AsciiDoc fragments below are produced from the registry — do not edit them manually.
+
+The notebook at `apps/fhs/notebooks/GLOSSARY.ipynb` renders a subset of these terms in a user-friendly table for Product Owners reading in JupyterLab.
+If a term is missing from the notebook, add it to the registry first, then regenerate.
+
+include::../_generated/_glossary-financial.adoc[]
+include::../_generated/_glossary-delivery.adoc[]
+include::../_generated/_glossary-multi_year.adoc[]
+include::../_generated/_glossary-product.adoc[]
+include::../_generated/_glossary-architecture.adoc[]
+
+'''
+_Part of Arc42 Architecture Documentation_

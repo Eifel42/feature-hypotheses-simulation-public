@@ -1,0 +1,12 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="3,5", options="header"]
+|===
+|Constraint |Rationale
+
+|No financial training required
+|Product Owners, Portfolio Owners, Agile leaders, and Risk Managers must run simulations without statistical expertise.
+
+|Agile context
+|Risk assessments must fit into sprint planning sessions.
+
+|===

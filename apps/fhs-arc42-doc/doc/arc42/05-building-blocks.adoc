@@ -1,0 +1,289 @@
+= Building Block View
+
+== Level 2: Container Landscape
+
+FHS consists of two containers: the Jupyter Lab interface where users run analysis, and the FHS Python Library that provides all simulation and risk logic.
+The diagram below shows how they connect and what each container is responsible for.
+
+.Container View
+image::structurizr-Containers.svg[Container View,900,600]
+
+[cols="2,2,3"]
+|===
+|Container |Technology |Responsibilities
+
+|*Jupyter Lab*
+|Python 3.14+, JupyterLab
+|Primary user interface — interactive analysis and visualization
+
+|*FHS Python Library*
+|Python package, NumPy, SciPy
+|Core business logic: Monte Carlo simulation, VaR/CVaR, portfolio analysis
+
+|===
+
+Notebooks import the FHS library directly — no REST API, no message queue, no database:
+
+[source,python]
+----
+# Modern approach (DDD-based, YAML config):
+from fhs.notebook import load_scenario
+
+scenario = load_scenario("blockchain", editable=True)
+# Access features, budget, strategy from scenario object
+
+# Or: Direct API usage (for custom features):
+from fhs import Feature, FeatureSimulator
+
+feature = Feature(
+    name="Mobile Checkout",
+    expected_users=20_000,
+    conversion_rate=0.12,
+    uncertainty=0.20,
+    business_value_per_conversion=45.0,
+    development_cost=25_000,
+)
+simulator = FeatureSimulator(seed=42)
+result = simulator.simulate_feature(feature, scenarios=10_000)
+----
+
+== Level 3: Component Views
+
+=== Container "Jupyter Lab" — Notebooks by Track
+
+The three notebook tracks serve different audiences: the Core track guides Product Owners through a first simulation and portfolio decision; the Tutorial track covers distribution selection; the Advanced track adds optimization, stress testing, and executive reporting for Risk Managers and CFOs.
+
+.Notebook Components (green = Core, amber = Tutorial, blue = Advanced)
+image::structurizr-JupyterNotebooks.svg[Notebook Components,900,500]
+
+.Core Track — Getting started (everyone)
+include::../_generated/_notebooks-core-table.adoc[]
+
+.Supporting Notebooks
+include::../_generated/_notebooks-supporting-table.adoc[]
+
+.Tutorial Track (Product Owner · Risk Manager)
+include::../_generated/_notebooks-tutorial-table.adoc[]
+
+.Advanced Track (Risk Manager · CFO)
+include::../_generated/_notebooks-advanced-table.adoc[]
+
+=== Container "FHS Python Library" — DDD Components
+
+The library follows DDD-inspired layering.
+Data flows strictly downward: the Presentation layer calls Application services, which call Domain and Core Service logic, which call Infrastructure for I/O.
+No upward or sideways dependencies are allowed.
+
+.DDD Architecture Overview — Five Layers
+image::structurizr-LibraryHighLevel.svg[DDD Architecture Overview,900,500]
+
+The ports and facades diagram below zooms in on how the Presentation layer (notebooks) accesses library logic through the `fhs.notebook` facade, and how the Application layer exposes the `AdvancedPortfolioService` with domain-specific sub-facades.
+
+.Python Library — Ports & Facades (focused)
+image::structurizr-PortsAndFacades.svg[Library Ports and Facades,900,450]
+
+The FHS Python Library follows DDD-inspired layering with five architectural layers:
+
+[cols="2,2,4"]
+|===
+|Layer |Technology |Responsibility
+
+|*Presentation*
+|ipywidgets, Matplotlib, Plotly
+|Notebook facade (`load_scenario`), `show.*` widgets, charts, styling & formatting
+
+|*Application*
+|Python
+|Service orchestration: `AdvancedPortfolioService` with 5 sub-facades, `ScenarioService`, `CaseStudyService`, `ExportService`
+
+|*Domain*
+|Pydantic
+|`Feature` entity, 20+ value objects, `ScenarioConfig` aggregate, domain events, repository protocols
+
+|*Core Services*
+|NumPy, SciPy, PuLP
+|Monte Carlo engine, Risk Calculator (VaR/CVaR), Portfolio analysis, Optimization (ILP/SLSQP), Financial Calculator (NPV/IRR)
+
+|*Infrastructure*
+|PyYAML
+|YAML scenario persistence, CSV/JSON portfolio export, version history, simulation defaults
+
+|===
+
+The following diagrams zoom into each layer individually.
+
+==== Presentation Layer
+
+.Presentation Layer — Notebook Facade & Widgets
+image::structurizr-PresentationLayer.svg[Presentation Layer,900,400]
+
+The presentation layer lives in `presentation/notebook/` and is structured into focused sub-modules:
+
+[cols="2,4"]
+|===
+|Module |Responsibilities
+
+|`styling.py`
+|`COLORS` proxy, `palette` mapping, `FIG` figure sizes, `RISK_HEATMAP_GRADIENT`, `setup_style()`. Supports light and dark themes via `ThemeContext`.
+
+|`charts/risk.py`, `charts/portfolio.py`, `charts/distributions.py`
+|Matplotlib chart functions. All return `matplotlib.figure.Figure` so callers can save, embed, or assert in tests.
+
+|`widgets/_risk.py`, `widgets/_portfolio.py`
+|`ipywidgets`-based HTML builders for risk cards, portfolio tables, selection explanations. Type-annotated with `TYPE_CHECKING` guards to avoid circular imports.
+
+|`formatters/`
+|Pure formatting functions (no I/O) — convert domain value objects to styled HTML strings.
+
+|`template_engine/`
+|Jinja2 templates for capital budgeting summary and other multi-section reports.
+
+|===
+
+===== FHSDisplay Mixin Facade
+
+`FHSDisplay` (`presentation/notebook/display.py`) is assembled from six mixins, one per business domain:
+
+[cols="2,4"]
+|===
+|Mixin |`show.*` methods
+
+|`_RiskMixin`
+|`show.risk_profile()`, `show.risk_contribution()`, `show.risk_layers()`, `show.stress_test()`, `show.shapley()`, `show.sensitivity()`
+
+|`_PortfolioMixin`
+|`show.portfolio()`, `show.ranking()`, `show.multi_year()`, `show.sprint_plan()`, `show.ilp_selection()`
+
+|`_CapitalBudgetingMixin`
+|`show.capital_budgeting_summary()`, `show.budget_optimizer()`, `show.budget_risk_path()`
+
+|`_DeliveryMixin`
+|`show.delivery_risk()`, `show.delivery_metrics()`, `show.profitability()`
+
+|`_DistributionMixin`
+|`show.distributions()`, `show.samples()`, `show.metrics()`, `show.beta_sample_size()`
+
+|`_PrimitivesMixin`
+|`show.kpi_row()`, `show.info_box()`, `show.section_heading()`
+
+|===
+
+==== Application Layer
+
+.Application Layer — Service Orchestration
+image::structurizr-ApplicationLayer.svg[Application Layer,900,500]
+
+===== AdvancedPortfolioService Sub-Facades
+
+`AdvancedPortfolioService` exposes five domain sub-facades, each encapsulating a coherent set of operations:
+
+[source,python]
+----
+service = AdvancedPortfolioService(features, budget=1_000_000, seed=42)
+
+service.risk.*       # Risk attribution, loss metrics, Shapley analysis
+service.delivery.*   # Delivery risk, sprint overruns, profitability
+service.multi_year.* # Multi-year simulations, NPV/IRR, financial views
+service.decisions.*  # Portfolio decisions, optimization, budget analysis
+service.layers.*     # Risk layer simulations
+----
+
+All sub-facades use an explicit `PortfolioContext` Protocol instead of `host: Any`.
+
+==== Domain Layer
+
+.Domain Layer — Entities, Value Objects & Events
+image::structurizr-DomainLayer.svg[Domain Layer,900,400]
+
+==== Core Domain Services
+
+.Core Domain Services — Simulation, Risk & Portfolio
+image::structurizr-CoreServiceLayer.svg[Core Service Layer,900,500]
+
+==== Infrastructure Layer
+
+.Infrastructure Layer — Persistence & Configuration
+image::structurizr-InfrastructureLayer.svg[Infrastructure Layer,900,400]
+
+==== Component Detail
+
+[cols="2,2,3"]
+|===
+|Component |Technology |Responsibilities
+
+|*Domain Model* (`core/model/entities/feature.py`, `core/model/value_objects/*.py`)
+|Pydantic BaseModel, frozen dataclasses
+|Core entities (`Feature`, `ScenarioConfig`) and 20+ value objects (`SimulationResult`, `LossProfile`, `RiskFactorShapley`, `ComponentRiskResult`, `OptimizationResult`, etc.) with validation and domain semantics
+
+|*Monte Carlo Engine* (`core/services/monte_carlo/engine.py`)
+|NumPy
+|Scenario generation: Normal, Lognormal, Uniform; bounded and correlated sampling
+
+|*Risk Services* (`core/services/risk/*.py`)
+|NumPy / SciPy
+|`RiskCalculator`: VaR, CVaR, percentiles, confidence intervals, bootstrap, loss profiles +
+`RiskLayerSimulationService`: Multi-layer risk simulation (delivery, market, component, global) +
+`ShapleyAttributionService`: Shapley value calculation for risk factor attribution +
+`ComponentRiskService`: Component/cluster risk analysis +
+`SensitivityAnalysisService`: Parameter sensitivity analysis
+
+|*Simulation Orchestration* (`core/services/simulation/simulator.py`)
+|Orchestration
+|Main controller — coordinates Monte Carlo engine and risk calculations
+
+|*Portfolio Services* (`core/services/portfolio/analysis.py`, `optimizer.py`)
+|NumPy / SciPy
+|Portfolio VaR/CVaR, correlation matrix handling, optimization, budget frontier (ILP/SLSQP)
+
+|*Application Services* (`application/*.py`)
+|Business orchestration
+|`AdvancedPortfolioService` (`advanced_portfolio_service.py`): Advanced portfolio analytics with domain sub-facades (see below) +
+`OptimizationService` (`optimization_service.py`): Portfolio optimization orchestration +
+`BlockchainCaseStudyService` (`blockchain_case_study_service.py`): Case study-specific workflows +
+`ExportService` (`export_service.py`): CSV/JSON portfolio export +
+All services return typed value objects (no `dict[str, Any]`)
+
+|*Repository Contract + Infrastructure* (`core/model/repositories.py`, `infra/repositories/yaml_repository.py`)
+|Protocol + YAML
+|`FeatureRepository` protocol and YAML implementation for scenario persistence (`notebooks/config/*.yaml`)
+
+|*Scenario Service* (`application/scenario_service.py`)
+|Orchestration
+|`ScenarioService` coordinates loading, validation, persistence/versioning, and exam checks; returns `ScenarioContext`
+
+|*Notebook Facade* (`notebook/__init__.py`)
+|Presentation
+|`load_scenario()` function — simplified entry point for notebooks. Hides complexity, provides clean API (DDD Presentation Layer)
+
+|*Presentation Layer* (`presentation/notebook/`)
+|Presentation
+|Mixin-based `FHSDisplay` facade, semantic chart styling, HTML widget builders, Jinja2 template engine; see below for details.
+
+|*Domain Events* (`core/model/events.py`)
+|Event Bus
+|`DomainEvent`, `ScenarioConfigurationChanged`, `EventBus`, `EventLogger` — audit trail for configuration changes
+
+|*Example Data* (`examples/blockchain.py`)
+|Helper utilities
+|Reusable helper functions (`expected_business_value`, `standalone_roi`); canonical scenario data is YAML-based
+
+|*Exception Hierarchy* (`core/model/exceptions.py`)
+|Python exceptions
+|Custom exception hierarchy: `FHSException`, `SimulationError`, `ValidationError` — used across all core modules for consistent error handling.
+
+|*UX Simulation* (`ux_simulation/models.py`, `ux_simulation/ux_simulator.py`)
+|NumPy
+|UX simulation: `UserProfile`, `UserSurveySimulator`, `UXSimulator`, `TaskScenario` — models user behavior and task completion scenarios.
+
+|*Configuration* (`infra/config.py`)
+|Dataclass
+|`SimulationConfig` and `DEFAULT_CONFIG` — logging, caching, and simulation defaults.
+
+|*Reporting* (`core/services/reporting/*.py`, `plotting/reporting.py`)
+|Pandas, Matplotlib
+|Portfolio summaries (`portfolio_reporting.py`), PO-facing markdown/PDF-ready reporting (`po_summary.py`), stress test summaries (`stress_test.py`), year-1 risk summary (`year1_risk.py`), and chart output
+
+|===
+
+'''
+_Part of Arc42 Architecture Documentation_
