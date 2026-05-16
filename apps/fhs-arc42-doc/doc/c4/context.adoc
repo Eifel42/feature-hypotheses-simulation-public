@@ -1,0 +1,44 @@
+= C4 Level 1 - System Context
+
+NOTE: To get angular/straight relationships in C4-Mermaid diagrams, use `Rel_D`, `Rel_U`, `Rel_L`, `Rel_R` instead of `Rel`.
+Example:
+`Rel_D(po, fhs, "Prioritizes features using risk/value analysis")`
+See link:https://github.com/plantuml-stdlib/C4-PlantUML/blob/master/C4_Context.puml[Mermaid C4 Notation Documentation].
+
+== Overview
+The system context diagram shows how Feature Hypotheses Simulation supports local planning decisions for product portfolios.
+
+[source,mermaid]
+----
+C4Context
+    title System Context - Feature Hypotheses Simulation
+    Person(po, "Product Owner", "Prioritizes feature backlog with quantified uncertainty")
+    Person(risk, "Financial Risk Manager", "Reviews CVaR, correlation, stress-test behavior")
+    Person(stakeholder, "Business Stakeholder", "Consumes reports for funding decisions")
+    System(fhs, "Feature Hypotheses Simulation", "Local-first Python toolkit for Monte Carlo, VaR, CVaR, and portfolio advisory")
+    System_Ext(config, "Scenario Configuration", "YAML scenario files in notebooks/config")
+    System_Ext(exports, "Planning Artifacts", "Notebook outputs and CLI markdown reports")
+    Rel_D(po, fhs, "Runs notebook analyses")
+    Rel_D(risk, fhs, "Runs advanced portfolio analysis")
+    Rel_D(stakeholder, fhs, "Reviews generated reports")
+    Rel_L(fhs, config, "Loads and validates scenarios from")
+    Rel_R(fhs, exports, "Produces")
+----
+
+== Key Relationships
+
+=== Primary Users
+* *Product Owners* leverage risk metrics for feature prioritization
+* *Portfolio Owners and Agile leaders* use the portfolio view for roadmap and budget decisions
+* *Risk Managers* assess correlation, CVaR, and stress scenarios
+* *Business Stakeholders* understand portfolio risk in business terms
+
+=== External Systems
+* *Scenario Configuration* provides YAML-based feature and budget definitions
+* *Planning Artifacts* receive notebook and CLI report outputs
+
+=== Value Proposition
+The platform bridges the gap between sophisticated quantitative risk assessment and practical product development needs.
+
+---
+_C4 Level 1 - System Context_

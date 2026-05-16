@@ -1,0 +1,89 @@
+ADR-004: Jupyter Notebooks as Components
+
+== Status
+Accepted
+
+== Context
+Traditional software architecture treats notebooks as:
+* Development tools only
+* Not production components
+* Documentation artifacts
+* Temporary exploration vehicles
+
+However, for the Feature Hypotheses Simulation platform, notebooks serve as:
+* Primary user interface for product teams
+* Progressive learning journey from basic to advanced
+* Domain-specific analysis templates
+* Production-ready analytical workflows
+
+The question is whether to treat notebooks as architectural components or just supporting tools.
+
+== Decision
+We will treat *Jupyter notebooks as first-class architectural components* within the C4 model:
+* Each notebook is a component within the Jupyter Lab container
+* Notebooks have defined responsibilities and target users
+* Component relationships show notebook-to-library connections
+* Learning progression is explicitly modeled
+
+Notebook component structure:
+* *01-getting-started.ipynb* - Entry point for basic feature analysis
+* *02-advanced-risk-analysis.ipynb* - UX simulation and advanced methods
+* *03-blockchain-agriculture-case-study.ipynb* - Real-world business scenarios
+* *04-blockchain-report.ipynb* - Formal reporting and certification
+
+== Consequences
+
+=== Positive
+* *Clear user journey* - explicit progression from basic to advanced
+* *Domain-specific templates* - notebooks tailored to specific use cases
+* *Component-level documentation* - each notebook has defined scope
+* *Architectural visibility* - notebooks appear in system diagrams
+* *Method-level traceability* - clear connections to library functions
+
+=== Negative
+* *Version control complexity* - notebook JSON format
+* *Testing challenges* - harder to unit test than pure Python
+* *Execution order dependencies* - notebooks must be run sequentially
+* *State management* - shared kernel state between cells
+
+=== Mitigation
+* *Clear cell execution instructions* in each notebook
+* *Independent cell design* - minimize dependencies between cells
+* *Automated testing* via nbval or papermill
+* *Regular notebook cleanup* - clear outputs before committing
+
+== Component Design Principles
+
+=== Learning Journey Design
+1. **Progressive Complexity**: Each notebook builds on previous concepts
+2. **Self-contained**: Notebooks can be run independently
+3. **Clear Outcomes**: Each notebook produces specific deliverables
+4. **Business Context**: Always connected to real product decisions
+
+=== Method Connection Pattern
+```python
+# Explicit method calls shown in notebooks
+from fhs import Feature, FeatureSimulator, UXSimulator
+
+# Basic pattern (Notebook 1)
+simulator = FeatureSimulator()
+feature_cls = Feature  # example keeps constructor details out of the ADR
+
+# Advanced pattern (Notebook 2)
+ux_sim = UXSimulator()
+user = object()
+task = object()
+learning_data = ux_sim.simulate_learning_curve(user, task, 10)
+
+# Business pattern (Notebook 3)
+portfolio_features: list[Feature] = []
+comparison = simulator.compare_features(portfolio_features, scenarios=5000)
+```
+
+=== Target User Mapping
+* **Product Owners**: Notebooks 1, 3, 4 (business focus)
+* **Scrum Teams**: Notebooks 1, 2 (development and UX focus)
+* **Business Stakeholders**: Notebooks 3, 4 (reporting and case studies)
+
+'''
+_Architecture Decision Record_

@@ -1,0 +1,132 @@
+= Runtime View
+
+== Typical Product Owner Workflow
+
+The following sequence shows how a Product Owner runs a first feature risk assessment: from opening the notebook, through Monte Carlo simulation, to reading the BVF 95% result and exporting the report.
+
+.C4 Dynamic View — Product Owner Workflow
+image::structurizr-SimpleFeatureAnalysis.svg[Product Owner Workflow,900,500]
+
+[cols="1,4,4"]
+|===
+|Step |User action |System processing
+
+|1
+|Open `01-getting-started.ipynb` in Jupyter Lab
+|Kernel initialises Python environment
+
+|2
+|Load scenario context via notebook facade: `scenario = load_scenario("blockchain", editable=True)`
+|`ScenarioService` loads YAML config through `YamlFeatureRepository`, validates with `ScenarioConfig`, builds `ScenarioContext`, and runs exam checks
+
+|3
+|Run feature simulation: `simulator.simulate_feature(feature, scenarios=10_000)`
+|`FeatureSimulator` orchestrates `MonteCarloEngine` and `RiskCalculator` (VaR, CVaR, expected value)
+
+|4
+|Read results: `result.expected_value`, `result.var_95`, `result.net_value`
+|SimulationResult properties return pre-calculated values
+
+|5
+|Adjust scenario parameters and persist changes
+|`ScenarioService.save_scenario()` writes YAML, creates version snapshots, and publishes `ScenarioConfigurationChanged` events
+
+|===
+
+== Sequence Diagram — Feature Simulation
+
+The diagram below traces the full call path from notebook cell to displayed result.
+Read it as: the Product Owner triggers a single cell; the notebook facade hides all service and engine calls behind `load_scenario()` and `simulate_feature()`.
+
+[plantuml, sequence-feature-simulation, svg]
+----
+@startuml
+actor "Product Owner" as PO
+participant "Jupyter Notebook" as Notebook
+participant "ScenarioService" as ScenarioService
+participant "FeatureSimulator" as FeatureSimulator
+participant "MonteCarloEngine" as MonteCarloEngine
+participant "RiskCalculator" as RiskCalculator
+
+PO -> Notebook: run cell — simulate_feature(feature, scenarios=10_000)
+activate Notebook
+Notebook -> ScenarioService: load_scenario("blockchain")
+activate ScenarioService
+ScenarioService -> ScenarioService: YamlFeatureRepository.load()\nvalidate ScenarioConfig\nexam checks
+ScenarioService --> Notebook: ScenarioContext
+deactivate ScenarioService
+
+Notebook -> FeatureSimulator: simulate_feature(feature, scenarios)
+activate FeatureSimulator
+FeatureSimulator -> MonteCarloEngine: generate(scenarios, dist, seed)
+activate MonteCarloEngine
+MonteCarloEngine --> FeatureSimulator: samples[10_000]
+deactivate MonteCarloEngine
+FeatureSimulator -> RiskCalculator: var_95, cvar_95, expected_value
+activate RiskCalculator
+RiskCalculator --> FeatureSimulator: SimulationResult
+deactivate RiskCalculator
+FeatureSimulator --> Notebook: SimulationResult
+deactivate FeatureSimulator
+
+Notebook --> PO: show.risk_profile(result)
+deactivate Notebook
+@enduml
+----
+
+== Sequence Diagram — Scenario Save with Domain Events
+
+When the Product Owner edits scenario parameters via the Configuration Form (Notebook 02) and saves, the following event flow persists the change and creates an audit entry.
+
+[plantuml, sequence-scenario-save, svg]
+----
+@startuml
+actor "Product Owner" as PO
+participant "Notebook 02\n(Configuration Form)" as Notebook
+participant "ScenarioService" as ScenarioService
+participant "YamlFeatureRepository" as Repo
+participant "VersioningService" as Versioning
+participant "EventBus / EventLogger" as Events
+
+PO -> Notebook: edit parameters, click Save
+Notebook -> ScenarioService: save_scenario(config)
+activate ScenarioService
+ScenarioService -> Repo: write notebooks/config/blockchain.yaml
+ScenarioService -> Versioning: snapshot(config, timestamp)
+ScenarioService -> Events: publish(ScenarioConfigurationChanged)
+Events -> Events: EventLogger.log(event) → Python logger INFO
+ScenarioService --> Notebook: saved confirmation
+deactivate ScenarioService
+Notebook --> PO: "Scenario saved ✓"
+@enduml
+----
+
+== Portfolio Workflow (Advanced)
+
+For portfolio analysis the Product Owner or Risk Manager uses `AdvancedPortfolioService` with its domain sub-facades:
+
+[source,python]
+----
+from fhs.application import AdvancedPortfolioService
+
+features = [feature_a, feature_b, feature_c]
+service  = AdvancedPortfolioService(features, budget=200_000, seed=42)
+
+ranking   = service.decisions.rank_features(strategy="var_floor")
+optimised = service.optimize(solver="ilp", strategy="var_floor")
+stress    = service.delivery.stress_test(features, fail_multiplier=1.5)
+----
+
+== CLI Workflow (Headless Planning)
+
+The same core services are available without notebooks:
+
+[source,bash]
+----
+fhs plan --features backlog.yaml --budget 200000 --scenarios 10000 --output po-report.md
+----
+
+The CLI parses features (YAML/JSON/CSV), runs `AdvancedPortfolioService`, and emits a markdown decision report for planning sessions.
+
+'''
+_Part of Arc42 Architecture Documentation_

@@ -1,0 +1,42 @@
+ADR-001: Python Stack Selection
+
+== Status
+Accepted
+
+== Context
+The Feature Hypotheses Simulation platform requires a technology stack that can:
+* Handle complex mathematical computations (Monte Carlo, VaR/CVaR)
+* Provide interactive user interfaces for non-technical users
+* Enable rapid prototyping and iteration
+* Support scientific computing workflows
+
+== Decision
+We will use Python 3.14+ as the primary technology stack with:
+* *NumPy/SciPy* for numerical computations
+* *Pandas* for data manipulation
+* *Jupyter Notebooks* for interactive analysis
+* *Matplotlib/Plotly* for visualization
+* *Docker* for deployment
+
+== Consequences
+
+=== Positive
+* Rich ecosystem for scientific computing
+* Familiar to development teams
+* Excellent library support for risk calculations
+* Interactive development with Jupyter
+* Strong visualization capabilities
+
+=== Negative
+* Performance overhead compared to compiled languages
+* Dependency management complexity
+* Python version compatibility issues
+
+=== Mitigation
+* Use Docker for consistent environments
+* Leverage NumPy's C optimizations
+* Pin dependency versions
+* Profile performance-critical code
+
+'''
+_Architecture Decision Record_
