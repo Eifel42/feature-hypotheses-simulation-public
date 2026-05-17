@@ -1,0 +1,714 @@
+/* Architecture Inception Canvas (AIC) page layout                            */
+/* Applies only to pages containing canvas section roles                      */
+/* -------------------------------------------------------------------------- */
+body.aic-page {
+  background: #f4f6f8;
+}
+
+body.toc2.aic-page {
+  padding-left: 0;
+}
+
+body.aic-page #toc.toc2 {
+  display: none;
+}
+
+body.aic-page #header,
+body.aic-page #content,
+body.aic-page #footer {
+  max-width: 1700px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+body.aic-page #header {
+  margin-top: 1rem;
+  margin-bottom: 0.7rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+body.aic-page #header > h1 {
+  margin: 0;
+  border: 2px solid #95a8ba;
+  background: #f5f8fb;
+  padding: 14px;
+  color: #2f5c7c;
+  font-size: 2rem;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  grid-column: 1 / -1;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+body.aic-page #header > .details {
+  margin: 0;
+  border: 2px solid #95a8ba;
+  background: #ffffff;
+  padding: 0;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(2.75rem, auto);
+}
+
+body.aic-page #header > .details br {
+  display: none;
+}
+
+body.aic-page #header > .details > span {
+  margin: 0;
+  padding: 10px 12px;
+  border-right: 1px solid #95a8ba;
+  border-bottom: none;
+  background: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  color: #0f172a;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+body.aic-page #header > .details > span:last-child {
+  border-right: none;
+}
+
+body.aic-page #content {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    "business business business business business business business business business business business business"
+    "functional functional functional context context context context context org org org org"
+    "quality quality quality context context context context context tech tech tech tech"
+    "hypotheses hypotheses hypotheses hypotheses hypotheses hypotheses risks risks risks risks risks risks";
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+  border: 3px solid #7f97ab;
+  background: #e8edf0;
+}
+
+body.aic-page #content > #preamble {
+  display: none;
+}
+
+body.aic-page #content > .sect1 {
+  margin: 0;
+  border: 2px solid #c7d0d8;
+  background: #ffffff;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 120px;
+  min-width: 0;
+}
+
+body.aic-page #content > .sect1 > h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: none;
+  padding-bottom: 0;
+  color: #2f5c7c;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+body.aic-page #content > .sect1 > .sectionbody {
+  overflow: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+body.aic-page #content > .sect1 > .sectionbody > .ulist,
+body.aic-page #content > .sect1 > .sectionbody > .olist {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+body.aic-page #content > .sect1 > .sectionbody > * {
+  max-width: none;
+}
+
+body.aic-page #content p,
+body.aic-page #content li,
+body.aic-page #content td {
+  font-size: 0.87rem;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+body.aic-page #content ul,
+body.aic-page #content ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 1.15rem;
+}
+
+body.aic-page #content li + li {
+  margin-top: 0.35rem;
+}
+
+body.aic-page #content table {
+  margin-bottom: 0;
+}
+
+body.aic-page #content pre {
+  margin-bottom: 0.5rem;
+  font-size: 0.74rem;
+  white-space: pre-wrap;
+}
+
+body.aic-page #content .imageblock {
+  margin: 0;
+}
+
+body.aic-page #content .imageblock img {
+  max-width: 100%;
+  height: auto;
+  max-height: 180px;
+  margin: 0;
+  object-fit: contain;
+}
+
+body.aic-page #content > .canvas-context .imageblock img,
+body.aic-page #content > .canvas-context .imageblock img[src$=".svg"] {
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  object-fit: contain;
+}
+
+body.aic-page #content > .canvas-business {
+  grid-area: business;
+  min-height: 130px;
+}
+
+body.aic-page #content > .canvas-functional {
+  grid-area: functional;
+  min-height: 220px;
+}
+
+body.aic-page #content > .canvas-quality {
+  grid-area: quality;
+  min-height: 195px;
+}
+
+body.aic-page #content > .canvas-context {
+  grid-area: context;
+  min-height: 430px;
+}
+
+body.aic-page #content > .canvas-org-constraints {
+  grid-area: org;
+  min-height: 220px;
+}
+
+body.aic-page #content > .canvas-tech-constraints {
+  grid-area: tech;
+  min-height: 195px;
+}
+
+body.aic-page #content > .canvas-hypotheses {
+  grid-area: hypotheses;
+  min-height: 215px;
+}
+
+body.aic-page #content > .canvas-risks {
+  grid-area: risks;
+  min-height: 215px;
+  border-color: #d66a71;
+  background: #f8d7d9;
+}
+
+body.aic-page #footer {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #475569;
+  border-top: none;
+}
+
+@media (max-width: 1040px) {
+  body.aic-page #content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "business business"
+      "functional quality"
+      "context context"
+      "org tech"
+      "hypotheses risks";
+  }
+
+  body.aic-page #content > .sect1 {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  body.aic-page #header {
+    grid-template-columns: 1fr;
+  }
+
+  body.aic-page #header > h1 {
+    font-size: 1.45rem;
+  }
+
+  body.aic-page #header > .details {
+    grid-template-columns: 1fr;
+  }
+
+  body.aic-page #header > .details > span {
+    border-right: none;
+    border-bottom: 1px solid #95a8ba;
+  }
+
+  body.aic-page #header > .details > span:last-child {
+    border-bottom: none;
+  }
+
+  body.aic-page #content {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "business"
+      "functional"
+      "quality"
+      "context"
+      "org"
+      "tech"
+      "hypotheses"
+      "risks";
+    padding: 10px;
+  }
+
+  body.aic-page #content > .sect1 {
+    min-height: 0 !important;
+  }
+}
+
+@media print {
+  @page {
+    size: A3 landscape;
+    margin: 7mm;
+  }
+
+  body.aic-page {
+    background: #ffffff !important;
+  }
+
+  body.aic-page #content {
+    gap: 8px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  body.aic-page #content > .sect1 {
+    min-height: 0 !important;
+  }
+
+  body.aic-page #content p,
+  body.aic-page #content li,
+  body.aic-page #content td {
+    font-size: 0.72rem;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Architecture Communication Canvas (ACC) layout                             */
+/* -------------------------------------------------------------------------- */
+body.acc-page {
+  background: #f4f6f8;
+}
+
+body.toc2.acc-page {
+  padding-left: 0;
+}
+
+body.acc-page #toc.toc2 {
+  display: none;
+}
+
+body.acc-page #header,
+body.acc-page #content,
+body.acc-page #footer {
+  max-width: 1700px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+body.acc-page #header {
+  margin-top: 1rem;
+  margin-bottom: 0.7rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+body.acc-page #header > h1 {
+  margin: 0;
+  border: 2px solid #95a8ba;
+  background: #f5f8fb;
+  padding: 14px;
+  color: #2f5c7c;
+  font-size: 2rem;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  grid-column: 1 / -1;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+body.acc-page #header > .details {
+  margin: 0;
+  border: 2px solid #95a8ba;
+  background: #ffffff;
+  padding: 0;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(2.75rem, auto);
+}
+
+body.acc-page #header > .details br {
+  display: none;
+}
+
+body.acc-page #header > .details > span {
+  margin: 0;
+  padding: 10px 12px;
+  border-right: 1px solid #95a8ba;
+  border-bottom: none;
+  background: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  color: #0f172a;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+body.acc-page #header > .details > span:last-child {
+  border-right: none;
+}
+
+body.acc-page #content {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    "value value value functions functions functions decisions decisions decisions technologies technologies technologies"
+    "stakeholders stakeholders stakeholders quality quality quality decisions decisions decisions technologies technologies technologies"
+    "context context context context context context components components components components components components"
+    "risks risks risks risks risks risks risks risks risks risks risks risks";
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+  border: 3px solid #7f97ab;
+  background: #e8edf0;
+}
+
+body.acc-page #content > #preamble {
+  display: none;
+}
+
+body.acc-page #content > .sect1 {
+  margin: 0;
+  border: 2px solid #c7d0d8;
+  background: #ffffff;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 120px;
+  border-left-width: 4px;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+body.acc-page #content > .sect1 > h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: none;
+  padding-bottom: 0;
+  color: #2f5c7c;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+body.acc-page #content > .sect1 > .sectionbody {
+  overflow: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+body.acc-page #content > .sect1 > .sectionbody > .ulist,
+body.acc-page #content > .sect1 > .sectionbody > .olist {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+body.acc-page #content > .sect1 > .sectionbody > * {
+  max-width: none;
+}
+
+body.acc-page #content p,
+body.acc-page #content li,
+body.acc-page #content td {
+  font-size: 0.87rem;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+body.acc-page #content ul,
+body.acc-page #content ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 1.15rem;
+}
+
+body.acc-page #content li + li {
+  margin-top: 0.35rem;
+}
+
+body.acc-page #content > .canvas-value {
+  grid-area: value;
+  min-height: 190px;
+  border-left-color: #1e40af;
+}
+
+body.acc-page #content > .canvas-functions {
+  grid-area: functions;
+  min-height: 290px;
+  border-left-color: #1d4ed8;
+}
+
+body.acc-page #content > .canvas-stakeholders {
+  grid-area: stakeholders;
+  min-height: 235px;
+  border-left-color: #0f766e;
+}
+
+body.acc-page #content > .canvas-quality {
+  grid-area: quality;
+  min-height: 190px;
+  border-left-color: #0369a1;
+}
+
+body.acc-page #content > .canvas-decisions {
+  grid-area: decisions;
+  min-height: 500px;
+  border-left-color: #4338ca;
+}
+
+body.acc-page #content > .canvas-technologies {
+  grid-area: technologies;
+  min-height: 500px;
+  border-left-color: #059669;
+}
+
+body.acc-page #content > .canvas-context {
+  grid-area: context;
+  min-height: 290px;
+  border-left-color: #1e40af;
+}
+
+body.acc-page #content > .canvas-components {
+  grid-area: components;
+  min-height: 290px;
+  border-left-color: #0f766e;
+}
+
+body.acc-page #content > .canvas-risks {
+  grid-area: risks;
+  min-height: 190px;
+  border-left-color: #b91c1c;
+  background: #fef2f2;
+}
+
+body.acc-page #footer {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: #475569;
+  border-top: none;
+}
+
+@media (max-width: 1040px) {
+  body.acc-page #content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "value functions"
+      "stakeholders quality"
+      "decisions technologies"
+      "context components"
+      "risks risks";
+  }
+
+  body.acc-page #content > .sect1 {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  body.acc-page #header {
+    grid-template-columns: 1fr;
+  }
+
+  body.acc-page #header > h1 {
+    font-size: 1.45rem;
+  }
+
+  body.acc-page #header > .details {
+    grid-template-columns: 1fr;
+  }
+
+  body.acc-page #header > .details > span {
+    border-right: none;
+    border-bottom: 1px solid #95a8ba;
+  }
+
+  body.acc-page #header > .details > span:last-child {
+    border-bottom: none;
+  }
+
+  body.acc-page #content {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "value"
+      "functions"
+      "stakeholders"
+      "quality"
+      "decisions"
+      "technologies"
+      "context"
+      "components"
+      "risks";
+    padding: 10px;
+  }
+
+  body.acc-page #content > .sect1 {
+    min-height: 0 !important;
+  }
+}
+
+@media print {
+  body.acc-page {
+    background: #ffffff !important;
+  }
+
+  body.acc-page #content {
+    gap: 8px;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  body.acc-page #content > .sect1 {
+    min-height: 0 !important;
+    box-shadow: none;
+  }
+
+  body.acc-page #content p,
+  body.acc-page #content li,
+  body.acc-page #content td {
+    font-size: 0.72rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body.aic-page,
+  body.acc-page {
+    background: #08111f;
+    color: #e2e8f0;
+  }
+
+  body.aic-page #header > h1,
+  body.acc-page #header > h1 {
+    background: #132238;
+    border-color: #3d5a74;
+    color: #dbeafe;
+  }
+
+  body.aic-page #header > .details,
+  body.acc-page #header > .details {
+    background: #0f1b2d;
+    border-color: #3d5a74;
+  }
+
+  body.aic-page #header > .details > span,
+  body.acc-page #header > .details > span {
+    background: #0f1b2d;
+    border-color: #3d5a74;
+    color: #dbeafe;
+  }
+
+  body.aic-page #content,
+  body.acc-page #content {
+    background: #0c1728;
+    border-color: #3d5a74;
+  }
+
+  body.aic-page #content > .sect1,
+  body.acc-page #content > .sect1 {
+    background: #132238;
+    border-color: #35506b;
+    color: #e2e8f0;
+    box-shadow: 0 10px 30px rgb(2 6 23 / 0.28);
+  }
+
+  body.aic-page #content > .sect1 > h2,
+  body.acc-page #content > .sect1 > h2 {
+    color: #dbeafe;
+  }
+
+  body.aic-page #content a,
+  body.acc-page #content a,
+  body.aic-page #footer a,
+  body.acc-page #footer a {
+    color: #93c5fd;
+  }
+
+  body.aic-page #content .imageblock img,
+  body.acc-page #content .imageblock img,
+  body.aic-page #content .imageblock img[src$=".svg"],
+  body.acc-page #content .imageblock img[src$=".svg"] {
+    background: #ffffff;
+    opacity: 1;
+    border-color: #475569;
+  }
+
+  body.aic-page #content > .canvas-risks,
+  body.acc-page #content > .canvas-risks {
+    background: #3c1218;
+    border-color: #f87171;
+  }
+
+  body.aic-page #footer,
+  body.acc-page #footer {
+    color: #cbd5e1;
+  }
+}

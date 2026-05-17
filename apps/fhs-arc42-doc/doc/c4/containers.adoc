@@ -1,0 +1,131 @@
+= C4 Level 2 - Containers
+
+== Overview
+The container diagram shows the two high-level runtime boundaries and how responsibilities are distributed across them.
+FHS runs entirely locally — there is no server, no API gateway, and no remote service call.
+
+[source,mermaid]
+----
+C4Container
+    title Container Diagram - Feature Hypotheses Simulation
+
+    Person(po, "Product Owner", "Analyses backlog risk, prioritises features")
+    Person(rm, "Financial Risk Manager", "Runs portfolio CVaR, stress tests, budget frontier")
+    Person(bs, "Business Stakeholder", "Reviews exported notebook reports")
+
+    Container(jupyter, "Jupyter Lab", "Python / JupyterLab", "Interactive analysis environment — all notebooks run here")
+    Container(library, "FHS Python Library", "Python / NumPy / SciPy / Pydantic", "DDD-layered simulation and risk library imported directly by notebooks")
+    ContainerDb(config, "Scenario Configuration", "YAML files", "Feature definitions, budget constraints, and delivery risk parameters in notebooks/config/")
+
+    Rel_D(po, jupyter, "Opens core and tutorial notebooks")
+    Rel_D(rm, jupyter, "Opens advanced portfolio notebooks")
+    Rel_D(bs, jupyter, "Reviews rendered notebook outputs")
+    Rel_D(jupyter, library, "Imports FHS library (no API, no network)")
+    Rel_L(library, config, "Loads via load_scenario()")
+----
+
+== Containers
+
+=== Jupyter Lab — Analysis Environment
+All notebooks run inside JupyterLab (or VS Code with the Jupyter extension).
+The notebooks are the only user interface — there is no separate web app or CLI.
+
+Notebook tracks:
+
+[cols="1,3,2"]
+|===
+| Track | Notebooks | Audience
+
+| *Reference*
+| README, GLOSSARY
+| All users
+
+| *Core*
+| 01 Getting Started, 02 Blockchain Case Study, 03 Capital Budgeting, 04 Portfolio Advisor, 05 Risk Dashboard, 06 Delivery Risk, 07 Executive Decision
+| Product Owners, Portfolio Owners, Agile leaders
+
+| *Config*
+| Config Reference (scenario-config-reference)
+| All users
+
+| *Tutorial*
+| T01 Distribution Guide
+| Product Owners first, Risk Managers second
+
+| *Advanced*
+| A01 Portfolio Advisor, A02 Portfolio Risk Dashboard
+| Portfolio Owners, Agile leaders, Risk Managers
+|===
+
+=== FHS Python Library — Simulation and Risk Engine
+A pure Python package installed via `pip install -e .` and imported directly by notebooks.
+No server process, no REST API, no database.
+
+DDD layers (top to bottom):
+
+* *Presentation Layer* — `fhs.notebook` facade + `fhs.presentation.notebook` widgets, charts, and styling
+** `Notebook Facade` — `load_scenario()`, `notebook_setup()`, interactive config form (ipywidgets)
+** `Widget Display` — `show.*` facade with mixin-based API (simulation, risk, portfolio, delivery, capital budgeting, distribution)
+** `Charts` — Matplotlib/Plotly chart builders (fan charts, heatmaps, distributions, portfolio, risk profiles)
+** `Styling & Formatting` — COLORS palette, formatters, HTML template engine
+
+* *Application Layer* — Orchestration services and domain sub-facades
+** `AdvancedPortfolioService` — main facade delegating to sub-facades (`risk`, `delivery`, `multi_year`, `decisions`, `layers`)
+** `ScenarioService` — YAML config loading and event publishing
+** `CaseStudyService` — blockchain case study orchestration
+** `ExportService` — Excel/CSV export
+** `ServiceFactory` — dependency injection and wiring
+
+* *Domain Layer* — Core model and domain logic
+** `Feature` aggregate root — Pydantic entity with business_value parameters
+** `SimulationResult`, `MultiYearResult` — simulation output value objects
+** `ScenarioConfig`, `DeliveryRiskConfig` — configuration aggregates
+** `DomainEvents` — `ScenarioConfigurationChanged`, `EventBus`
+** `Exceptions` — typed domain exceptions
+** `Repository Interfaces` — `FeatureRepository` protocol
+
+* *Core Domain Services* — Calculation engines
+** `Monte Carlo Engine` — Normal, Lognormal, Beta, bounded, correlated draws
+** `Risk Calculator` — VaR, CVaR, Shapley attribution, bootstrap
+** `Simulation Engine` — FeatureSimulator, multi-year simulation, P&L
+** `Portfolio Service` — portfolio risk, correlation, stress tests, budget frontier (ILP/SLSQP)
+** `Optimization Service` — ILP, CVaR-MILP, greedy solvers
+** `Assessment & Ranking` — feature scoring and ranking strategies
+** `Financial Calculator` — NPV, IRR, present value
+** `Reporting Service` — executive summaries, stress test reports
+
+* *Infrastructure Layer* — Persistence and configuration
+** `YAML Repository` — reads and writes `notebooks/config/*.yaml`
+** `Portfolio Exporter` — Excel export with styled worksheets
+** `Versioning Service` — scenario version history
+** `Simulation Config` — DEFAULT_CONFIG, logging, validation defaults
+
+=== Scenario Configuration — YAML Files
+Central scenario definitions at `apps/fhs/notebooks/config/blockchain.yaml`.
+Features, budget constraints, and delivery risk parameters are all expressed in YAML
+and can be edited directly or via the interactive Configuration Form in Notebook 02.
+
+== Technology Choices
+
+=== Core Technologies
+* *Python 3.14+*: scientific computing ecosystem
+* *JupyterLab*: interactive analysis environment
+* *NumPy / SciPy*: Monte Carlo simulation and risk mathematics
+* *Pydantic*: Feature entity and value object validation
+* *PyYAML*: scenario configuration persistence
+* *Matplotlib / Plotly*: simulation charts and dashboards
+* *ipywidgets*: interactive configuration forms and display widgets
+* *PuLP*: Integer Linear Programming for budget optimisation
+* *openpyxl*: Excel export with styled formatting
+
+=== Data Flow
+1. Notebook calls `load_scenario()` — Scenario Service loads and validates the YAML config.
+2. Notebook calls `show.*` — Widget Display facade orchestrates Application layer.
+3. Application layer delegates to Core Services (Monte Carlo, Risk, Portfolio, Simulation, Optimization).
+4. Core Services use Domain Models (Feature, SimulationResult, value objects) for computation.
+5. Results flow back as typed value objects (SimulationResult, MultiYearResult, PortfolioSnapshot, …).
+6. Widget Display renders HTML tables, cards, and Plotly / Matplotlib charts inline.
+7. Charts module uses centralised Styling & Formatting for consistent visual design.
+
+---
+_C4 Level 2 - Containers_

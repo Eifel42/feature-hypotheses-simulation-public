@@ -1,0 +1,83 @@
+= Risks and Technical Debt
+
+Known risks with their mitigations and remaining technical debt.
+
+== Risks
+
+[cols="2,1,4,4"]
+|===
+|Risk |Severity |Impact |Mitigation
+
+|*Clipping bias*
+|Medium
+|Normal distribution clips negative values to zero, inflating the mean by ~0.5%. Effect grows with uncertainty > 0.5.
+|Warning issued when uncertainty > 0.5. Beta distribution recommended for bounded parameters (conversion rates).
+
+|*Correlation estimation*
+|Medium
+|Features rarely have historical correlation data. Default (uncorrelated) may underestimate portfolio risk if features actually move together.
+|Users can supply a custom correlation matrix. Matrix is validated before Cholesky decomposition with clear error messages.
+
+|*Budget optimization heuristic risk*
+|Medium
+|`optimize_portfolio_by_budget` uses greedy selection and may miss globally optimal subsets for some portfolios.
+|Mitigated by transparent alternatives output and separate exact combinatorial mode (`optimize_portfolio`) when selecting by fixed feature count.
+
+|*Development cost uncertainty*
+|High
+|Development costs are point estimates with typical ±30-50% error. Bad cost estimates produce misleading ROI and portfolio recommendations.
+|Documented limitation. Future: add `cost_uncertainty` field and simulate cost scenarios alongside business value.
+
+|*Model risk — VaR/CVaR validity boundary*
+|High
+|VaR and CVaR are known to underestimate tail risk in fat-tailed distributions (Black Swan events). The Normal/Lognormal simulation engines produce well-behaved tails that may not reflect real business outcome distributions. All results are estimates, not guarantees.
+|Results are always presented alongside the underlying uncertainty parameters. Notebooks include plain-language disclaimers. For heavy-tail scenarios, users are guided to higher scenario counts (100k+) and warned to treat tail metrics as directional, not precise.
+
+|*Input data quality — estimates as facts*
+|High
+|`expected_users`, `conversion_rate`, and `business_value_per_conversion` are expert estimates, not measured values. Simulations produce statistically precise output from imprecise input, creating a false confidence effect with stakeholders who focus on the numbers rather than their provenance.
+|Scenario configuration form (Notebook 02) prominently labels inputs as estimates. Output headings include "Simulated" to signal model-derived values. Users are encouraged to run sensitivity analysis to understand how input uncertainty drives output uncertainty.
+
+|*Reproducibility under library upgrades*
+|Medium
+|NumPy's random number generator behavior has changed between major versions (legacy vs. `default_rng`). A NumPy major-version upgrade could produce different simulation outputs from the same seed, breaking reproducibility and invalidating saved scenario comparisons.
+|`seed=42` with `numpy.random.default_rng` is used consistently. Library versions are pinned in `pyproject.toml`. Any NumPy upgrade must include a simulation regression test before release.
+
+|*Audit trail persistence*
+|Medium
+|`EventBus` and `EventLogger` run in Jupyter kernel memory. A kernel crash or restart discards the event log. Scenario YAML versions survive, but the sequence of changes and the actor who made them is lost between sessions.
+|YAML version snapshots provide a persistent change history via `VersioningService`. Users are advised to commit `notebooks/config/` to a Git repository for full audit trail durability.
+
+|*False confidence effect*
+|Medium
+|Stakeholders may treat simulation outputs (e.g. "VaR 95%: EUR 42,317") as precise forecasts rather than probability estimates. This risk grows when the tool is used to justify large budget commitments without communicating model limitations.
+|Every metric card includes a one-sentence plain-language explanation. The Quality Goal "Transparency" (Kap. 1) mandates that no metric is displayed without context. Risk Managers reviewing outputs should communicate confidence intervals alongside point estimates.
+
+|===
+
+== Technical Debt
+
+[cols="2,1,4"]
+|===
+|Debt |Priority |Description
+
+|*Cost uncertainty modeling*
+|Medium
+|`development_cost` is a single number. Adding a cost uncertainty range with Monte Carlo over costs would improve ROI accuracy.
+
+|*Algorithm documentation*
+|Low
+|ADR-011 should be extended with practical guidance on when to use greedy budget optimization vs. exact combinatorial selection.
+
+|*Solver dependency transparency*
+|Low
+|`AdvancedPortfolioService` uses PuLP for ILP optimization. The default solver (CBC, included with PuLP) is open source, but users who install commercial solvers (CPLEX, Gurobi) may face separate license obligations. This is not documented.
+
+|*Input validation coverage*
+|Low
+|`ScenarioConfig` validates YAML structure but does not enforce business-rule constraints across fields (e.g., `budget` covering at least one feature's `development_cost`). Cross-field validation lives implicitly in the optimizer rather than at load time.
+
+|===
+
+'''
+_Part of Arc42 Architecture Documentation_

@@ -1,0 +1,15 @@
+{# sensitivity_table.html.j2 — inner table for sensitivity analysis #}
+<table style="{{ table_base(font_size='14px', border='1px solid ' ~ COLORS.border) }}"><thead><tr style="background:{{ COLORS.surface }};">
+{% for h in headers %}
+<th style="padding:10px 12px;text-align:{{ 'left' if loop.index0 == 0 else 'right' }};color:{{ COLORS.neutral }};font-weight:700;">{{ h }}</th>
+{% endfor %}
+</tr></thead><tbody>
+{% for row in rows %}
+{% set bold = 'font-weight:bold;' if row[0] in hl_set else '' %}
+<tr style="background:{{ alternating_bg(loop.index0) }};">
+{% for v in row %}
+<td style="padding:10px 12px;text-align:{{ 'left' if loop.index0 == 0 else 'right' }};{{ bold }}">{{ v }}</td>
+{% endfor %}
+</tr>
+{% endfor %}
+</tbody></table>

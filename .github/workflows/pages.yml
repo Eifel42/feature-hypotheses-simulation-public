@@ -1,0 +1,68 @@
+name: Deploy Documentation to Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify canvas HTML rendering markers
+        run: |
+          set -euo pipefail
+          required=(
+            docs/html5/arc42-docs.html
+            docs/html5/architecture-inception-canvas.html
+            docs/html5/architecture-communication-canvas.html
+            docs/html5/index.html
+          )
+          for f in "${required[@]}"; do
+            if [ ! -s "$f" ]; then
+              echo "::error::missing or empty: $f"
+              exit 1
+            fi
+          done
+
+          grep -q 'class="[^"]* aic-page"' docs/html5/architecture-inception-canvas.html \
+            || { echo "::error::aic-page body class missing"; exit 1; }
+          grep -q 'class="[^"]* acc-page"' docs/html5/architecture-communication-canvas.html \
+            || { echo "::error::acc-page body class missing"; exit 1; }
+
+          if ! grep -Eq '\.(aic|acc)-page #header' docs/html5/architecture-inception-canvas.html; then
+            echo "::error::architecture-inception-canvas.html has no inline canvas CSS"
+            exit 1
+          fi
+          if ! grep -Eq '\.(aic|acc)-page #header' docs/html5/architecture-communication-canvas.html; then
+            echo "::error::architecture-communication-canvas.html has no inline canvas CSS"
+            exit 1
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/html5
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
