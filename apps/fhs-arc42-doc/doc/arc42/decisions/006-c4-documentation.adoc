@@ -1,0 +1,111 @@
+ADR-006: C4 Model Documentation
+
+== Status
+Accepted
+
+== Context
+Software architecture documentation often suffers from:
+* Inconsistent notation and abstraction levels
+* UML complexity that's hard for non-technical stakeholders
+* Documentation that quickly becomes outdated
+* Poor communication between architects and business stakeholders
+
+Alternative approaches include:
+* Traditional UML diagrams with full method/attribute details
+* Ad-hoc box-and-arrow diagrams
+* Code-only documentation
+* C4 Model with progressive levels of detail
+
+== Decision
+We will use the *C4 Model* for architectural documentation with:
+* *Structurizr DSL* for diagram-as-code approach
+* *Four levels of abstraction*: Context, Containers, Components, Code
+* *Progressive disclosure* - stakeholders see appropriate level of detail
+* *Consistent notation* across all diagrams
+* *Living documentation* - generated from code-adjacent definitions
+
+Implementation approach:
+* **Level 1 (Context)**: System interactions with users and external systems
+* **Level 2 (Containers)**: Jupyter Lab, FHS Library, CSV Files
+* **Level 3 (Components)**: Individual notebooks and Python modules
+* **Level 4 (Code)**: PlantUML for specific algorithm flows
+
+== Consequences
+
+=== Positive
+* *Stakeholder-appropriate views* - business sees context, developers see components
+* *Consistent notation* - same symbols and colors across all diagrams
+* *Version control friendly* - DSL files can be diffed and merged
+* *Automated generation* - diagrams stay synchronized with code
+* *Progressive complexity* - start simple, add detail as needed
+* *Tool agnostic* - C4 model works with multiple tools
+
+=== Negative
+* *Learning curve* - team needs to learn Structurizr DSL syntax
+* *Tool dependency* - requires Structurizr CLI for diagram generation
+* *Limited customization* - less flexibility than hand-drawn diagrams
+* *Abstraction constraints* - C4 model may not fit all architectural patterns
+
+=== Mitigation
+* *Clear DSL examples* - template files for common patterns
+* *Automated validation* - CI/CD pipeline checks DSL syntax
+* *Fallback to PlantUML* - for code-level details that don't fit C4
+* *Regular review sessions* - ensure diagrams stay current
+
+== C4 Level Mapping
+
+=== Level 1: System Context
+* **Actors**: Product Owner, Scrum Team, Business Stakeholder
+* **External Systems**: Analytics Platform, Product Backlog
+* **Our System**: Feature Hypotheses Simulation Platform
+* **Purpose**: Show high-level business context and user interactions
+
+=== Level 2: Containers
+* **Jupyter Lab**: Interactive analysis environment
+* **FHS Python Library**: Core simulation and risk calculation library
+* **CSV Data Files**: Feature parameters and market data
+* **Purpose**: Show major deployable/executable units
+
+=== Level 3: Components
+* **Notebook Components**: 01-getting-started, 02-advanced-analysis, 03-case-study, 04-report
+* **Library Components**: models, monte_carlo, risk_calculator, simulator, user_profiles
+* **Purpose**: Show internal organization and responsibilities
+
+=== Level 4: Code (PlantUML)
+* **Sequence Diagrams**: KISS workflow patterns
+* **Component Diagrams**: C4-style component interactions
+* **Method-level flows**: Specific algorithm implementations
+* **Purpose**: Developer-focused implementation details
+
+== Notation Standards
+
+=== Color Scheme (Simon Brown C4 Standard)
+* **Person**: #08427b (dark blue)
+* **Software System**: #1168bd (blue)
+* **Container**: #438dd5 (light blue)
+* **Component**: #85bbf0 (lighter blue)
+* **External System**: #999999 (gray)
+
+=== Relationship Patterns
+* **Uses**: Solid arrow with descriptive label
+* **Includes**: Component inclusion relationships
+* **Extends**: Inheritance or extension relationships
+* **Method calls**: Specific API usage patterns
+
+== Documentation-as-Code Workflow
+
+=== DSL Development
+1. **Define model** in workspace.dsl
+2. **Validate syntax** with Structurizr CLI
+3. **Generate diagrams** to SVG/PNG
+4. **Include in documentation** via AsciiDoc image references
+5. **Version control** DSL files alongside code
+
+=== Maintenance Process
+* **Weekly reviews** - ensure diagrams reflect current code
+* **Change-driven updates** - update diagrams when architecture changes
+* **Stakeholder feedback** - regular reviews with different stakeholder groups
+* **Tool updates** - keep Structurizr CLI current for new features
+
+'''
+_Architecture Decision Record_

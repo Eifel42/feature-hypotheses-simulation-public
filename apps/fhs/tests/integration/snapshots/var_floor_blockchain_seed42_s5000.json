@@ -1,0 +1,11 @@
+{
+  "scenario_id": "blockchain",
+  "strategy": "var_floor",
+  "seed": 42,
+  "scenarios": 5000,
+  "ordered_features": [
+    "H2: Traceability",
+    "H3: Expiration Alerts",
+    "H1: Simplified UI"
+  ]
+}

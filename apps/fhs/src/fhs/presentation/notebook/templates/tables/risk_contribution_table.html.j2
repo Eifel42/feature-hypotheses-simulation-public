@@ -1,0 +1,7 @@
+{# risk_contribution_table.html.j2 #}
+<table style="{{ table_base(font_size='14px', border='1px solid ' ~ COLORS.border) }}"><thead><tr style="background:{{ COLORS.surface }};font-weight:bold;color:{{ COLORS.neutral }};"><th style="padding:12px 14px;text-align:left;">Feature</th><th style="padding:12px 14px;text-align:left;">Weight</th><th style="padding:12px 14px;text-align:left;">Expected Business Value</th><th style="padding:12px 14px;text-align:left;">Business Value Volatility</th><th style="padding:12px 14px;text-align:left;">Risk Ratio</th><th style="padding:12px 14px;text-align:left;">Risk Contribution</th></tr></thead><tbody>
+{% for name, weight, exp_rev, volatility, ratio, risk_contrib in rows %}
+{% set ratio_color = COLORS.danger if ratio > 40 else (COLORS.neutral if ratio > 20 else COLORS.secondary) %}
+<tr><td style="padding:10px 14px;font-weight:bold;">{{ name }}</td><td style="padding:10px 14px;">{{ '{:.0%}'.format(weight) }}</td><td style="padding:10px 14px;">EUR {{ '{:,.0f}'.format(exp_rev) }}</td><td style="padding:10px 14px;">EUR {{ '{:,.0f}'.format(volatility) }}</td><td style="padding:10px 14px;font-weight:bold;color:{{ ratio_color }};">{{ '{:.1f}'.format(ratio) }}%</td><td style="padding:10px 14px;">{{ '{:.1f}'.format(risk_contrib) }}%</td></tr>
+{% endfor %}
+</tbody></table>

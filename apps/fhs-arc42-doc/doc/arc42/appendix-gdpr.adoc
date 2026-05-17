@@ -1,0 +1,32 @@
+Data privacy note for the Feature Hypotheses Simulation.
+
+== B.1 Data Privacy Statement
+
+FHS is a local Python library that runs on the user's own machine. It does not collect, store, or transmit personal data.
+
+[cols="2,4"]
+|===
+|Aspect |Status
+
+|*User accounts*
+|None. No login, no authentication.
+
+|*Database*
+|None. No persistent storage. All data lives in Jupyter notebook memory during a session.
+
+|*Network communication*
+|None. No API calls, no telemetry, no analytics.
+
+|*Cloud services*
+|None. Runs entirely offline.
+
+|*Personal data processed*
+|None. Input data consists of feature parameters (expected users, conversion rates, costs) — business estimates, not personal data.
+
+|===
+
+== B.2 GDPR Applicability
+
+GDPR does not apply to this system because it processes no personal data and has no user accounts.
+
+If FHS is deployed in a multi-user environment (e.g., JupyterHub), the organization operating that environment is responsible for any GDPR obligations arising from the deployment infrastructure.

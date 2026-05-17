@@ -1,0 +1,108 @@
+<!-- Modern HTML5 Design for arc42 Documentation - Header -->
+<!-- No external runtime resources: GitHub Pages output must not depend on CDNs. -->
+
+<!-- Meta tags for better mobile experience -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2156a5">
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    const isIndex = path.endsWith('/index.html') || path === '/' || path === '';
+
+    if (isIndex || document.querySelector('.back-to-index')) {
+      return;
+    }
+
+    const pageTitle =
+      document.querySelector('#content h1, #header h1')?.textContent?.trim() ||
+      document.title.replace(/\s+-\s+.*$/, '').trim() ||
+      'Current page';
+
+    const link = document.createElement('a');
+    link.href = 'index.html';
+    link.className = 'back-to-index';
+    link.setAttribute('rel', 'home');
+    link.setAttribute('aria-label', `Back from ${pageTitle} to the documentation index`);
+    link.setAttribute('title', 'Back to documentation index');
+    link.innerHTML = `
+      <span class="back-to-index__icon" aria-hidden="true">
+        <span class="back-to-index__arrow">&larr;</span>
+      </span>
+      <span class="back-to-index__copy">
+        <span class="back-to-index__eyebrow">Documentation Hub</span>
+        <span class="back-to-index__title">Return to index</span>
+      </span>
+    `;
+    document.body.appendChild(link);
+  });
+</script>
+
+<!-- Additional styles for modern appearance -->
+<style>
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Improved focus styles for accessibility */
+  a:focus, button:focus, input:focus, select:focus, textarea:focus {
+    outline: 2px solid #2156a5;
+    outline-offset: 2px;
+  }
+
+  /* Dark mode: all variables are defined in arc42-custom.css */
+</style>
+
+<!-- Disclaimer footer injected on all arc42 pages -->
+<style>
+  #fhs-disclaimer {
+    margin-top: 3rem;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid #cbd5e1;
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.6;
+  }
+  #fhs-disclaimer a {
+    color: #2156a5;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  #fhs-disclaimer .disclaimer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-bottom: 6px;
+  }
+  #fhs-disclaimer .disclaimer-note {
+    color: #94a3b8;
+    font-size: 0.75rem;
+  }
+  @media print {
+    #fhs-disclaimer { display: none; }
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const footer = document.createElement('div');
+    footer.id = 'fhs-disclaimer';
+    footer.innerHTML = `
+      <div class="disclaimer-links">
+        <span>&#169; 2026 Stefan Zils &mdash; MIT License</span>
+        <a href="https://github.com/Eifel42/feature-hypotheses-simulation-public" target="_blank" rel="noopener">GitHub Repository</a>
+        <a href="https://github.com/Eifel42/feature-hypotheses-simulation-public/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
+        <a href="https://github.com/Eifel42/feature-hypotheses-simulation-public/issues" target="_blank" rel="noopener">Report an Issue</a>
+        <a href="https://www.eifel42.dev/page/compliance/imprint/#en" target="_blank" rel="noopener">Site Notice</a>
+        <a href="https://www.eifel42.dev/page/compliance/gdpr/#en" target="_blank" rel="noopener">Privacy Policy</a>
+        <a href="index.html">Documentation Index</a>
+      </div>
+      <p class="disclaimer-note">
+        Auto-generated architecture documentation hosted on GitHub Pages.
+        Provided for educational and analytical purposes only.
+        Simulations and risk metrics are illustrative and do not constitute financial advice.
+      </p>
+    `;
+    document.body.appendChild(footer);
+  });
+</script>

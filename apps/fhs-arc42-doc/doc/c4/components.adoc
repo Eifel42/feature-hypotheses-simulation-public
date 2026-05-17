@@ -1,0 +1,264 @@
+= C4 Level 3 - Components
+
+== Overview
+The component diagram shows how the FHS Python Library is decomposed into DDD layers.
+Dependency direction is always top-down: Presentation -> Application -> Domain/Core -> Infrastructure.
+
+[source,mermaid]
+----
+C4Component
+    title Component Diagram - FHS Python Library (DDD Layers)
+
+    Boundary(presentation, "Presentation Layer") {
+        Component(notebook_facade, "Notebook Facade", "fhs.notebook", "load_scenario(), notebook_setup(), config form — single entry point for all notebooks")
+        Component(widget_display, "Widget Display", "fhs.presentation.notebook.widgets.facade", "show.* facade: simulation, comparison, risk, portfolio, delivery, capital budgeting")
+        Component(charts, "Charts", "fhs.presentation.notebook.charts", "Fan charts, heatmaps, distribution plots, portfolio charts, risk profiles")
+        Component(styling, "Styling & Formatting", "fhs.presentation.notebook.styling", "COLORS palette, setup_style(), formatters, HTML template engine")
+    }
+
+    Boundary(application, "Application Layer") {
+        Component(scenario_service, "Scenario Service", "fhs.application.scenario_service", "Loads and validates YAML scenario config; publishes ScenarioConfigurationChanged")
+        Component(adv_portfolio, "AdvancedPortfolioService", "fhs.application.advanced_portfolio_service", "Main orchestration facade — delegates to domain sub-facades")
+        Component(risk_ops, "Risk Operations", "fhs.application.risk_analysis_operations", "service.risk.* — loss metrics, Shapley attribution, component risk")
+        Component(delivery_ops, "Delivery Operations", "fhs.application.delivery_analysis_operations", "service.delivery.* — delivery risk, sprint overruns, profitability")
+        Component(multiyear_ops, "Multi-Year Operations", "fhs.application.multi_year_analysis_operations", "service.multi_year.* — NPV/IRR, multi-year P&L, financial views")
+        Component(decision_ops, "Decision Operations", "fhs.application.decision_operations", "service.decisions.* — feature ranking, score analysis, budget strategy")
+        Component(layer_ops, "Risk Layer Operations", "fhs.application.risk_layers_operations", "service.layers.* — risk layer simulation, sensitivity, retention")
+        Component(case_study, "Case Study Service", "fhs.application.blockchain_case_study_service", "Blockchain case study orchestration and board recommendations")
+        Component(export_service, "Export Service", "fhs.application.export_service", "Export results to Excel/CSV with styled formatting")
+        Component(service_factory, "Service Factory", "fhs.application.service_factory", "Factory pattern for creating and wiring application services")
+    }
+
+    Boundary(domain, "Domain Layer") {
+        Component(domain_models, "Domain Models", "fhs.core.model", "Feature aggregate root, SimulationResult, MultiYearResult, Value Objects, Events, Exceptions")
+        Component(domain_events, "Domain Events", "fhs.core.model.events", "ScenarioConfigurationChanged, EventBus, EventLogger")
+        Component(domain_config, "Scenario Config", "fhs.core.model.config", "ScenarioConfig aggregate, DeliveryRiskConfig")
+        Component(repositories, "Repository Interfaces", "fhs.core.model.repositories", "FeatureRepository protocol — implemented in infrastructure")
+        Component(domain_exceptions, "Domain Exceptions", "fhs.core.model.exceptions", "FHSException, SimulationError, ValidationError, PortfolioOptimizationError")
+    }
+
+    Boundary(core, "Core Domain Services") {
+        Component(monte_carlo, "Monte Carlo Engine", "fhs.core.services.monte_carlo", "Normal, Lognormal, Beta, bounded, and correlated scenario draws")
+        Component(risk_calc, "Risk Calculator", "fhs.core.services.risk", "VaR, CVaR, percentiles, confidence intervals, Shapley attribution")
+        Component(portfolio_svc, "Portfolio Service", "fhs.core.services.portfolio", "Portfolio VaR/CVaR, correlation matrix, stress tests, budget frontier (ILP/SLSQP)")
+        Component(optimizer, "Optimization Service", "fhs.core.services.optimization", "ILP, CVaR-MILP, and greedy budget optimisation solvers")
+        Component(simulator, "Simulation Engine", "fhs.core.services.simulation", "FeatureSimulator orchestration, multi-year simulation, multi-year P&L")
+        Component(assessment, "Assessment & Ranking", "fhs.core.services.assessment", "FeatureAssessmentService, RankingService (Expected Value, VaR, CVaR, ROI)")
+        Component(financial, "Financial Calculator", "fhs.core.services.financial", "Present value, NPV, IRR, annualisation computations")
+        Component(reporting, "Reporting Service", "fhs.core.services.reporting", "Executive summaries, stress test reports, PO summaries, Year 1 risk reports")
+    }
+
+    Boundary(infra, "Infrastructure Layer") {
+        Component(yaml_repo, "YAML Repository", "fhs.infra.repositories.yaml_repository", "Loads and persists scenario YAML files from notebooks/config/")
+        Component(exporters, "Portfolio Exporter", "fhs.infra.exporters", "Excel export with styled worksheets for portfolio results")
+        Component(versioning, "Versioning Service", "fhs.infra.versioning", "Scenario version history tracking and rollback")
+        Component(infra_config, "Simulation Config", "fhs.infra.config", "DEFAULT_CONFIG, logging configuration, validation defaults")
+    }
+
+    Rel_D(notebook_facade, scenario_service, "load_scenario()")
+    Rel_D(notebook_facade, widget_display, "delegates show.* rendering")
+    Rel_R(widget_display, charts, "renders figures")
+    Rel_R(widget_display, styling, "applies palette, formatters")
+    Rel_R(charts, styling, "uses COLORS, figure sizes")
+    Rel_D(widget_display, adv_portfolio, "delegates portfolio analysis")
+    Rel_D(widget_display, simulator, "delegates single-feature simulations")
+    Rel_D(service_factory, adv_portfolio, "creates and wires")
+    Rel_D(scenario_service, yaml_repo, "loads/saves YAML")
+    Rel_D(scenario_service, domain_events, "publishes events")
+    Rel_D(adv_portfolio, risk_ops, "service.risk.*")
+    Rel_D(adv_portfolio, delivery_ops, "service.delivery.*")
+    Rel_D(adv_portfolio, multiyear_ops, "service.multi_year.*")
+    Rel_D(adv_portfolio, decision_ops, "service.decisions.*")
+    Rel_D(adv_portfolio, layer_ops, "service.layers.*")
+    Rel_D(case_study, adv_portfolio, "orchestrates case study")
+    Rel_D(export_service, exporters, "delegates Excel generation")
+    Rel_D(risk_ops, risk_calc, "VaR, CVaR, Shapley")
+    Rel_D(risk_ops, portfolio_svc, "portfolio risk")
+    Rel_D(delivery_ops, monte_carlo, "delivery scenario draws")
+    Rel_D(delivery_ops, risk_calc, "loss metrics, LaR")
+    Rel_D(multiyear_ops, monte_carlo, "multi-year scenario draws")
+    Rel_D(multiyear_ops, financial, "NPV, IRR computations")
+    Rel_D(decision_ops, optimizer, "budget optimisation")
+    Rel_D(decision_ops, risk_calc, "ranking metrics")
+    Rel_D(decision_ops, assessment, "feature scoring")
+    Rel_D(layer_ops, portfolio_svc, "layer analysis")
+    Rel_D(reporting, risk_calc, "risk metrics for reports")
+    Rel_D(reporting, portfolio_svc, "portfolio data")
+    Rel_D(simulator, monte_carlo, "orchestrates scenario draws")
+    Rel_D(simulator, risk_calc, "calculates result metrics")
+    Rel_D(monte_carlo, domain_models, "reads Feature parameters")
+    Rel_D(risk_calc, domain_models, "reads SimulationResult")
+    Rel_D(portfolio_svc, monte_carlo, "per-feature simulations")
+    Rel_D(portfolio_svc, risk_calc, "portfolio-level metrics")
+    Rel_D(optimizer, portfolio_svc, "feature subset evaluation")
+    Rel_D(assessment, risk_calc, "feature-level risk metrics")
+    Rel_D(financial, domain_models, "reads financial params")
+    Rel_D(yaml_repo, domain_models, "materialises Feature, ScenarioConfig")
+    Rel_D(yaml_repo, domain_config, "loads DeliveryRiskConfig")
+    Rel_D(versioning, yaml_repo, "reads/writes version snapshots")
+----
+
+== Component Responsibilities
+
+=== Presentation Layer
+
+==== Notebook Facade (`fhs.notebook`)
+* Exposes `load_scenario(name, editable=False)` as the single notebook entry point
+* Exposes `notebook_setup()` for one-line environment configuration (matplotlib, warnings, style)
+* Shows interactive configuration form when `editable=True` (ipywidgets)
+* Contains no business logic — only orchestration and display delegation
+
+==== Widget Display (`fhs.presentation.notebook.widgets`)
+* `show` singleton facade with mixin-based API: `show.simulation()`, `show.comparison()`, `show.risk_dashboard()`, …
+* Delegates rendering to Charts module and applies Styling & Formatting
+* Mixins: `_PrimitivesMixin`, `_CapitalBudgetingMixin`, `_RiskMixin`, `_PortfolioMixin`, `_DistributionMixin`, `_DeliveryMixin`
+* Includes table builders for metrics, decisions, risk analysis, comparisons, and sample data
+
+==== Charts (`fhs.presentation.notebook.charts`)
+* Matplotlib and Plotly chart builders: portfolio distributions, risk profiles, fan charts, heatmaps
+* Modules: `portfolio.py`, `risk.py`, `forecast.py`, `distributions.py`, `capital_budgeting.py`, `heatmap.py`
+* All charts use the centralised `COLORS` palette and `setup_style()` configuration
+
+==== Styling & Formatting (`fhs.presentation.notebook.styling`)
+* `COLORS` palette, `palette()`, `setup_style()` — consistent visual design
+* `formatters.py` — risk metric and delivery analysis formatters
+* `template_engine.py` — HTML template rendering for widget cards
+
+=== Application Layer
+
+==== Scenario Service
+* Calls YAML Repository to load and validate scenario files
+* Assembles typed `ScenarioContext` objects consumed by notebooks
+* Publishes `ScenarioConfigurationChanged` domain events on save
+
+==== AdvancedPortfolioService (main facade)
+* Accepts features, budget, discount rate, seed, and scenario count
+* Exposes five domain sub-facades via `service.risk`, `service.delivery`, `service.multi_year`, `service.decisions`, `service.layers`
+* Delegates all computation — contains no calculation logic itself
+* All collaborators share an explicit `PortfolioContext` Protocol (no `host: Any`)
+
+==== Sub-Facades
+[cols="1,3"]
+|===
+| Sub-facade | Responsibility
+
+| `service.risk`
+| Loss metrics, Shapley attribution, component-level simulated risk
+
+| `service.delivery`
+| Delivery risk simulation, sprint overrun stress tests, profitability analysis
+
+| `service.multi_year`
+| Multi-year Monte Carlo P&L, NPV/IRR, financial views per feature
+
+| `service.decisions`
+| Feature ranking, score analysis, strategy category cost share
+
+| `service.layers`
+| Risk layer simulation, feature sensitivity, risk retention
+|===
+
+==== Case Study Service
+* Orchestrates the blockchain case study across notebooks
+* Provides board recommendation generation
+* Delegates to AdvancedPortfolioService for portfolio analysis
+
+==== Export Service
+* Exports portfolio results and risk reports to Excel/CSV
+* Delegates formatting to infrastructure exporters
+
+==== Service Factory
+* Factory pattern for creating and wiring all application services
+* Ensures consistent dependency injection across the application layer
+
+=== Domain Layer
+
+==== Domain Models (`fhs.core.model`)
+* `Feature` — Pydantic aggregate root with `business_value` distribution parameters
+* `SimulationResult` — VaR, CVaR, expected value, scenario array (25+ computed properties)
+* `MultiYearResult` / `YearResult` — per-year simulation output
+* Value objects: `BudgetFrontier`, `OptimizationResult`, `RiskLayerStats`, `ShapleyAttribution`, `PortfolioSnapshot`, `LossMetrics`, `FinancialView`, …
+
+==== Domain Events
+* `ScenarioConfigurationChanged` — published when scenario config is saved
+* `EventBus` — simple in-process event routing
+* `EventLogger` — writes audit trail to `notebooks/logs/`
+
+==== Scenario Config
+* `ScenarioConfig` — aggregate for scenario-level parameters
+* `DeliveryRiskConfig` — delivery risk simulation parameters (scenarios, failure rates)
+
+==== Repository Interfaces
+* `FeatureRepository` protocol — defines persistence contract
+* Implemented by `YamlFeatureRepository` in infrastructure layer
+
+==== Domain Exceptions
+* `FHSException` — base exception
+* `SimulationError`, `ValidationError`, `PortfolioOptimizationError`, `CorrelationMatrixError`, `InsufficientDataError`
+
+=== Core Domain Services
+
+==== Monte Carlo Engine
+* Generates scenario distributions (Normal, Lognormal, Beta)
+* Supports bounded sampling and correlated draws via Cholesky decomposition
+* Returns raw `np.ndarray` scenario arrays
+
+==== Risk Calculator
+* VaR and CVaR at configurable confidence levels
+* Bootstrap confidence intervals for tail metrics
+* Shapley attribution of portfolio risk to individual features
+* Delivery risk: loss metrics, LaR computation
+
+==== Portfolio Service
+* Aggregates per-feature simulations into portfolio-level risk
+* Computes correlation matrix and concentration (Herfindahl index)
+* Budget frontier generation via ILP/SLSQP solvers
+* Stress testing and scenario analysis
+
+==== Optimization Service
+* ILP (Integer Linear Programming) exact solver for budget allocation
+* CVaR-MILP solver for risk-constrained optimisation
+* Greedy fallback solver for large feature sets
+* Supports `var_floor` and `value_max` optimisation strategies
+
+==== Simulation Engine
+* `FeatureSimulator` — main orchestration for single-feature Monte Carlo
+* Multi-year simulation with growth rate compounding
+* Multi-year P&L computation across portfolio
+
+==== Assessment & Ranking
+* `FeatureAssessmentService` — feature-level risk and value assessment
+* `RankingService` — ranking strategies: Expected Value, VaR, CVaR, ROI
+
+==== Financial Calculator
+* Present value, NPV, IRR, annualisation computations
+* Used by multi-year operations for financial views
+
+==== Reporting Service
+* Executive summaries for board-level reporting
+* Stress test reports with scenario analysis
+* PO summary generation
+* Year 1 delivery risk reports
+
+=== Infrastructure Layer
+
+==== YAML Repository
+* Reads and writes `notebooks/config/*.yaml`
+* Materialises `Feature` entities, `ScenarioConfig`, and `DeliveryRiskConfig` from YAML
+* Implements the `FeatureRepository` protocol defined in the domain
+
+==== Portfolio Exporter
+* Excel export with styled worksheets (openpyxl)
+* Formats portfolio results, risk metrics, and optimisation outputs
+
+==== Versioning Service
+* Tracks scenario configuration version history
+* Supports rollback to previous configurations
+
+==== Simulation Config
+* `DEFAULT_CONFIG` — default simulation parameters
+* Logging configuration via `configure_logging()`
+* Validation defaults for simulation inputs
+
+---
+_C4 Level 3 - Components_

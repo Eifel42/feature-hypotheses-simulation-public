@@ -1,0 +1,15 @@
+++++
+<a href="index.html"
+   class="back-to-index"
+   rel="home"
+   aria-label="Back to the documentation index"
+   title="Back to documentation index">
+  <span class="back-to-index__icon" aria-hidden="true">
+    <span class="back-to-index__arrow">&larr;</span>
+  </span>
+  <span class="back-to-index__copy">
+    <span class="back-to-index__eyebrow">Documentation Hub</span>
+    <span class="back-to-index__title">Return to index</span>
+  </span>
+</a>
+++++
