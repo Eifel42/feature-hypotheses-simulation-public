@@ -1,0 +1,26 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+[cols="2,3,3", options="header"]
+|===
+|Decision |Technology Choice |Rationale
+
+|Programming Language
+|Python 3.14+
+|Modern Python with access to the latest scientific tooling and language features.
+
+|Risk Calculations
+|NumPy / SciPy
+|Optimized mathematical libraries for Monte Carlo simulation and statistical analysis.
+
+|User Interface
+|Jupyter Notebooks
+|Interactive analysis environment with code, results, and explanations in one document.
+
+|Deployment
+|Docker + GitHub Actions
+|Consistent environments across machines with automated CI/CD.
+
+|Documentation
+|Arc42 + docToolchain
+|Enterprise-standard architecture documentation.
+
+|===

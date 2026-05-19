@@ -1,0 +1,61 @@
+= Quality Requirements
+
+== Quality Tree
+
+The tree below maps the four Quality Goals (defined in <<_introduction_and_goals>>) to their contributing quality attributes.
+*Correctness* ranks first because stakeholders act on the numbers; a statistically wrong result causes worse decisions than no result at all.
+*Simplicity* and *Transparency* are co-constraints: results must be understandable without a finance degree, and every metric must be explained in context — not just displayed.
+*Practical Value* closes the loop: insights that cannot be acted on in a sprint planning session are not useful to a Product Owner.
+
+.Quality Attributes — Feature Hypotheses Simulation
+[plantuml, quality-tree, svg]
+....
+include::../plantuml/quality-tree.puml[]
+....
+
+== Key Quality Scenarios
+
+include::../_generated/_quality-scenarios-table.adoc[]
+
+== Quality Goal — Scenario Traceability
+
+The table below links each Quality Goal from <<_introduction_and_goals>> to the scenario that verifies it and the mechanism that enforces it.
+
+[cols="2,3,3,3", options="header"]
+|===
+|Quality Goal |Quality Scenario |Verification |Enforcement
+
+|*Correctness*
+|Monte Carlo with 10,000 scenarios produces VaR 95% within ±1% of theoretical value across five runs with the same seed.
+|`test_var_reproducibility` in `tests/test_risk_calculator.py`
+|NumPy seeded `default_rng`; CI runs the full suite on every commit.
+
+|*Simplicity*
+|A Product Owner with no financial background completes a first risk assessment in Notebook 01 within 15 minutes, without external help.
+|Manual walkthrough; notebook UX review.
+|Progressive disclosure (Core → Tutorial → Advanced tracks); plain-language metric labels throughout.
+
+|*Transparency*
+|Every `show.*` widget displays a one-sentence plain-language explanation alongside the EUR figure.
+|Code review; `test_display_includes_explanation` (presentation layer tests).
+|`FHSDisplay` mixin contract: each method renders a `show.info_box()` alongside the metric.
+
+|*Practical Value*
+|A Risk Manager can run a full portfolio stress test and export a decision report within a single sprint planning session (~2 hours).
+|End-to-end notebook walkthrough (Notebook A01–A02).
+|`AdvancedPortfolioService` returns pre-computed value objects; no manual data wrangling required.
+
+|*Performance*
+|(Supporting Correctness & Practical Value) 10,000-scenario Monte Carlo completes in under 2 seconds on standard laptop hardware.
+|`test_performance_budget` benchmark test.
+|NumPy vectorized simulation; no Python loops in the hot path.
+
+|*Maintainability*
+|(Supporting Correctness) A new distribution type can be added to the Monte Carlo engine without changing `simulator.py`, `risk_calculator.py`, or any notebook.
+|Architecture boundary test (`tests/test_architecture.py`).
+|DDD layering enforced by import restriction tests; `MonteCarloEngine` is the single extension point.
+
+|===
+
+'''
+_Part of Arc42 Architecture Documentation_

@@ -1,0 +1,235 @@
+= Deployment View
+
+FHS runs entirely locally — no cloud, no server, no API.
+Two deployment options address different user contexts and operating systems.
+
+== Deployment Options Overview
+
+[cols="2,3,2,3"]
+|===
+|Option |Best for |Platform |Entry point
+
+|*Lima VM Sandbox*
+|macOS developers wanting a complete, isolated dev environment
+|macOS (Intel + Apple Silicon)
+|`make -C local-sandbox shell` → `fhs-lab`
+
+|*Docker*
+|Quick start on any OS; CI/CD pipelines
+|Linux · macOS · Windows
+|`docker compose -f cicd/docker-compose.yml up --profile fhs`
+
+|===
+
+== Option 1 — Lima VM Development Sandbox (recommended for macOS)
+
+A headless Ubuntu 24.04 VM with the full FHS development environment (Python 3.14, JupyterLab, Claude Code, Go, Dagger) managed by Lima / QEMU. Code runs inside the VM; IDEs and browsers connect from the Mac.
+
+=== C4 Deployment Diagram — Lima VM
+
+The diagram shows the VM node hierarchy: the Mac host manages the Lima VM; inside the VM, Docker runs the JupyterLab and documentation containers; the browser connects to JupyterLab over a forwarded port.
+
+image::structurizr-LimaVMDeployment.svg[Lima VM Deployment,900,600]
+
+=== Node Details
+
+[cols="2,2,4"]
+|===
+|Node |Technology |Description
+
+|`fhs` VM
+|Ubuntu 24.04 LTS (Lima / QEMU)
+|Isolated Linux environment with Python 3.14, uv, Node.js 22, Go, Dagger, Claude Code, Copilot CLI, JupyterLab, Docker CLI, Ollama CLI
+
+|Python 3.14 Runtime
+|uv package manager
+|Manages the FHS virtual environment (`pip install -e .[dev]`) — all scientific computing dependencies (NumPy, SciPy, Matplotlib, Plotly, Pydantic, PuLP, openpyxl)
+
+|JupyterLab 4.x
+|Python / JupyterLab
+|Interactive analysis environment hosting all notebooks — the only user interface for FHS
+
+|FHS Python Library
+|Python package
+|Imported directly by notebooks; provides DDD-layered Monte Carlo simulation, VaR/CVaR, portfolio analysis, and optimization services
+
+|Scenario Configuration
+|YAML files
+|`notebooks/config/blockchain.yaml` — single source of truth for features, budget, delivery risk parameters
+
+|Documentation Server
+|docToolchain 3.4.1 / JDK 21 / Gradle 8.5
+|On-demand arc42 HTML documentation build — port 28085 forwarded to host localhost:28085
+
+|Web Browser
+|Chrome / Firefox / Safari
+|Accesses JupyterLab via Lima port-forward (VM 8888 → host 28888)
+
+|IDE / Editor
+|VS Code Remote-SSH / JetBrains Gateway
+|Remote development: code, lint, test inside the VM while editing locally
+
+|===
+
+=== Port Forwarding
+
+[cols="2,2,4"]
+|===
+|Host port |VM port |Service
+
+|`localhost:28888`
+|`8888`
+|JupyterLab
+
+|`localhost:28000`
+|`8000`
+|Docs (alternative)
+
+|`localhost:28085`
+|`8085`
+|Arc42 documentation
+
+|===
+
+=== Setup
+
+[source,bash]
+----
+# From the project root
+make -C local-sandbox create      # ~2 min: start minimal Lima VM
+make -C local-sandbox provision   # ~10 min: install Python, Go, Dagger, AI tools
+make -C local-sandbox shell       # Enter the VM shell
+# Inside VM:
+fhs-lab                           # Start JupyterLab at http://localhost:28888
+----
+
+Requirements: macOS, Lima (`brew install lima`), Docker Desktop (optional), Ollama (optional).
+
+Full setup guide: `local-sandbox/README.md`
+
+== Option 2 — Docker (Quick Start)
+
+A single Docker container with all dependencies pre-installed — the simplest way to start using FHS on any operating system.
+
+=== C4 Deployment Diagram — Docker
+
+The Docker option mounts the project directory into the container and exposes JupyterLab on port 8888.
+All analysis runs inside the container; results are written back to the mounted volume.
+
+image::structurizr-DockerDeployment.svg[Docker Deployment,900,600]
+
+=== Container Details
+
+[cols="2,2,4"]
+|===
+|Container |Technology |Description
+
+|`fhs-platform`
+|Python 3.14-slim + JupyterLab
+|Pre-configured image with Python 3.14, NumPy, SciPy, Matplotlib, Plotly, and the FHS library
+
+|FHS Python Library
+|Python package (pre-installed)
+|All DDD-layered services available immediately — no additional setup required
+
+|Scenario Configuration
+|YAML files (bind mount)
+|Host directory mounted into the container for persistent scenario edits
+
+|===
+
+=== Setup
+
+[source,bash]
+----
+# From the project root
+docker compose -f cicd/docker-compose.yml up --profile fhs
+# Open http://localhost:8888
+----
+
+Requirements: Docker Engine or Docker Desktop.
+
+== Platform Compatibility
+
+[cols="2,3,3"]
+|===
+|Platform |Lima VM |Docker
+
+|macOS (Intel + Apple Silicon)
+|Lima + Docker Desktop
+|Docker Desktop
+
+|Linux
+|Lima + Docker Engine
+|Docker Engine
+
+|Windows
+|Not supported
+|Docker Desktop (WSL 2)
+
+|===
+
+NOTE: Shell scripts and Makefiles target Linux and macOS only. Windows users should use Docker or WSL 2.
+
+== Build the Arc42 Documentation
+
+[source,bash]
+----
+docker compose -f cicd/docker-compose.yml up --profile docs
+# Output: docs/arc42-docs.html
+----
+
+The documentation builder uses Python 3.14-slim with OpenJDK 21, docToolchain 3.4.1, and Gradle 8.5.
+
+== Scenario Configuration — Backup and Recovery
+
+All scenario inputs live in YAML files under `apps/fhs/notebooks/config/`.
+These files are the single source of truth for reproducible simulations.
+
+*Backup strategy:*
+
+* Commit `config/*.yaml` to version control after each significant change.
+  Git history serves as a full audit trail.
+* To snapshot a configuration before a major edit, copy the file:
+  `cp blockchain.yaml blockchain_backup_$(date +%Y%m%d).yaml`
+
+*Recovery:*
+
+* Roll back to any previous version with `git checkout <commit> -- apps/fhs/notebooks/config/blockchain.yaml`.
+* The seed field ensures that identical YAML produces identical simulation results — no further state is stored outside the YAML and the codebase.
+
+*What is NOT backed up automatically:*
+
+* Executed notebook outputs — strip outputs before committing (the `nbstripout` pre-commit hook does this automatically).
+* Exported HTML/PDF reports — regenerate from the committed YAML and code.
+
+== CI/CD Pipeline
+
+The project CI/CD runs inside Docker containers using the `cicd/docker-compose.yml` profiles:
+
+[cols="2,4"]
+|===
+|Profile / Command |Purpose
+
+|`./cicd/run-cicd.sh test`
+|pytest suite — unit tests for all modules
+
+|`./cicd/run-cicd.sh lint`
+|ruff format + ruff check code quality checks
+
+|`./cicd/run-cicd.sh types`
+|mypy type checking
+
+|`./cicd/run-cicd.sh arch`
+|Architecture layer boundary tests (import restrictions)
+
+|`./cicd/run-cicd.sh security`
+|Jupyter security defaults validation
+
+|`./cicd/run-cicd.sh pipeline`
+|Complete pipeline: security + ci + docs
+
+|===
+
+'''
+_Part of Arc42 Architecture Documentation_
