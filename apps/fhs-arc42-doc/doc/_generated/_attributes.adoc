@@ -1,0 +1,8 @@
+// Auto-generated from doc/registry/architecture-data.yaml - do not edit manually
+:project-name: Feature Hypotheses Simulation
+:project-short: FHS
+:project-version: 1.0.0
+:project-author: eifel42.dev
+:github-url: https://github.com/Eifel42/feature-hypotheses-simulation-public
+:github-artifacts-raw: .
+:default-scenarios: 10,000

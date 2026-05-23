@@ -1,0 +1,63 @@
+# Pin by SHA digest for supply-chain immutability.
+# To update: docker pull python:3.14-slim && docker inspect --format='{{index .RepoDigests 0}}' python:3.14-slim
+FROM python:3.14-slim@sha256:fb83750094b46fd6b8adaa80f66e2302ecbe45d513f6cece637a841e1025b4ca
+
+# Install Java 21 (available on Debian trixie) plus build tooling
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openjdk-21-jre-headless \
+    curl \
+    unzip \
+    graphviz \
+    ca-certificates \
+    locales \
+    && rm -rf /var/lib/apt/lists/* \
+    && locale-gen en_US.UTF-8 \
+    && update-ca-certificates \
+    && rm -rf /etc/ssl/certs/NetLock_Arany_*
+
+# Install plantuml (pinned version)
+RUN curl -fsSL --max-time 120 \
+    https://github.com/plantuml/plantuml/releases/download/v1.2023.12/plantuml-1.2023.12.jar \
+    -o /usr/local/bin/plantuml.jar && \
+    chmod +x /usr/local/bin/plantuml.jar
+
+# Install Structurizr CLI (latest release)
+RUN mkdir -p /opt/structurizr && \
+    STRUCTURIZR_VERSION=$(curl -fsSL --max-time 30 https://api.github.com/repos/structurizr/cli/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | tr -d 'v') && \
+    echo "Installing Structurizr CLI version: ${STRUCTURIZR_VERSION}" && \
+    curl -fsSL --max-time 120 "https://github.com/structurizr/cli/releases/download/v${STRUCTURIZR_VERSION}/structurizr-cli.zip" -o /tmp/structurizr-cli.zip && \
+    unzip /tmp/structurizr-cli.zip -d /opt/structurizr && \
+    rm /tmp/structurizr-cli.zip && \
+    find /opt/structurizr -name "*.sh" -exec chmod +x {} \;
+
+# Install docToolchain (pinned version)
+RUN mkdir -p /opt/doctoolchain && \
+    DOCTOOLCHAIN_VERSION=3.4.1 && \
+    echo "Installing docToolchain version: ${DOCTOOLCHAIN_VERSION}" && \
+    curl -fsSL --max-time 120 "https://github.com/docToolchain/docToolchain/releases/download/v${DOCTOOLCHAIN_VERSION}/docToolchain-${DOCTOOLCHAIN_VERSION}.zip" -o /tmp/doctoolchain.zip && \
+    unzip /tmp/doctoolchain.zip -d /opt/doctoolchain && \
+    rm /tmp/doctoolchain.zip && \
+    chmod +x /opt/doctoolchain/docToolchain-${DOCTOOLCHAIN_VERSION}/bin/doctoolchain
+
+# Upgrade the bundled Gradle wrapper from 8.1.1 to 8.5 so it runs on Java 21.
+# Gradle 8.1.1 does not support Java 21 (class file major version 65);
+# Gradle 8.5 added full Java 21 support (released Nov 2023).
+RUN sed -i \
+    's|gradle-8\.1\.1-bin\.zip|gradle-8.5-bin.zip|g; s|distributions/gradle-8\.1\.1|distributions/gradle-8.5|g' \
+    /opt/doctoolchain/docToolchain-3.4.1/gradle/wrapper/gradle-wrapper.properties
+
+# Add to PATH
+ENV PATH="/opt/structurizr:/opt/doctoolchain/docToolchain-3.4.1/bin:${PATH}"
+ENV DTC_VERSION=3.4.1
+ENV DTC_HOME="/opt/doctoolchain/docToolchain-3.4.1"
+ENV LANG=C.UTF-8
+
+# Create working directory
+WORKDIR /workspace
+
+# Install required Python packages for documentation
+COPY config/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set entrypoint to bash
+CMD ["/bin/bash", "-c", "doctoolchain . generateHTML"]

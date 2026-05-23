@@ -1,0 +1,72 @@
+scenario_id: blockchain
+name: Blockchain Scenario
+budget: 155000.0
+seed: 73
+scenarios: 100000
+discount_rate: 0.12
+deployment_risk:
+  scenarios: 100000
+  sprint_length_weeks: 2
+  quarterly_capacity_sprints: 6
+  delay_model:
+    sprint_uncertainty: 30
+    sprint_ceiling: 2.5
+  cancellation:
+    max_sprints_over_plan: 2
+    cancellation_probability: 0.6
+strategy:
+  'H1: Simplified UI':
+    category: Protect & Grow
+    reason: Retain customers and grow share by fixing UX friction
+  'H2: Traceability':
+    category: Grow
+    reason: Win new customers and premium pricing by proving sustainability (full
+      provenance)
+  'H3: Expiration Alerts':
+    category: Efficiency
+    reason: Cut spoilage and chargebacks
+features:
+- name: 'H1: Simplified UI'
+  expected_users: 10000
+  conversion_rate: 0.22
+  uncertainty: 0.3
+  business_value_per_conversion: 14.0
+  development_cost: 75000.0
+  installment_years: 3
+  development_weeks: 5
+  annual_growth_rate: -0.2
+  likelihood_of_non_delivery: 0.2
+  dependency_cluster: Customer Experience Platform
+  planned_release: R2
+  acceptance_model: binomial
+  annual_operating_cost: 25000.0
+- name: 'H2: Traceability'
+  expected_users: 15000
+  conversion_rate: 0.18
+  uncertainty: 0.25
+  business_value_per_conversion: 32.0
+  development_cost: 55000.0
+  installment_years: 3
+  development_weeks: 5
+  annual_growth_rate: -0.09999999999999998
+  likelihood_of_non_delivery: 0.5
+  dependency_cluster: Traceability Platform
+  planned_release: R2
+  acceptance_model: binomial
+  annual_operating_cost: 40000.0
+- name: 'H3: Expiration Alerts'
+  expected_users: 80000
+  conversion_rate: 0.12
+  uncertainty: 0.35
+  business_value_per_conversion: 5.5
+  development_cost: 10509.0
+  installment_years: 2
+  development_weeks: 3
+  annual_growth_rate: 0.15000000000000002
+  likelihood_of_non_delivery: 0.8
+  dependency_cluster: Traceability Platform
+  planned_release: R2
+  acceptance_model: binomial
+  annual_operating_cost: 3000.0
+metadata:
+  config_source: yaml

@@ -1,0 +1,42 @@
+@startmindmap quality-tree
+
+skinparam mindmapDiagram {
+  BackgroundColor #ffffff
+  RootBackgroundColor #08427B
+  RootFontColor #ffffff
+  RootFontSize 16
+  RootFontStyle bold
+}
+
+skinparam node {
+  BackgroundColor #1168BD
+  BorderColor #08427B
+  FontColor #ffffff
+  FontSize 12
+  FontStyle bold
+}
+
+skinparam leafNode {
+  BackgroundColor #438DD5
+  BorderColor #1168BD
+  FontColor #ffffff
+  FontSize 10
+}
+
+title Quality Requirements — FHS
+
+* **Quality**
+** **1. Correctness**
+*** VaR 95% within +/-1% across runs
+*** Reproducible results via seed
+** **2. Usability**
+*** First assessment <15 min
+*** Plain-language EUR results
+** **3. Performance**
+*** 10,000 scenarios <2s
+*** Portfolio analysis <10s
+** **4. Maintainability**
+*** New distribution = one module change
+*** All logic in library, not notebooks
+
+@endmindmap

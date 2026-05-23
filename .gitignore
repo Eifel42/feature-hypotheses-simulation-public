@@ -1,0 +1,129 @@
+# Public mirror .gitignore — published by publish-public.yml.
+#
+# Critical difference vs the dev .gitignore: docs/html5/ is NOT ignored
+# here. The dev publish workflow builds, verifies, and force-pushes the
+# fully rendered arc42 HTML into this directory; the public repo's
+# pages.yml then uploads and deploys it. If docs/html5/ were ignored,
+# `git add .` would skip the very files customers come to see.
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+build/*
+!build/README.md
+build-output/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+junit*.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Environments
+cicd/.env.local
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+*.bak
+plantuml.jar
+node_modules/
+.gradle/
+
+# Asciidoctor working directory (per-render cache, not the rendered output)
+docs/.asciidoctor/
+docs/html5/.asciidoctor/
+
+# API keys and secrets (never commit)
+.env
+.env.example.local
+.env.local
+.env.*.local
+*.secret
+*.secrets
+*credentials*.json
+*token*.json
+
+# SSH keys
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+!*.pub

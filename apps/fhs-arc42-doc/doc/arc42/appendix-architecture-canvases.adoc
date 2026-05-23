@@ -1,0 +1,11 @@
+Direct HTML access to both architecture canvases. The pages render the canvas content natively instead of embedding thumbnail-style previews.
+
+== Architecture Inception Canvas
+
+*Open HTML:* link:architecture-inception-canvas.html[Architecture Inception Canvas] +
+*Open Source:* link:{github-artifacts-raw}/architecture-inception-canvas.drawio[architecture-inception-canvas.drawio]
+
+== Architecture Communication Canvas
+
+*Open HTML:* link:architecture-communication-canvas.html[Architecture Communication Canvas] +
+*Open Source:* link:{github-artifacts-raw}/architecture-communication-canvas.drawio[architecture-communication-canvas.drawio]

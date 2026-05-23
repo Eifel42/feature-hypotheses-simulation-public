@@ -1,0 +1,54 @@
+Visual guide to C4 Model elements and their official notation, following https://c4model.com/diagrams/notation[C4 Model standards].
+
+== A.1 Official C4 Notation Diagram
+
+.C4 Model notation with official symbols and colors - System Context Level
+image::structurizr-C4Notation.svg[C4 Notation System Context, align="center"]
+
+.C4 Model notation - Container Level
+image::structurizr-NotationContainers.svg[C4 Notation Container Level, align="center"]
+
+.C4 Model notation - Component Level
+image::structurizr-NotationComponents.svg[C4 Notation Component Level, align="center"]
+
+The diagrams above show the official C4 Model notation as defined by Simon Brown, generated using Structurizr DSL. Each element has a specific shape, color, and purpose within the four levels of abstraction.
+
+== A.2 Element Reference
+
+[cols="2,3,2"]
+|===
+| **Element** | **Purpose** | **Color Code**
+
+| **Person** | Users, actors, stakeholders | [.c4-person]#08427B#
+| **Software System** | High-level systems | [.c4-system]#1168BD#
+| **External System** | Third-party systems | [.c4-external]#999999#
+| **Container** | Deployable units, applications | [.c4-container]#438DD5#
+| **Database** | Data storage | [.c4-database]#23A2F0#
+| **Component** | Code groupings, modules | [.c4-component]#85BBF0#
+| **Deployment Node** | Infrastructure: VMs, containers, machines | border only (white fill)
+|===
+
+== A.3 Views
+
+[cols="1,2,2,2"]
+|===
+| **View** | **Name** | **Audience** | **Focus**
+
+| **1** | System Context | Non-technical stakeholders | Business scope
+| **2** | Container | Technical stakeholders | Technology choices
+| **3** | Component | Software architects | Code organization
+| **4** | Code | Developers | Implementation details
+| **Deployment** | Deployment | DevOps, architects | Infrastructure and runtime topology
+| **Dynamic** | Dynamic (Sequence) | Architects, developers | Runtime interaction flows
+|===
+
+The *Deployment View* is orthogonal to the four levels of abstraction — it maps containers onto the real infrastructure nodes (VMs, Docker containers, machines) where they run. FHS defines three deployment environments: Lima VM, Docker, and Local Python Install (see <<_deployment_view>>).
+
+The *Dynamic View* traces a specific runtime scenario (e.g. Product Owner opening a notebook and running a simulation) across containers and components.
+
+== A.4 References
+
+* **C4 Model:** https://c4model.com/
+* **Notation Guide:** https://c4model.com/diagrams/notation
+* **Structurizr:** https://structurizr.com/
+* **Arc42 Template:** https://arc42.org/
